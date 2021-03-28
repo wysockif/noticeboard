@@ -1,0 +1,152 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{indentfirst}
+\usepackage{lastpage}
+\usepackage{natbib}
+\usepackage{graphicx} 
+\usepackage{sidecap}
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{caption}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Franciszek Wysocki}
+\rfoot{Strona \thepage \hspace{1pt} z \pageref{LastPage}}
+\lhead{Spis treści}
+\title{Specyfikacja funkcjonalna dla projektu pt. ,,Noticeboard''}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{flushright}
+\par
+\vfill
+\par
+{\fontsize{11}{11}\selectfont
+    Wykonał: Franciszek Wysocki
+
+    Sprawdzający: mgr inż. Paweł Zawadzki
+
+    Data: 17.03.2021
+}
+\end{flushright}
+\thispagestyle{empty}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Cel dokumentu}
+{\fontsize{12}{12}\selectfont
+    Celem ninijeszego dokumentu jest przedstawienie funkcjonalności aplikacji webowej ,,Noticeboard''. Zostaną w nim opisane m.in: cel projektu, interakcje pomiędzy systemem a użytkownikiem, jak również same funkcje systemu.
+}
+
+\lhead{Cel dokumentu}
+
+\section{Cel projektu}
+{\fontsize{12}{12}\selectfont
+    Celem projektu jest stworzenie prostego serwisu ogłoszeniowego - aplikacji webowej w architekturze klient-serwer. Będzie ona rozwiązywać problem ograniczonego zasięgu ogłoszeń na tradycyjnych tablicach czy słupach reklamowych.
+    
+    Serwis ten będzie umożliwiać m.in. rejestrację oraz logowanie do serwisu, wyświetlanie/filtrowanie stron z ogłoszeniami (bez logowania), jak również dodawanie/kasowanie/edycja ogłoszeń (po uwierzytelnieniu). 
+    
+    Aplikacja będzie także odpowiednio zabezpieczona - walidacja danych, hashowanie hasła, reakcja na błędy ze strony użytkownika.
+}
+
+\section{Użytkownik serwisu}
+
+{\fontsize{12}{12}\selectfont
+    Aplikacja będzie kierowana do każdej osoby, dlatego interfejs użytkownika będzie prosty, aby każdy mniej techniczny użytkownik nie miał problemów z jej obsługą. 
+    
+    W celu korzystania z serwisu użytkownik powinien miec zainstalowaną przeglądarkę internetową z włączoną obsługą JavaScriptu. Preferowane jest korzystanie z przeglądarek wspierających ES6.
+}
+
+\section{Dostępne funkcje w serwisie i ich opis}
+{\fontsize{12}{12}\selectfont
+    
+\begin{itemize}
+    \item Rejestracja:
+    Strona rejestracji będzie posiadać pola na adres email, nazwę użytkownika, hasło i powtórzenie hasła oraz przycisk zatwierdzający operacje. Dane zostaną zwalidowane (np. złożoność hasła, unikalność nazwy użytkownika). Mogą pojawić się komunikaty o błędach.
+    
+    \item Logowanie: 
+    Strona logowania będzie posiadać pola na nazwę użytkownika i hasło oraz przycisk zatwierdzający operację. Po zatwierdzeniu nastąpi weryfikacja istnienia użytkownika i zgodności hasła. Mogą pojawić się komunikaty o błędach.
+    
+    \item Wyświetlenie, wyszukiwanie i filtrowanie ogłoszeń:
+    Na stronie głównej zostanie wyświetlona lista ogłoszeń z możliowścią ich filtrowania oraz wyszukiwania (paginacja i lazy loading). Mogą pojawić się komunikaty o braku znalezienia wyników.
+    
+    \item Dodawanie ogłoszeń:
+    Strona na dodawanie ogłoszeń (dostępna po zalogowaniu) będzie posiadać pola na tytuł, opis, cenę i lokalizację oraz przyciski na załączenie zdjęcie, zatwierdzenie operacji i skasowanie ogłoszenia. Nastąpi walidacja danych (np. ceny) i mogą pojawić się komunikaty o błędach.
+    
+    \item Edytowanie i kasowanie ogłoszeń: 
+    Strona na edytowanie ogłoszeń będzie podobna do strony do ich dodawania, z tą różnicą, że pola będą automatycznie wypełniane i pojawi się na niej dodatkowy przycisk służący kasowaniu ogłoszenia.
+
+    
+\end{itemize}
+}
+\lhead{Przykładowy scenariusz użytkowania}
+
+\section{Przykładowy scenariusz użytkowania}
+{\fontsize{12}{12}\selectfont
+
+Uruchomienie aplikacji nie będzie wymagało działania użytkownika, gdyż ta w końcowej wersji będzie stale uruchomiona na serwerze - więcej szczegółów w specyfikacji implementacyjnej.
+
+\begin{itemize}
+    \item Użytkownik zakłada konto oraz loguje się:
+        \begin{enumerate}
+            \item Użytkownik otwiera przeglądarkę i przechodzi pod odpowiedni adres URL.
+            \item Użytkownik przechodzi na stronę rejestracji i wprowadza wymagane dane.
+            \item Użytkownik zostaje poinformowany o pomyślności operacji, po czym zostaje przekierowany na stronę logowania.
+            \item Użytkownik loguje się.
+            \item Użytkownik zostaje przekierowany na stronę główną.
+        \end{enumerate}
+
+    \item Użytkownik jest ogłoszeniodawcą.
+            \begin{enumerate}
+            \item Użytkownik otwiera przeglądarkę i przechodzi pod odpowiedni adres URL.
+            \item Użytkownik przechodzi ze strony głównej na stronę logowania i uwierzytelnia się, po czym zostaje z powrotem przekierowany na stronę główną.
+            \item Użytkownik naciska przycisk ,,Dodaj ogłoszenie'' i podaje tytuł, opis, cenę, lokalizację, adres email oraz załadowuje zdjęcie, po czym zatwierdza operację.
+            \item Użytkownik edytuje swoje (np. błędne) ogłoszenie.
+            \item Użytkownik kasuje swoje (np. nieaktualne) ogłoszenie.
+            \item Użytkownik wylogowuje się.
+        \end{enumerate}
+        
+    \item Użytkownik jest ogłoszeniobiorcą.
+        \begin{enumerate}
+            \item Użytkownik otwiera przeglądarkę i przechodzi pod odpowiedni adres URL.
+            \item Użytkownik przegląda i filtruje ogłoszenia.
+            \item Użytkownik otwiera ogłoszenie i wyświetla szczegółowy opis, dane sprzedawcy i jego adres email do kontaktu.
+        \end{enumerate}
+    \end{itemize}
+    
+}
+
+\lhead{Błędy}
+\section{Błędy}
+{\fontsize{12}{12}\selectfont
+    Dane wprowadzane przez użytkownika będą walidowane podczas rejestracji, logowania, a także dodawania i
+    edycji ogłoszeń. Jeżeli wystąpi błąd użytkownik zostanie o tym poinformowany. Komunikaty będą wyświetlane m.in. w poniższych sytuacjach:
+    
+    \begin{enumerate}
+        \item zajęta nazwa użytkownika;
+        \item hasło nie pasujące do wzorca;
+        \item email nie pasujący do wzorca;
+        \item cena nie pasujaca do wzorca;
+        \item błędne dane logowania;
+        \item próba wyświetlenia stron wymagających autoryzacji bez zalogowania;
+        \item próba wyświetlenia stron wymagających autentykacji bez posiadania odpowiednich uprawnień.
+        
+    \end{enumerate}
+    
+    Błędy nie bedą kończyły działania aplikacji.
+
+}
+
+\end{document}

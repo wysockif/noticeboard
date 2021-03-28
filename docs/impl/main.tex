@@ -1,0 +1,197 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage{indentfirst}
+\usepackage{lastpage}
+\usepackage{natbib}
+\usepackage{graphicx} 
+\usepackage{sidecap}
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{caption}
+
+\captionsetup[figure]{name={Rysunek}}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Franciszek Wysocki}
+\rfoot{Strona \thepage \hspace{1pt} z \pageref{LastPage}}
+
+\title{Specyfikacja implementacyjna dla projektu pt. \\ ,,Noticeboard''}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{flushright}
+\par
+\vfill
+\par
+{\fontsize{11}{11}\selectfont
+    Wykonał: Franciszek Wysocki
+
+    Sprawdzający: mgr inż. Paweł Zawadzki
+
+    Data: 24-03-2021
+}
+\end{flushright}
+\thispagestyle{empty}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\lhead{Cel dokumentu i projektu oraz środowisko deweloperskie}
+
+\section{Cel dokumentu}
+{\fontsize{12}{12}\selectfont
+    Celem dokumentu jest przedstawienie planów implementacyjnych dotyczących projektu ,,Noticeboard''. Zostaną w nim opisane szczegóły dotyczące środowiska deweloperskiego, struktury projektu, jak również zasady wersjonowania i testowania.
+}
+
+\section{Cel aplikacji}
+{\fontsize{12}{12}\selectfont
+    Celem projektu jest stworzenie prostego serwisu ogłoszeniowego - aplikacji webowej w architekturze klient-serwer. Będzie ona rozwiązywać problem ograniczonego zasięgu ogłoszeń na tradycyjnych tablicach czy słupach reklamowych.
+    
+    Serwis ten będzie umożliwiać m.in. rejestrację oraz logowanie do serwisu, wyświetlanie/filtrowanie stron z ogłoszeniami (bez logowania), jak również dodawanie/kasowanie/edycja ogłoszeń (po uwierzytelnieniu). 
+    
+    Aplikacja będzie także odpowiednio zabezpieczona - walidacja danych, hashowanie hasła, reakcja na błędy ze strony użytkownika.
+}
+
+
+
+
+\section{Środowisko deweloperskie}
+{\fontsize{12}{12}\selectfont
+    Aplikacja będzie tworzona w systemie Ubuntu 20.04. Front-end aplikacji zostanie napisany w JavaScriptcie (ES6) z wykorzystaniem biblioteki React (v. 17.0.1) i biblioteki Bootstrap 5 (v. 5.0). Back-end aplikacji zostanie napisany w Javie (openjdk v. 13.0.4) w oparciu o framework Spring Boot (v. 2.4.3). Zostanie również utworzony serwer bazy danych PostgreSQL 
+    
+    Kontakt pomiędzy front-endem, a back-endem odbywać się będzie za pomocą metod HTTP zgodnie ze stylem architektury oprogramowania REST (każde zapytanie płynące z front-endu będzie musiało zawierać komplet informacji). Formatem wymienianych danych będzie JSON. Do stwierdzania uwierzytelniania użytkowników w żądaniach zostanie zaimplementowany Basic Auth. \\
+    
+    \\ 
+    Narzędzia:
+    \begin{itemize}
+        \item IntelliJ IDEA Ultimate 2020.3 - zintegrowane środowisko programistyczne (back-end);
+        \item Visual Studio Code 1.54.3 - zintegrowane środowisko programistyczne (front-end);
+        \item Postman (v. 7.36.5) - manualne testowanie żądań;
+        \item Git (v. 2.25.1) - system kontroli wersji;
+        \item Github - hosting repozytorium;
+        \item Npm (v. 6.14.4) - menadżer pakietów (front-end);
+        \item Apache Maven (v. 3.6.3) - narzędzie automatyzujące budowę oprogramowania (back-end);
+        \item Docker (v. 19.03.13) - narzędzie do konteneryzacji;
+        \item SQuirreL (v. 4.1.0) - klient GUI do PostgreSQL.
+    \end{itemize}
+}
+
+
+\lhead{Zasady wersjonowania, uruchomienie i bezpieczeństwo}
+\section{Zasady wersjonowania}
+{\fontsize{12}{12}\selectfont
+    Wersjonowanie odbędzie się za pomocą systemu kontroli wersji (git).
+    Nazwy branchy, tagów i commitów będą pisane w języku angielskim.  
+    Praca z systemem kontroli wersji git będzie rozłożona na wiele gałęzi. 
+    Łączenie ich będzie wykonywane za pomocą komendy git merge. \\
+
+    W repozytorium znajdą się oddzielne katalogi na front-end, back-end, konfiguracje bazy danych i dokumentację.
+}
+
+
+
+\section{Uruchomienie}
+{\fontsize{12}{12}\selectfont
+    Założeniem aplikacji jest jest jej ciągła praca na serwerze, zatem nie zakłada się jej częstego uruchamiania. W tym celu jednak można będzie wykorzystać dockera, uruchamiając odpowiednie kontenery, bądź skorzystać z poleceń: \\
+    
+    \texttt{npm start} - dla aplikacji front-endowej;
+    
+    
+    \texttt{java -jar nazwaAplikacji} - dla aplikacji back-endowej.
+}
+
+
+\section{Bezpieczeństwo}
+{\fontsize{12}{12}\selectfont
+    Do zabezpieczenia aplikacji zostanie wykorzystany framework Spring Security. Endpointy służące dodawaniu/edytowaniu/kasowaniu ogłoszeń oraz edycji danych użytkownika będą wymagały uwierzytelnienia. Wgląd w panel administracyjny będzie wymagał dodatkowych uprawnień administratora.
+    
+    Hasła przechowywane w bazie danych będą hashowane za pomocą funkcji hashującej Bcrypt, a uwierzytelnianie requestów odbywać się będzie za pomocą BasicAuth, wykorzystując funkcję szyfrującą Base64.
+
+}
+
+
+\section{Obsługa danych}
+{\fontsize{12}{12}\selectfont
+    Do modyfikowania danych (w bazie danych) po stronie serwera zostanie wykorzystany moduł Spring Data JPA. 
+    
+    Dane wprowadzane przez użytkownika będą walidowane zarówno przez front-end (aby zapewnić szybki feedback np. odnośnie złożoności hasła), jak i przez back-end aplikacji (np. aby sprawdzić czy użytkownik o podanej nazwie użytkownika już istnieje).
+    
+    Pobieranie danych będzie podlegało paginacji i lazy-loadingowi, co przyspieszy ładowanie ogłoszeń.
+    
+    Użytkownicy będą przechowywani w trwałym magazynie danych.
+
+}
+\lhead{Obsługa danych i testowanie}
+\section{Testowanie}
+{\fontsize{12}{12}\selectfont
+Testy aplikacji będą pisane przed tworzeniem samego kodu zgodnie z techniką TDD i zgodnie z zasadami F.I.R.S.T.
+
+\begin{enumerate}
+    \item Back-end \\ \\
+        Biblioteki, które zostana wykorzystane: JUnit 4, AssertJ oraz Mockito.\\
+
+        Nazwy testów będą pisane zgodnie z konwencją:
+                \begin{center}
+                    \texttt{nameOfTheMethod\_stateUnderTest\_expectedBehavior}
+                \end{center}
+        Testy będą automatycznie uruchamiane za pomocą Mavena przed stworzeniem pliku JAR, bezpośrednio uruchamiając je w IDE lub wywołując \texttt{mvn test}.
+        
+    \item Front-end \\ \\
+        Zostanie wykorzystana biblioteka: testing-library oraz framework ,,Jest'' (do mockowania). \\
+        Nazwy testów będą dopełniały funkcję testową ,,it'' np. 
+        \begin{center}
+           (it) \texttt{'hides login page when user logged in'}
+        \end{center}
+        Testy będą uruchamiane automatycznie przez npm po każdym zapisaniu zmian w projekcie, po wcześniejszym wywołaniu \texttt{npm test}.
+\end{enumerate}
+
+    Zarówno testy back-endowe, jak i front-endowe będą pisane zgodnie ze schamatem given/when/then.
+}
+
+
+\section{Struktura, klasy i moduły w projekcie}
+{\fontsize{12}{12}\selectfont
+    
+\begin{enumerate}
+    \item Back-end \\ \\
+    Struktura projektu będzie zgodna z tą narzuconą przez Mavena. Dodatkowo powstaną pakiety:
+    \begin{itemize}
+        \item controllers - pakiet przechowujący klasy, będące restowymi kontrolerami - w tym pakiecie zostaną wyróżnione podpakiety przechowujące m. in. klasy UserController, NoticeController, LoginController;
+        \item repositories - pakiet przechowujący interfejsy, służące komunikacji z bazą danych - w tym pakiecie zostaną wyróżnione podpakiety przechowujące m. in. interfejsy UserRepository, NoticeRepository;
+        \item services - pakiet przechowujący klasy, służące obsłudze danych (przełożenie odpowiedzialności z kontrolerów) - w tym pakiecie zostaną wyróżnione podpakiety przechowujące m. in. klasy UserService, NoticeService;
+        \item entities - pakiet przechowujący klasy, będące encjami (tabelami w bazie danych) - w tym pakiecie zostaną wyróżnione podpakiety przechowujące m. in. klasy User, Notice;
+        \item dto - pakiet przechowujący klasy, których obiekty będą służyły wymienie danych - w tym pakiecie zostaną wyróżnione podpakiety przechowujące m. in. klasy UserDTO, NoticeDTO;
+        \item configurations - pakiet przechowujący klasy, służące konfiguracji aplikacji np. SecurityConfiguration;
+        \item errors - pakiet przechowujący wyjątki i klasy odpowiedzialne za obługę błędów.
+        
+    \end{itemize}
+    \item Front-end \\ \\
+        Kod będzie umieszczony w odpowiednich pakietach w folderze src.
+        \begin{itemize}
+            \item api - pakiet przechowujący moduł odpowiedzialny za wysyłanie requestów;
+            \item components - pakiet przechowujący komponenty Reacta takie jak np. NoticeList.js czy TopBar.js;
+            \item pages - pakiet przechowujący strony takie jak strona logowania, główna, rejestracji, administratora, dodawania/edycji ogłoszeń - w rzeczywistości to również będą komponenty Reacta, jednak będą pełniły funkcję podstron, zmienianych przy wykorzystaniu React Router.
+        \end{itemize}
+    \item Baza danych \\ \\
+        W bazie danych zostaną utworzone m. in. tabele:
+        \begin{itemize}
+            \item User - tabela reprezentująca użytkownika aplikacji, przechowująca takie dane jak: id użytkownika, email, nazwa użytkownika, nazwa do wyświetlenia, hasło, rolę i ogłoszenia danego użytkownika;
+            \item Notice - tabela reprezentująca ogłoszenie, przechowująca takie dane jak: id ogłoszenia, id użytkownika (autora), lokalizacja, tytuł, opis.
+        \end{itemize}
+\end{enumerate}
+}
+\lhead{Struktura, klasy i moduły w projekcie}
+
+
+\end{document}
