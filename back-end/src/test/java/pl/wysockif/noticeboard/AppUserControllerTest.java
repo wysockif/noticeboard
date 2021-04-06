@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.wysockif.noticeboard.appuser.dto.requests.PostUserRequest;
 import pl.wysockif.noticeboard.appuser.entity.AppUser;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
-import pl.wysockif.noticeboard.shared.Response;
 
 import java.util.List;
 
@@ -65,13 +64,13 @@ public class AppUserControllerTest {
     }
 
     @Test
-    public void postAppUser_whenAppUserIsValid_receiveSuccessMessage() {
+    public void postAppUser_whenAppUserIsValid_receiveSavedUserId() {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Response.class);
+        ResponseEntity<Long> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Long.class);
         // then
-        assertThat(response.getBody().getMessage()).isNotNull();
+        assertThat(response.getBody()).isEqualTo(1L);
     }
 
     @Test
@@ -79,7 +78,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Response.class);
+        testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Long.class);
         // then
         List<AppUser> users = userRepository.findAll();
         AppUser userInDatabase = users.get(0);

@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.appuser.dto.requests.PostUserRequest;
 import pl.wysockif.noticeboard.appuser.entity.AppUser;
+import pl.wysockif.noticeboard.appuser.mapper.AppUserMapper;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
 
 import java.util.logging.Logger;
@@ -22,10 +23,11 @@ public class AppUserService {
 
     public Long save(PostUserRequest postUserRequest) {
         LOGGER.info("Saving user: " + postUserRequest);
-        AppUser user = postUserRequest.toAppUser();
+        AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(postUserRequest);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         AppUser savedUser = userRepository.save(user);
-        LOGGER.info("Saved user (id: " + savedUser.getId() + ")" );
+        Long savedUserId = savedUser.getId();
+        LOGGER.info("Saved user (id: " + savedUserId + ")");
         return savedUser.getId();
     }
 }
