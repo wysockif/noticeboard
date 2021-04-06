@@ -1,9 +1,10 @@
+import RegistrationPage from "./pages/RegistrationPage";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h2>noticeboard</h2>
+        <RegistrationPage />
       </header>
     </div>
   );
