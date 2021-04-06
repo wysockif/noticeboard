@@ -6,10 +6,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.wysockif.noticeboard.appuser.dto.requests.PostUserRequest;
 import pl.wysockif.noticeboard.appuser.entity.AppUser;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
 import pl.wysockif.noticeboard.shared.Response;
@@ -17,6 +17,7 @@ import pl.wysockif.noticeboard.shared.Response;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -34,31 +35,31 @@ public class AppUserControllerTest {
         userRepository.deleteAll();
     }
 
-    private AppUser createValidUser() {
-        AppUser appUser = new AppUser();
-        appUser.setUsername("test-username");
-        appUser.setEmail("test@email.com");
-        appUser.setDisplayName("test-display-name");
-        appUser.setPassword("Password123");
-        return appUser;
+    private PostUserRequest createValidPostUserRequest() {
+        PostUserRequest postUserRequest = new PostUserRequest();
+        postUserRequest.setUsername("test-username");
+        postUserRequest.setEmail("test@email.com");
+        postUserRequest.setDisplayName("test-display-name");
+        postUserRequest.setPassword("Password123");
+        return postUserRequest;
     }
 
     @Test
-    public void postAppUser_whenAppUserIsValid_receiveOk() {
+    public void postAppUser_whenAppUserIsValid_receiveCreatedStatus() {
         // given
-        AppUser appUser = createValidUser();
+        PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, appUser, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
     }
 
     @Test
     public void postAppUser_whenAppUserIsValid_userSavedToDatabase() {
         // given
-        AppUser appUser = createValidUser();
+        PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        testRestTemplate.postForEntity(API_1_0_USERS, appUser, Object.class);
+        testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(userRepository.count()).isEqualTo(1);
     }
@@ -66,23 +67,23 @@ public class AppUserControllerTest {
     @Test
     public void postAppUser_whenAppUserIsValid_receiveSuccessMessage() {
         // given
-        AppUser appUser = createValidUser();
+        PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, appUser, Response.class);
+        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Response.class);
         // then
         assertThat(response.getBody().getMessage()).isNotNull();
     }
 
     @Test
-    public void postUser_whenUserIsValid_passwordIsHashedInDatabase(){
+    public void postUser_whenUserIsValid_passwordIsHashedInDatabase() {
         // given
-        AppUser appUser = createValidUser();
+        PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, appUser, Response.class);
+        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Response.class);
         // then
         List<AppUser> users = userRepository.findAll();
         AppUser userInDatabase = users.get(0);
-        assertThat(userInDatabase.getPassword()).isNotEqualTo(appUser.getPassword());
+        assertThat(userInDatabase.getPassword()).isNotEqualTo(postUserRequest.getPassword());
     }
 
 
