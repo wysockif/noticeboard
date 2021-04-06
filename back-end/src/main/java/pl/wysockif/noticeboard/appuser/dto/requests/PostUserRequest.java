@@ -2,7 +2,6 @@ package pl.wysockif.noticeboard.appuser.dto.requests;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.wysockif.noticeboard.appuser.entity.AppUser;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +13,7 @@ public class PostUserRequest {
 
     @Override
     public String toString() {
-        return "PostUserRequest{" +
+        return "{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", displayName='" + displayName + '\'' +
