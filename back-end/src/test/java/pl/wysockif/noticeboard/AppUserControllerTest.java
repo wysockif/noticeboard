@@ -38,7 +38,8 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = new PostUserRequest();
         postUserRequest.setUsername("test-username");
         postUserRequest.setEmail("test@email.com");
-        postUserRequest.setDisplayName("test-display-name");
+        postUserRequest.setFirstName("Firstname");
+        postUserRequest.setLastName("Lastname");
         postUserRequest.setPassword("Password123");
         return postUserRequest;
     }

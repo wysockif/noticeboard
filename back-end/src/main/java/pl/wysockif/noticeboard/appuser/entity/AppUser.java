@@ -20,6 +20,7 @@ public class AppUser implements Serializable {
     private Long id;
     private String username;
     private String email;
-    private String displayName;
+    private String firstName;
+    private String lastName;
     private String password;
 }

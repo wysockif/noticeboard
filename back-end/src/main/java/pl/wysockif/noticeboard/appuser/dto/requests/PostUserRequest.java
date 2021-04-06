@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 public class PostUserRequest {
     private String username;
     private String email;
-    private String displayName;
+    private String firstName;
+    private String lastName;
     private String password;
 
     @Override
@@ -16,7 +17,8 @@ public class PostUserRequest {
         return "{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", displayName='" + displayName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 '}';
     }
 }
