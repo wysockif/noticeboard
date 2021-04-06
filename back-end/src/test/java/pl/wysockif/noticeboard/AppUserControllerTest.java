@@ -14,6 +14,8 @@ import pl.wysockif.noticeboard.appuser.entity.AppUser;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
 import pl.wysockif.noticeboard.shared.Response;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -69,6 +71,18 @@ public class AppUserControllerTest {
         ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, appUser, Response.class);
         // then
         assertThat(response.getBody().getMessage()).isNotNull();
+    }
+
+    @Test
+    public void postUser_whenUserIsValid_passwordIsHashedInDatabase(){
+        // given
+        AppUser appUser = createValidUser();
+        // when
+        ResponseEntity<Response> response = testRestTemplate.postForEntity(API_1_0_USERS, appUser, Response.class);
+        // then
+        List<AppUser> users = userRepository.findAll();
+        AppUser userInDatabase = users.get(0);
+        assertThat(userInDatabase.getPassword()).isNotEqualTo(appUser.getPassword());
     }
 
 
