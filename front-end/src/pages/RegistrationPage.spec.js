@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitForElementToBeRemoved, findByText } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { RegistrationPage } from './RegistrationPage';
 
@@ -124,7 +124,13 @@ describe('RegistrationPage', () => {
             return rendered;
         };
 
-
+        const mockAsyncDelayed = () => {
+            return jest.fn().mockImplementation(() => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => resolve({}), 300);
+                });
+            });
+        }
 
         it('sets the first name value into state', () => {
             // given
@@ -202,9 +208,9 @@ describe('RegistrationPage', () => {
             // given
             setupForSubmit();
             // when
-            const doesThrow = fireEvent.click(button);
+            const doesThrow = () => fireEvent.click(button);
             // then
-            expect(() => doesThrow).not.toThrow();
+            expect(doesThrow).not.toThrow();
         });
 
         it('calls postRegister with user body when the fields are valid', () => {
@@ -225,7 +231,67 @@ describe('RegistrationPage', () => {
             }
             expect(actions.postRegister).toHaveBeenCalledWith(expectedUser);
         });
+
+        it('block the button when there is an ongoing api call', () => {
+            // given
+            const actions = {
+                postRegister: mockAsyncDelayed()
+            }
+            setupForSubmit({ actions });
+            // when
+            fireEvent.click(button);
+            fireEvent.click(button);
+            // then
+            expect(actions.postRegister).toHaveBeenCalledTimes(1);
+        });
+
+        it('displays progress indicator when there is ongoing api call', () => {
+            // given
+            const actions = {
+                postRegister: mockAsyncDelayed()
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            // when
+            fireEvent.click(button);
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).toBeInTheDocument();
+        });
+
+        it('hides progress indicator when after api calls finishes with success', async () => {
+            // given
+            const actions = {
+                postRegister: mockAsyncDelayed()
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).not.toBeInTheDocument();
+        });
+
+        it('hides progress indicator when after api calls finishes with error', async () => {
+            // given
+            const actions = {
+                postRegister: jest.fn().mockImplementation(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => reject({
+                            response: {data: {}}
+                        }), 300);
+                    });
+                })
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).not.toBeInTheDocument();
+        });
     });
 });
 
-console.error = () => {}
+console.error = () => { }

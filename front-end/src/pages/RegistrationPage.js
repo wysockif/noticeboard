@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Spinner } from 'react-bootstrap';
 import InputWithValidation from '../components/InputWithValidation';
 
 
@@ -10,7 +10,8 @@ export class RegistrationPage extends Component {
         username: '',
         email: '',
         password: '',
-        passwordRepeat: ''
+        passwordRepeat: '',
+        pendingApiCall: false
     }
 
     onChangeFirstName = event => this.setState({ firstName: event.target.value });
@@ -33,42 +34,46 @@ export class RegistrationPage extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        this.props.actions.postRegister(user);
+        this.setState({ pendingApiCall: true });
+        this.props.actions.postRegister(user)
+            .then(response => {
+                this.setState({ pendingApiCall: false });
+            })
+            .catch(error => {
+                this.setState({ pendingApiCall: false });
+            });
     }
 
     render() {
         return (
-            <Container className="col-11 col-sm-9 col-md-7 col-lg-5">
+            <Container className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
                 <h1 className="text-center my-4">Rejestracja</h1>
 
                 <InputWithValidation placeholder="Imię" icon="user" value={this.state.firstName} onChange={this.onChangeFirstName} />
-
                 <InputWithValidation placeholder="Nazwisko" icon="user" value={this.state.lastName} onChange={this.onChangeLastName} />
-
                 <InputWithValidation placeholder="Nazwa użytkownika" icon="at" value={this.state.username} onChange={this.onChangeUsername} />
-
                 <InputWithValidation placeholder="Adres email" icon="at" value={this.state.email} onChange={this.onChangeEmail} />
-
                 <InputWithValidation placeholder="Hasło" type="password" icon="key" value={this.state.password} onChange={this.onChangePassword} />
-
                 <InputWithValidation placeholder="Powtórz hasło" type="password" icon="key" value={this.state.passwordRepeat} onChange={this.onChangePasswordRepeat} />
-
-
                 <div className="mb-3 text-center" >
-                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister}>Zarejestruj się</Button>
+                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister} disabled={this.state.pendingApiCall}>
+                        Zarejestruj się
+                        {this.state.pendingApiCall && <Spinner animation="border" size="sm" role="status" className="ms-1">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>}
+                    </Button>
                 </div>
-
-
             </Container >
-
-
         );
     }
 }
 RegistrationPage.defaultProps = {
     actions: {
-        postRegister: () => { }
+        postRegister: () =>
+            new Promise((resolve, reject) => {
+                resolve({});
+            })
     }
-}
+};
 
 export default RegistrationPage;

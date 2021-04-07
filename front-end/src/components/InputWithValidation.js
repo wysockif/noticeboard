@@ -9,7 +9,7 @@ const InputWithValidation = props => {
         <InputGroup className="mb-3">
             <InputGroup.Prepend style={{ minWidth: '200px' }}>
                 <InputGroup.Text id="basic-addon1">
-                    <FontAwesomeIcon icon={props.icon} className="my-2 me-2 " /> {props.placeholder}:
+                    <FontAwesomeIcon icon={props.icon} className="my-2 me-2" /> {props.placeholder}:
                 </InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
