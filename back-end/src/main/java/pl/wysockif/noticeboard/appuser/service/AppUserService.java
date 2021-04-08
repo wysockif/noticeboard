@@ -27,7 +27,7 @@ public class AppUserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         AppUser savedUser = userRepository.save(user);
         Long savedUserId = savedUser.getId();
-        LOGGER.info("Saved user (id: " + savedUserId + ")");
+        LOGGER.info("Saved user (userId: " + savedUserId + ")");
         return savedUser.getId();
     }
 }

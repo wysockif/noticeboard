@@ -9,7 +9,7 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: FjBJ5r55oNmr4MEUGAeig3WDwE
+    password: Cj1dNIdO4JjRoNXe46yzF7dyokDJ
     url: jdbc:postgresql://localhost:5555/noticeboard_database
     username: noticeboard_user
   jpa:
@@ -29,7 +29,7 @@ spring:
       on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: FjBJ5r55oNmr4MEUGAeig3WDwE
+    password: Cj1dNIdO4JjRoNXe46yzF7dyokDJ
     url: jdbc:postgresql://localhost:5555/noticeboard_database
     username: noticeboard_user
   jpa:
