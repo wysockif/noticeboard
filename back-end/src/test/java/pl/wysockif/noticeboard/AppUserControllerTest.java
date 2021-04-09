@@ -100,6 +100,17 @@ public class AppUserControllerTest {
     }
 
     @Test
+    public void postUser_whenUserHasNullUsername_receiveMessageOfNullField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setUsername(null);
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("username")).isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
     public void postUser_whenUserHasTooShortUsername_receiveBadRequest() {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
@@ -134,6 +145,17 @@ public class AppUserControllerTest {
     }
 
     @Test
+    public void postUser_whenUserHasNullFirstName_receiveMessageOfNullField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setFirstName(null);
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("firstName")).isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
     public void postUser_whenUserHasTooShortFirstName_receiveBadRequest() {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
@@ -142,6 +164,18 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenUserHasTooShortFirstName_receiveMessageOfTooShortTextInField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setFirstName("Im");
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("firstName"))
+                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 64 znaki");
     }
 
     @Test
@@ -165,6 +199,17 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenUserHasNullLastName_receiveMessageOfNullField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setLastName(null);
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("lastName")).isEqualTo("To pole nie może być puste");
     }
 
     @Test
@@ -199,6 +244,17 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenUserHasNullEmail_receiveMessageOfNullField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setEmail(null);
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("email")).isEqualTo("To pole nie może być puste");
     }
 
     @Test
@@ -247,6 +303,17 @@ public class AppUserControllerTest {
     }
 
     @Test
+    public void postUser_whenUserHasNullPassword_receiveMessageOfNullField() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setPassword(null);
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("password")).isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
     public void postUser_whenUserHasTooShortPassword_receiveBadRequest() {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
@@ -278,6 +345,18 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenUserHasPasswordNotMatchingThePattern_receiveMessageOfPatternError() {
+        // given
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setPassword("withoutuppercaseandnumber");
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("password"))
+                .isEqualTo("Musi mieć conajmniej jedną małą i wielką literę oraz cyfrę");
     }
 
     @Test
