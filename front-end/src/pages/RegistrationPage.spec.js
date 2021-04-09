@@ -1,4 +1,4 @@
-import { render, fireEvent, waitForElementToBeRemoved, findByText } from '@testing-library/react';
+import { render, fireEvent, waitForElementToBeRemoved, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { RegistrationPage } from './RegistrationPage';
 
@@ -278,7 +278,7 @@ describe('RegistrationPage', () => {
                 postRegister: jest.fn().mockImplementation(() => {
                     return new Promise((resolve, reject) => {
                         setTimeout(() => reject({
-                            response: {data: {}}
+                            response: { data: {} }
                         }), 300);
                     });
                 })
@@ -291,6 +291,28 @@ describe('RegistrationPage', () => {
             const spinner = queryByText('Loading...');
             expect(spinner).not.toBeInTheDocument();
         });
+
+        it('displays validation error for first name when error is received for the field', async () => {
+            // given
+            const actions = {
+                postRegister: jest.fn().mockRejectedValue({
+                    response: {
+                        data: {
+                            validationErrors: {
+                                firstName: 'Cannot be null'
+                            }
+                        }
+                    }
+                })
+            };
+            const { queryByText, findByText } = setupForSubmit({ actions });
+            // when
+            fireEvent.click(button);
+            const errorMessage = await waitFor(() => findByText('Cannot be null'));
+            // then
+            expect(errorMessage).toBeInTheDocument();
+        });
+
     });
 });
 

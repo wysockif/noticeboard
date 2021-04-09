@@ -11,7 +11,8 @@ export class RegistrationPage extends Component {
         email: '',
         password: '',
         passwordRepeat: '',
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors: []
     }
 
     onChangeFirstName = event => this.setState({ firstName: event.target.value });
@@ -39,8 +40,12 @@ export class RegistrationPage extends Component {
             .then(response => {
                 this.setState({ pendingApiCall: false });
             })
-            .catch(error => {
-                this.setState({ pendingApiCall: false });
+            .catch(apiError => {
+                let errors = { ...this.state.errors };
+                if (apiError.response.data && apiError.response.data.validationErrors) {
+                    errors = { ...apiError.response.data.validationErrors }
+                }
+                this.setState({ pendingApiCall: false, errors });
             });
     }
 
@@ -49,12 +54,48 @@ export class RegistrationPage extends Component {
             <Container className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
                 <h1 className="text-center my-4">Rejestracja</h1>
 
-                <InputWithValidation placeholder="Imię" icon="user" value={this.state.firstName} onChange={this.onChangeFirstName} />
-                <InputWithValidation placeholder="Nazwisko" icon="user" value={this.state.lastName} onChange={this.onChangeLastName} />
-                <InputWithValidation placeholder="Nazwa użytkownika" icon="at" value={this.state.username} onChange={this.onChangeUsername} />
-                <InputWithValidation placeholder="Adres email" icon="at" value={this.state.email} onChange={this.onChangeEmail} />
-                <InputWithValidation placeholder="Hasło" type="password" icon="key" value={this.state.password} onChange={this.onChangePassword} />
-                <InputWithValidation placeholder="Powtórz hasło" type="password" icon="key" value={this.state.passwordRepeat} onChange={this.onChangePasswordRepeat} />
+                <InputWithValidation
+                    label="Imię:" placeholder="Imię" icon="user"
+                    value={this.state.firstName}
+                    onChange={this.onChangeFirstName}
+                    hasError={this.state.errors.firstName !== undefined}
+                    error={this.state.errors.firstName}
+                />
+                <InputWithValidation
+                    label="Nazwisko:" placeholder="Nazwisko" icon="user"
+                    value={this.state.lastName}
+                    onChange={this.onChangeLastName}
+                    hasError={this.state.errors.lastName !== undefined}
+                    error={this.state.errors.lastName}
+                />
+                <InputWithValidation
+                    label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"
+                    value={this.state.username}
+                    onChange={this.onChangeUsername}
+                    hasError={this.state.errors.username !== undefined}
+                    error={this.state.errors.username}
+                />
+                <InputWithValidation
+                    label="Adres email:" placeholder="Adres email" icon="at"
+                    value={this.state.email}
+                    onChange={this.onChangeEmail}
+                    hasError={this.state.errors.email !== undefined}
+                    error={this.state.errors.email}
+                />
+                <InputWithValidation
+                    label="Hasło:" placeholder="Hasło" type="password" icon="key"
+                    value={this.state.password}
+                    onChange={this.onChangePassword}
+                    hasError={this.state.errors.password !== undefined}
+                    error={this.state.errors.password}
+                />
+                <InputWithValidation
+                    label="Powtórz hasło" placeholder="Powtórz hasło" type="password" icon="key"
+                    value={this.state.passwordRepeat}
+                    onChange={this.onChangePasswordRepeat}
+                    // hasError={this.state.errors.firstName !== undefined}
+                    // error={this.state.errors.firstName}
+                />
                 <div className="mb-3 text-center" >
                     <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister} disabled={this.state.pendingApiCall}>
                         Zarejestruj się
