@@ -2,8 +2,12 @@ package pl.wysockif.noticeboard.appuser.dto.requests;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.wysockif.noticeboard.appuser.constraints.email.UniqueEmail;
+import pl.wysockif.noticeboard.appuser.constraints.username.UniqueUsername;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -11,13 +15,16 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 public class PostUserRequest {
+
     @NotNull
     @Size(min = 6, max = 64)
+    @UniqueUsername
     private String username;
 
     @NotNull
     @Email
-    @Size(min = 5, max = 64)
+    @UniqueEmail
+    @Size(min = 6, max = 64)
     private String email;
 
     @NotNull

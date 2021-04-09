@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.wysockif.noticeboard.appuser.dto.requests.PostUserRequest;
 import pl.wysockif.noticeboard.appuser.entity.AppUser;
+import pl.wysockif.noticeboard.appuser.mapper.AppUserMapper;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
 import pl.wysockif.noticeboard.error.ApiError;
 
@@ -28,18 +29,20 @@ public class AppUserControllerTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
+
     @Autowired
     private AppUserRepository userRepository;
 
     @Before
     public void setUp() {
         userRepository.deleteAll();
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
     private PostUserRequest createValidPostUserRequest() {
         PostUserRequest postUserRequest = new PostUserRequest();
-        postUserRequest.setUsername("test-username");
-        postUserRequest.setEmail("test@email.com");
+        postUserRequest.setUsername("username");
+        postUserRequest.setEmail("usermail@email.com");
         postUserRequest.setFirstName("Firstname");
         postUserRequest.setLastName("Lastname");
         postUserRequest.setPassword("Password123");
@@ -73,7 +76,7 @@ public class AppUserControllerTest {
         // when
         ResponseEntity<Long> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Long.class);
         // then
-        assertThat(response.getBody()).isEqualTo(1L);
+        assertThat(response.getBody()).isNotNegative();
     }
 
     @Test
@@ -131,6 +134,33 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasUsedUsername_receiveBadRequest() {
+        // given
+        AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(createValidPostUserRequest());
+        userRepository.save(user);
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setEmail("sameUserNameButDifferentEmail@mail.com");
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasUsedUsername_receiveMessageOfUsedUsername() {
+        // given
+        AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(createValidPostUserRequest());
+        userRepository.save(user);
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setEmail("sameUserNameButDifferentEmail@mail.com");
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("username"))
+                .isEqualTo("Podana nazwa użytkownika jest już zajęta");
     }
 
     @Test
@@ -289,6 +319,33 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasUserEmail_receiveBadRequest() {
+        // given
+        AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(createValidPostUserRequest());
+        userRepository.save(user);
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setUsername("sameEmailButDifferentUsername");
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasUsedEmail_receiveMessageOfUsedEmail() {
+        // given
+        AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(createValidPostUserRequest());
+        userRepository.save(user);
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setUsername("sameEmailButDifferentUsername");
+        // when
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("email"))
+                .isEqualTo("Podany adres email został już zarejestrowany");
     }
 
     @Test
