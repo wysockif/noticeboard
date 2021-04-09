@@ -8,21 +8,17 @@ const InputWithValidation = props => {
     return (
         <InputGroup className="mb-3">
             <InputGroup.Prepend style={{ minWidth: '200px' }}>
-                <InputGroup.Text 
-                // id="basic-addon1"
-                >
+                <InputGroup.Text>
                     <FontAwesomeIcon icon={props.icon} className="my-2 me-2" /> {props.label}
                 </InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
                 placeholder={props.placeholder}
-                // aria-label={props.placeholder}
-                // aria-describedby="basic-addon1"
                 value={props.value}
                 onChange={props.onChange}
                 type={type}
                 isInvalid={props.hasError}
-                isValid={false}
+                isValid={props.isCorrect && true}
             />
             <FormControl.Feedback type="invalid" className="text-center">
                 {props.hasError && props.error}
@@ -33,7 +29,7 @@ const InputWithValidation = props => {
 }
 
 InputWithValidation.defaultProps = {
-    onChange: () => {}
+    onChange: () => { }
 };
 
 export default InputWithValidation;

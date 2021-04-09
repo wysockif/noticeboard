@@ -313,7 +313,26 @@ describe('RegistrationPage', () => {
             expect(errorMessage).toBeInTheDocument();
         });
 
+        it('enables the register button when password and repeat password are the same', () => {
+            // given
+            setupForSubmit();
+            // when
+            fireEvent.change(passwordInput, changeEvent('TheSamePassoword'));
+            fireEvent.change(passwordRepeatInput, changeEvent('TheSamePassoword'));
+            // then
+            expect(button).not.toBeDisabled();
+        });
+
+        it('disable the register button when password and repeat password are not the same', () => {
+            // given
+            setupForSubmit();
+            // when
+            fireEvent.change(passwordInput, changeEvent('FirstPassoword'));
+            fireEvent.change(passwordRepeatInput, changeEvent('SecondPassoword'));
+            // then
+            expect(button).toBeDisabled();
+        });
+
     });
 });
-
 console.error = () => { }

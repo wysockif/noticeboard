@@ -12,20 +12,47 @@ export class RegistrationPage extends Component {
         password: '',
         passwordRepeat: '',
         pendingApiCall: false,
-        errors: []
+        errors: [],
+        isPasswordRepeatCorrect: true
     }
 
-    onChangeFirstName = event => this.setState({ firstName: event.target.value });
+    onChangeFirstName = event => {
+        const errors = {...this.state.errors};
+        delete errors.firstName;
+        this.setState({ firstName: event.target.value, errors });
+    }
 
-    onChangeLastName = event => this.setState({ lastName: event.target.value });
+    onChangeLastName = event => {
+        const errors = {...this.state.errors};
+        delete errors.lastName;
+        this.setState({ lastName: event.target.value, errors});
+    }
 
-    onChangeUsername = event => this.setState({ username: event.target.value });
+    onChangeUsername = event => {
+        const errors = {...this.state.errors};
+        delete errors.username;
+        this.setState({ username: event.target.value, errors });
+    }
 
-    onChangeEmail = event => this.setState({ email: event.target.value });
+    onChangeEmail = event => {
+        const errors = {...this.state.errors};
+        delete errors.email;
+        this.setState({ email: event.target.value, errors });
+    }
 
-    onChangePassword = event => this.setState({ password: event.target.value });
+    onChangePassword = event => {
+        const errors = {...this.state.errors};
+        delete errors.password;
+        const isPasswordRepeatCorrect = this.state.passwordRepeat === event.target.value ? true : false;
+        this.setState({ password: event.target.value, isPasswordRepeatCorrect, errors });
+    }
 
-    onChangePasswordRepeat = event => this.setState({ passwordRepeat: event.target.value });
+    onChangePasswordRepeat = event => {
+        const errors = {...this.state.errors};
+        delete errors.passwordRepeat;
+        const isPasswordRepeatCorrect = this.state.password === event.target.value ? true : false;
+        this.setState({ passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors });
+    }
 
     onClickRegister = () => {
         const user = {
@@ -93,11 +120,14 @@ export class RegistrationPage extends Component {
                     label="Powtórz hasło" placeholder="Powtórz hasło" type="password" icon="key"
                     value={this.state.passwordRepeat}
                     onChange={this.onChangePasswordRepeat}
-                    // hasError={this.state.errors.firstName !== undefined}
-                    // error={this.state.errors.firstName}
+                    hasError={!this.state.isPasswordRepeatCorrect}
+                    isCorrect={this.state.isPasswordRepeatCorrect && this.state.passwordRepeat !== ''}
+                    error="Hasła nie są identyczne"
                 />
                 <div className="mb-3 text-center" >
-                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister} disabled={this.state.pendingApiCall}>
+                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister}
+                        disabled={this.state.pendingApiCall || !this.state.isPasswordRepeatCorrect}
+                    >
                         Zarejestruj się
                         {this.state.pendingApiCall && <Spinner animation="border" size="sm" role="status" className="ms-1">
                             <span className="sr-only">Loading...</span>
