@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
@@ -16,8 +18,12 @@ import pl.wysockif.noticeboard.appuser.entity.AppUser;
 import pl.wysockif.noticeboard.appuser.repository.AppUserRepository;
 import pl.wysockif.noticeboard.appuser.service.AppUserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.OK;
 
 @RunWith(SpringRunner.class)
@@ -83,6 +89,112 @@ public class LoginControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(OK);
     }
+
+    @Test
+    public void login_withValidUsernameAndPassword_doNotReceiveLoggedInUserPassword() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        Boolean isPasswordField = response.getBody().containsKey("password");
+        assertThat(isPasswordField).isFalse();
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserId() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        Long userInDbId = userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        Long id = Long.valueOf((Integer) response.getBody().get("id"));
+        assertThat(id).isEqualTo(userInDbId);
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserUsername() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        String actualUsername = (String) response.getBody().get("username");
+        assertThat(actualUsername).isEqualTo(user.getUsername());
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserEmail() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        String actualEmail = (String) response.getBody().get("email");
+        assertThat(actualEmail).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserFirstName() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        String actualFirstName = (String) response.getBody().get("firstName");
+        assertThat(actualFirstName).isEqualTo(user.getFirstName());
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserLastName() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        String actualLastName = (String) response.getBody().get("lastName");
+        assertThat(actualLastName).isEqualTo(user.getLastName());
+    }
+
+    @Test
+    public void login_withValidUsernameAndPassword_receiveLoggedInUserImage() {
+        // given
+        PostUserRequest user = createValidAppUser();
+        userService.save(user);
+        authenticateUser(user.getUsername(), user.getPassword());
+        // when
+        ResponseEntity<Map<String, Object>> response =
+                testRestTemplate.exchange(LOGIN_PATH, POST, null, new ParameterizedTypeReference<>() {
+                });
+        // then
+        Boolean isImageField = response.getBody().containsKey("image");
+        assertThat(isImageField).isTrue();
+    }
+
 
     private PostUserRequest createValidAppUser() {
         PostUserRequest user = new PostUserRequest();

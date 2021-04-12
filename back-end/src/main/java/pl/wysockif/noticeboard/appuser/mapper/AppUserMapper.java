@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import pl.wysockif.noticeboard.appuser.dto.requests.PostUserRequest;
+import pl.wysockif.noticeboard.appuser.dto.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.appuser.entity.AppUser;
 
 @Mapper
@@ -12,4 +13,6 @@ public interface AppUserMapper {
 
     @Mapping(target = "id", ignore = true)
     AppUser postUserRequestToAppUser(PostUserRequest postUserRequest);
+
+    AppUserSnapshot appUserToSnapshot(AppUser appUser);
 }

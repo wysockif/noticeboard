@@ -34,6 +34,8 @@ public class AppUser implements Serializable, UserDetails {
 
     private String password;
 
+    private String image;
+
     @Transient
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
