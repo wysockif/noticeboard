@@ -8,7 +8,7 @@ import pl.wysockif.noticeboard.appuser.entity.AppUser;
 
 @Mapper
 public interface AppUserMapper {
-    AppUserMapper INSTANCE = Mappers.getMapper( AppUserMapper.class );
+    AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
 
     @Mapping(target = "id", ignore = true)
     AppUser postUserRequestToAppUser(PostUserRequest postUserRequest);

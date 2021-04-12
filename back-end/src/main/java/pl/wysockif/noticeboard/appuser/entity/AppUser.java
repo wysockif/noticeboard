@@ -15,12 +15,19 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Getter
 public class AppUser implements Serializable {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     private String username;
+
     private String email;
+
     private String firstName;
+
     private String lastName;
+
     private String password;
+
 }
