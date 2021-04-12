@@ -423,7 +423,7 @@ public class AppUserControllerTest {
         // when
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(API_1_0_USERS, postUserRequest, ApiError.class);
         // then
-        assertThat(response.getBody().getUrl()).isEqualTo(API_1_0_USERS);
+        assertThat(response.getBody().getMessage()).isEqualTo("Validation error");
     }
 
     // https://stackoverflow.com/questions/2804827/create-a-string-with-n-characters

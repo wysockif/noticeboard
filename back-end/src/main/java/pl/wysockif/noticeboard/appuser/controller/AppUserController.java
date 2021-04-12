@@ -38,14 +38,4 @@ public class AppUserController {
         return savedUserId;
     }
 
-    // https://stackoverflow.com/questions/9245487/how-to-handle-validation-errors-and-exceptions-in-a-restful-spring-mvc-controlle
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    @ResponseStatus(BAD_REQUEST)
-    public ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {
-        Map<String, String> validationErrors = new HashMap<>();
-        for (FieldError fieldError : exception.getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        return new ApiError(BAD_REQUEST.value(), "Validation error", request.getServletPath(), validationErrors);
-    }
 }
