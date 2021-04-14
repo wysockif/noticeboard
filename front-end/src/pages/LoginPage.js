@@ -3,7 +3,18 @@ import InputWithValidation from '../components/InputWithValidation';
 import { Container, Button /*, Spinner*/ } from 'react-bootstrap';
 
 export class LoginPage extends Component {
+    state = {
+        username: '',
+        password: ''
+    }
 
+    onChangeUsername = event => {
+        this.setState({ username: event.target.value });
+    }
+
+    onChangePassword = event => {
+        this.setState({ password: event.target.value });
+    }
 
     render() {
         return (
@@ -11,24 +22,24 @@ export class LoginPage extends Component {
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"
-                // value={this.state.username}
-                // onChange={this.onChangeUsername}
+                    value={this.state.username}
+                    onChange={this.onChangeUsername}
                 // hasError={this.state.errors.username !== undefined}
                 // error={this.state.errors.username}
                 />
 
                 <InputWithValidation
                     label="Hasło:" placeholder="Hasło" type="password" icon="key"
-                // value={this.state.password}
-                // onChange={this.onChangePassword}
+                    value={this.state.password}
+                    onChange={this.onChangePassword}
                 // hasError={this.state.errors.password !== undefined}
                 // error={this.state.errors.password}
                 />
 
                 <div className="mb-3 text-center" >
-                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" 
-                        // onClick={this.onClickRegister}
-                        // disabled={this.state.pendingApiCall || !this.state.isPasswordRepeatCorrect}
+                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light"
+                    // onClick={this.onClickRegister}
+                    // disabled={this.state.pendingApiCall || !this.state.isPasswordRepeatCorrect}
                     >
                         Zaloguj się
                         {/* {this.state.pendingApiCall && <Spinner animation="border" size="sm" role="status" className="ms-1">

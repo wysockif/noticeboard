@@ -1,5 +1,5 @@
 import React from 'react';
-import { queryByPlaceholderText, render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -17,7 +17,7 @@ describe('LoginPage', () => {
             expect(header).toHaveTextContent('Zaloguj się');
         });
 
-      it('has input for username', () => {
+        it('has input for username', () => {
             // given
             const { queryByPlaceholderText } = render(<LoginPage />);
             // when
@@ -53,8 +53,37 @@ describe('LoginPage', () => {
             // then
             expect(header).toHaveTextContent('Zaloguj się');
         });
-    
+
+    });
+
+    describe('Interactions', () => {
+        const changeEvent = content => {
+            return {
+                target: {
+                    value: content
+                }
+            };
+        }
+        it('sets the username value into state', () => {
+            // given
+            const { queryByPlaceholderText } = render(<LoginPage />);
+            const usernameInput = queryByPlaceholderText('Nazwa użytkownika')
+            // when
+            fireEvent.change(usernameInput, changeEvent('newusername'));
+            // then
+            expect(usernameInput).toHaveValue('newusername');
+        });
+
+        it('sets the password value into state', () => {
+            // given
+            const { queryByPlaceholderText } = render(<LoginPage />);
+            const passwordInput = queryByPlaceholderText('Hasło')
+            // when
+            fireEvent.change(passwordInput, changeEvent('newPassword123'));
+            // then
+            expect(passwordInput).toHaveValue('newPassword123');
+        });
     });
 });
 
-console.error = () => {}
+console.error = () => { }
