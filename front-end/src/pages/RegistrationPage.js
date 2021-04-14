@@ -117,7 +117,7 @@ export class RegistrationPage extends Component {
                     error={this.state.errors.password}
                 />
                 <InputWithValidation
-                    label="Powtórz hasło" placeholder="Powtórz hasło" type="password" icon="key"
+                    label="Powtórz hasło:" placeholder="Powtórz hasło" type="password" icon="key"
                     value={this.state.passwordRepeat}
                     onChange={this.onChangePasswordRepeat}
                     hasError={!this.state.isPasswordRepeatCorrect}
