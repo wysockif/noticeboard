@@ -13,6 +13,18 @@ describe('apiCalls', () => {
             const calledPath = mockRegister.mock.calls[0][0];
             expect(calledPath).toBe('/api/1.0/users');
         });
+    });
 
+    describe('login', () => {
+        it('calls /api/1.0/login', () => {
+            // given
+            const mockLogin = jest.fn();
+            axios.post = mockLogin;
+            // when
+            apiCalls.login({username: 'username', password: 'Password123'});
+            // then
+            const calledPath = mockLogin.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/login');
+        });
     });
 });
