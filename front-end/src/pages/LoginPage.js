@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import InputWithValidation from '../components/InputWithValidation';
-import { Container, Button, Alert /*, Spinner*/ } from 'react-bootstrap';
+import { Container, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ButtonWithSpinner from '../components/ButtonWithSpinner';
 
 
 export class LoginPage extends Component {
     state = {
         username: '',
         password: '',
-        alertMessage: undefined
+        alertMessage: undefined,
+        ongoingApiCall: false
     }
 
     onClickLoginButton = () => {
@@ -16,8 +18,13 @@ export class LoginPage extends Component {
             username: this.state.username,
             password: this.state.password
         }
+        this.setState({ ongoingApiCall: true })
         this.props.actions.postLogin(body)
+            .then(() => {
+                this.setState({ ongoingApiCall: false })
+            })
             .catch(error => {
+                this.setState({ ongoingApiCall: false })
                 if (error.response) {
                     this.setState({ alertMessage: error.response.data.message })
                 }
@@ -42,16 +49,12 @@ export class LoginPage extends Component {
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"
                     value={this.state.username}
                     onChange={this.onChangeUsername}
-                // hasError={this.state.errors.username !== undefined}
-                // error={this.state.errors.username}
                 />
 
                 <InputWithValidation
                     label="Hasło:" placeholder="Hasło" type="password" icon="key"
                     value={this.state.password}
                     onChange={this.onChangePassword}
-                // hasError={this.state.errors.password !== undefined}
-                // error={this.state.errors.password}
                 />
 
                 {this.state.alertMessage && <Alert variant="danger" className="text-center">
@@ -60,15 +63,12 @@ export class LoginPage extends Component {
                 </Alert>}
 
                 <div className="mb-3 text-center" >
-                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light"
+                    <ButtonWithSpinner
                         onClick={this.onClickLoginButton}
-                        disabled={disableSubmit}
-                    >
-                        Zaloguj się
-                        {/* {this.state.pendingApiCall && <Spinner animation="border" size="sm" role="status" className="ms-1">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>} */}
-                    </Button>
+                        disabled={disableSubmit || this.state.ongoingApiCall}
+                        content="Zaloguj się"
+                        ongoingApiCall={this.state.ongoingApiCall}
+                    />
                 </div>
 
 

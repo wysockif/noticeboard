@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor, findByText } from '@testing-library/react';
+import { render, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -76,6 +76,15 @@ describe('LoginPage', () => {
             fireEvent.change(passwordInput, changeEvent('newPassword123'));
             return rendered;
         }
+
+        const mockAsyncDelayed = () => {
+            return jest.fn().mockImplementation(() => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => resolve({}), 300);
+                });
+            });
+        }
+
         it('sets the username value into state', () => {
             // given
             const { queryByPlaceholderText } = render(<LoginPage />);
@@ -144,6 +153,68 @@ describe('LoginPage', () => {
             expect(message).toBeInTheDocument();
         });
 
+
+        it('block the button when there is an ongoing api call', () => {
+            // given
+            const actions = {
+                postLogin: mockAsyncDelayed()
+            }
+            setup({ actions });
+            // when
+            fireEvent.click(button);
+            fireEvent.click(button);
+            // then
+            expect(actions.postLogin).toHaveBeenCalledTimes(1);
+        });
+
+        it('displays progress indicator when there is ongoing api call', () => {
+            // given
+            const actions = {
+                postLogin: mockAsyncDelayed()
+            };
+            const { queryByText } = setup({ actions });
+            // when
+            fireEvent.click(button);
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).toBeInTheDocument();
+        });
+
+        it('hides progress indicator when after api calls finishes with success', async () => {
+            // given
+            const actions = {
+                postLogin: mockAsyncDelayed()
+            };
+            const { queryByText } = setup({ actions });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).not.toBeInTheDocument();
+        });
+
+        it('hides progress indicator when after api calls finishes with error', async () => {
+            // given
+            const actions = {
+                postLogin: jest.fn().mockImplementation(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => reject({
+                            response: { data: {} }
+                        }), 300);
+                    });
+                })
+            };
+            const { queryByText } = setup({ actions });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            const spinner = queryByText('Loading...');
+            expect(spinner).not.toBeInTheDocument();
+        });
+ 
+
         it('does not throw error when actions not provided in props', () => {
             // given
             const { container, queryByPlaceholderText } = setup();
@@ -183,7 +254,6 @@ describe('LoginPage', () => {
             expect(button).toBeDisabled();
         });
 
- 
     });
 });
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Button, Spinner } from 'react-bootstrap';
+import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
 
 
@@ -11,44 +12,44 @@ export class RegistrationPage extends Component {
         email: '',
         password: '',
         passwordRepeat: '',
-        pendingApiCall: false,
+        ongoingApiCall: false,
         errors: [],
         isPasswordRepeatCorrect: true
     }
 
     onChangeFirstName = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.firstName;
         this.setState({ firstName: event.target.value, errors });
     }
 
     onChangeLastName = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.lastName;
-        this.setState({ lastName: event.target.value, errors});
+        this.setState({ lastName: event.target.value, errors });
     }
 
     onChangeUsername = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.username;
         this.setState({ username: event.target.value, errors });
     }
 
     onChangeEmail = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.email;
         this.setState({ email: event.target.value, errors });
     }
 
     onChangePassword = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.password;
         const isPasswordRepeatCorrect = this.state.passwordRepeat === event.target.value ? true : false;
         this.setState({ password: event.target.value, isPasswordRepeatCorrect, errors });
     }
 
     onChangePasswordRepeat = event => {
-        const errors = {...this.state.errors};
+        const errors = { ...this.state.errors };
         delete errors.passwordRepeat;
         const isPasswordRepeatCorrect = this.state.password === event.target.value ? true : false;
         this.setState({ passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors });
@@ -62,17 +63,17 @@ export class RegistrationPage extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        this.setState({ pendingApiCall: true });
+        this.setState({ ongoingApiCall: true });
         this.props.actions.postRegister(user)
             .then(response => {
-                this.setState({ pendingApiCall: false });
+                this.setState({ ongoingApiCall: false });
             })
             .catch(apiError => {
                 let errors = { ...this.state.errors };
                 if (apiError.response.data && apiError.response.data.validationErrors) {
                     errors = { ...apiError.response.data.validationErrors }
                 }
-                this.setState({ pendingApiCall: false, errors });
+                this.setState({ ongoingApiCall: false, errors });
             });
     }
 
@@ -125,14 +126,12 @@ export class RegistrationPage extends Component {
                     error="Hasła nie są identyczne"
                 />
                 <div className="mb-3 text-center" >
-                    <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={this.onClickRegister}
-                        disabled={this.state.pendingApiCall || !this.state.isPasswordRepeatCorrect}
-                    >
-                        Zarejestruj się
-                        {this.state.pendingApiCall && <Spinner animation="border" size="sm" role="status" className="ms-1">
-                            <span className="sr-only">Loading...</span>
-                        </Spinner>}
-                    </Button>
+                    <ButtonWithSpinner
+                        onClick={this.onClickRegister}
+                        disabled={this.state.ongoingApiCall || !this.state.isPasswordRepeatCorrect}
+                        content="Zarejestruj się"
+                        ongoingApiCall={this.state.ongoingApiCall}
+                    />
                 </div>
             </Container >
         );
