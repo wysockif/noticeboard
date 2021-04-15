@@ -12,6 +12,7 @@ import java.io.IOException;
 public class NoPopupBasicAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        String message = request.getServletPath().equals("/api/1.0/login") ? "Niepoprawne dane logowania" : "Brak autoryzacji";
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), message);
     }
 }
