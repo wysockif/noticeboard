@@ -1,5 +1,4 @@
 import { render, fireEvent, waitForElementToBeRemoved, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { RegistrationPage } from './RegistrationPage';
 
 describe('RegistrationPage', () => {
@@ -105,7 +104,7 @@ describe('RegistrationPage', () => {
         }
         let firstNameInput, lastNameInput, usernameInput, emailInput, passwordInput, passwordRepeatInput, button;
 
-        const setupForSubmit = props => {
+        const renderRegistrationPage = props => {
             const rendered = render(<RegistrationPage {...props} />);
             const { container, queryByPlaceholderText } = rendered;
             firstNameInput = queryByPlaceholderText('Imię');
@@ -131,6 +130,22 @@ describe('RegistrationPage', () => {
                 });
             });
         }
+
+        it('redirects to home page after successful login', async () => {
+            // given
+            const actions = {
+                postRegister: jest.fn().mockResolvedValueOnce({})
+            };
+            const history = {
+                push: jest.fn()
+            }
+            const { queryByText } = renderRegistrationPage({ actions, history });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            expect(history.push).toHaveBeenCalledWith('/');
+        });
 
         it('sets the first name value into state', () => {
             // given
@@ -197,7 +212,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
             };
-            setupForSubmit({ actions });
+            renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -206,7 +221,7 @@ describe('RegistrationPage', () => {
 
         it('does not throw exception when actions not provided in props', () => {
             // given
-            setupForSubmit();
+            renderRegistrationPage();
             // when
             const doesThrow = () => fireEvent.click(button);
             // then
@@ -218,7 +233,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
             };
-            setupForSubmit({ actions });
+            renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -237,7 +252,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             }
-            setupForSubmit({ actions });
+            renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             fireEvent.click(button);
@@ -250,7 +265,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             };
-            const { queryByText } = setupForSubmit({ actions });
+            const { queryByText } = renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -263,7 +278,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             };
-            const { queryByText } = setupForSubmit({ actions });
+            const { queryByText } = renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -283,7 +298,7 @@ describe('RegistrationPage', () => {
                     });
                 })
             };
-            const { queryByText } = setupForSubmit({ actions });
+            const { queryByText } = renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -305,7 +320,7 @@ describe('RegistrationPage', () => {
                     }
                 })
             };
-            const { queryByText, findByText } = setupForSubmit({ actions });
+            const { queryByText, findByText } = renderRegistrationPage({ actions });
             // when
             fireEvent.click(button);
             const errorMessage = await waitFor(() => findByText('Cannot be null'));
@@ -315,7 +330,7 @@ describe('RegistrationPage', () => {
 
         it('enables the register button when password and repeat password are the same', () => {
             // given
-            setupForSubmit();
+            renderRegistrationPage();
             // when
             fireEvent.change(passwordInput, changeEvent('TheSamePassoword'));
             fireEvent.change(passwordRepeatInput, changeEvent('TheSamePassoword'));
@@ -325,7 +340,7 @@ describe('RegistrationPage', () => {
 
         it('disable the register button when password and repeat password are not the same', () => {
             // given
-            setupForSubmit();
+            renderRegistrationPage();
             // when
             fireEvent.change(passwordInput, changeEvent('FirstPassoword'));
             fireEvent.change(passwordRepeatInput, changeEvent('SecondPassoword'));

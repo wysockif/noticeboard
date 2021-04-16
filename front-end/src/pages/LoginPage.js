@@ -21,12 +21,14 @@ export class LoginPage extends Component {
         this.setState({ ongoingApiCall: true })
         this.props.actions.postLogin(body)
             .then(() => {
-                this.setState({ ongoingApiCall: false })
+                this.setState({ ongoingApiCall: false }, () => {
+                    this.props.history.push('/');
+                });
             })
             .catch(error => {
                 this.setState({ ongoingApiCall: false })
                 if (error.response) {
-                    this.setState({ alertMessage: error.response.data.message })
+                    this.setState({ alertMessage: error.response.data.message });
                 }
             });
     }
@@ -43,7 +45,7 @@ export class LoginPage extends Component {
         const disableSubmit = this.state.username && this.state.password ? false : true;
 
         return (
-            <Container className="col-11 col-sm-10 col-md-7 col-lg-6">
+            <Container className="col-11 col-sm-10 col-md-7 col-lg-5 mt-5">
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"

@@ -1,13 +1,11 @@
 import React from 'react';
 import { render, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { LoginPage } from './LoginPage';
-import '@testing-library/jest-dom/extend-expect';
 
 
 
 describe('LoginPage', () => {
     describe('Layout', () => {
-
         it('has login header', () => {
             // given
             const { container } = render(<LoginPage />);
@@ -66,7 +64,7 @@ describe('LoginPage', () => {
         }
         let usernameInput, passwordInput, button;
 
-        const setup = props => {
+        const renderLoginPage = props => {
             const rendered = render(<LoginPage {...props} />);
             const { container, queryByPlaceholderText } = rendered;
             usernameInput = queryByPlaceholderText('Nazwa użytkownika');
@@ -110,7 +108,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: jest.fn().mockResolvedValue({})
             }
-            setup({ actions });
+            renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -122,7 +120,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: jest.fn().mockResolvedValue({})
             }
-            setup({ actions });
+            renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -144,7 +142,7 @@ describe('LoginPage', () => {
                     }
                 })
             }
-            const { queryByText, findByText } = setup({ actions });
+            const { queryByText, findByText } = renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -159,7 +157,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             }
-            setup({ actions });
+            renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             fireEvent.click(button);
@@ -172,7 +170,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             };
-            const { queryByText } = setup({ actions });
+            const { queryByText } = renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             // then
@@ -185,7 +183,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             };
-            const { queryByText } = setup({ actions });
+            const { queryByText } = renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -205,7 +203,7 @@ describe('LoginPage', () => {
                     });
                 })
             };
-            const { queryByText } = setup({ actions });
+            const { queryByText } = renderLoginPage({ actions });
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -213,11 +211,11 @@ describe('LoginPage', () => {
             const spinner = queryByText('Loading...');
             expect(spinner).not.toBeInTheDocument();
         });
- 
+
 
         it('does not throw error when actions not provided in props', () => {
             // given
-            const { container, queryByPlaceholderText } = setup();
+            const { container, queryByPlaceholderText } = renderLoginPage();
             // when
             const clicking = () => fireEvent.click(button);
             // then
@@ -226,7 +224,7 @@ describe('LoginPage', () => {
 
         it('enables the button when username and password is not empty', () => {
             // given
-            setup();
+            renderLoginPage();
             // when
             fireEvent.change(usernameInput, changeEvent('notEmptyUsername'));
             fireEvent.change(passwordInput, changeEvent('notEmptyPassword123'));
@@ -236,7 +234,7 @@ describe('LoginPage', () => {
 
         it('disables the button when username is empty', () => {
             // given
-            setup();
+            renderLoginPage();
             // when
             fireEvent.change(usernameInput, changeEvent(''));
             fireEvent.change(passwordInput, changeEvent('notEmptyPassword123'));
@@ -246,7 +244,7 @@ describe('LoginPage', () => {
 
         it('disables the button when password is empty', () => {
             // given
-            setup();
+            renderLoginPage();
             // when
             fireEvent.change(usernameInput, changeEvent('notEmptyUsername'));
             fireEvent.change(passwordInput, changeEvent(''));
@@ -254,6 +252,21 @@ describe('LoginPage', () => {
             expect(button).toBeDisabled();
         });
 
+        it('redirects to home page after successful login', async () => {
+            // given
+            const actions = {
+                postLogin: jest.fn().mockResolvedValueOnce({})
+            };
+            const history = {
+                push: jest.fn()
+            }
+            const { queryByText } = renderLoginPage({ actions, history });
+            // when
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            // then
+            expect(history.push).toHaveBeenCalledWith('/');
+        });
     });
 });
 

@@ -66,7 +66,9 @@ export class RegistrationPage extends Component {
         this.setState({ ongoingApiCall: true });
         this.props.actions.postRegister(user)
             .then(response => {
-                this.setState({ ongoingApiCall: false });
+                this.setState({ ongoingApiCall: false }, () => {
+                    this.props.history.push('/');
+                });
             })
             .catch(apiError => {
                 let errors = { ...this.state.errors };
@@ -79,7 +81,7 @@ export class RegistrationPage extends Component {
 
     render() {
         return (
-            <Container className="col-11 col-sm-10 col-md-7 col-lg-6 ">
+            <Container className="col-11 col-sm-10 col-md-7 col-lg-6 mt-5">
                 <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
@@ -143,6 +145,9 @@ RegistrationPage.defaultProps = {
             new Promise((resolve, reject) => {
                 resolve({});
             })
+    },
+    history: {
+        push: () => { }
     }
 };
 

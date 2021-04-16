@@ -7,15 +7,23 @@ import NoticePage from '../pages/NoticePage';
 import RegistrationPage from '../pages/RegistrationPage';
 import UserProfilePage from '../pages/UserProfilePage';
 import ErrorPage from '../pages/ErrorPage';
+import TopBar from '../components/TopBar';
+import * as apiCalls from '../api/apiCalls';
+
+const actions = {
+  postLogin: apiCalls.login,
+  postRegister: apiCalls.register
+}
 
 function App() {
   return (
     <div>
       <div className="container">
+        <TopBar />
         <Switch>
           <Route exact path="/" component={HomePage} />
-          <Route path="/login" component={LoginPage} />
-          <Route path="/register" component={RegistrationPage} />
+          <Route path="/login" component={props => <LoginPage {...props} actions={actions} />} />
+          <Route path="/register" component={props => < RegistrationPage  {...props} actions={actions} />} />
           <Route path="/user/:username" component={UserProfilePage} />
           <Route path="/notice/:id" component={NoticePage} />
           <Route path="/mynotice/:id" component={NoticeFormPage} />
