@@ -10,7 +10,7 @@ describe('RegistrationPage', () => {
             // when
             const header = container.querySelector('h1');
             // then
-            expect(header).toHaveTextContent('Rejestracja');
+            expect(header).toHaveTextContent('Zarejestruj się');
         });
 
         it('has input for first name', () => {

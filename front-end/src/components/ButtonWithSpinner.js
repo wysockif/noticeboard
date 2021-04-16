@@ -3,7 +3,10 @@ import { Button, Spinner } from 'react-bootstrap';
 
 const ButtonWithSpinner = props => {
     return (
-        <Button style={{ backgroundColor: '#B84' }} variant="outline-light" onClick={props.onClick}
+        <Button
+            style={{ backgroundColor: '#B84' }}
+            variant="outline-light"
+            onClick={props.onClick}
             disabled={props.disabled}
         >
             {props.content}

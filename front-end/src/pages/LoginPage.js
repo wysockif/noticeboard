@@ -43,7 +43,7 @@ export class LoginPage extends Component {
         const disableSubmit = this.state.username && this.state.password ? false : true;
 
         return (
-            <Container className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
+            <Container className="col-11 col-sm-10 col-md-7 col-lg-6">
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"

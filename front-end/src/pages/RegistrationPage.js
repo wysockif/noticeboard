@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Spinner } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
 
@@ -79,8 +79,8 @@ export class RegistrationPage extends Component {
 
     render() {
         return (
-            <Container className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
-                <h1 className="text-center my-4">Rejestracja</h1>
+            <Container className="col-11 col-sm-10 col-md-7 col-lg-6 ">
+                <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
                     label="Imię:" placeholder="Imię" icon="user"

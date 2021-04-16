@@ -21,7 +21,7 @@ describe('apiCalls', () => {
             const mockLogin = jest.fn();
             axios.post = mockLogin;
             // when
-            apiCalls.login({username: 'username', password: 'Password123'});
+            apiCalls.login({ username: 'username', password: 'Password123' });
             // then
             const calledPath = mockLogin.mock.calls[0][0];
             expect(calledPath).toBe('/api/1.0/login');
