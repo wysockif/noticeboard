@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
-const createApp = url => {
+const renderAppComponent = url => {
     return render(
         <MemoryRouter initialEntries={[url]}>
             <App />
@@ -16,7 +16,7 @@ describe('App', () => {
         // given
         const url = '/'
         // when
-        const { queryByTestId } = createApp(url);
+        const { queryByTestId } = renderAppComponent(url);
         // then
         const homeDiv = queryByTestId('homepage');
         expect(homeDiv).toBeInTheDocument();
@@ -26,28 +26,69 @@ describe('App', () => {
         // given
         const url = '/login'
         // when
-        const { container } = createApp(url);
+        const { container } = renderAppComponent(url);
         // then
         const header = container.querySelector('h1');
         expect(header).toHaveTextContent('Zaloguj się');
     });
 
-    it('displays only pogin page when url is /login', () => {
+    it('displays only login page when url is /login', () => {
         // given
         const url = '/login'
         // when
-        const { queryByTestId } = createApp(url);
+        const { queryByTestId } = renderAppComponent(url);
         // then
-        const homeDiv = queryByTestId('homepage');
-        expect(homeDiv).not.toBeInTheDocument();
+        const loginDiv = queryByTestId('login');
+        expect(loginDiv).not.toBeInTheDocument();
     });
-    it('displays registeration page when url is /register', () => {
+
+    it('displays registration page when url is /register', () => {
         // given
         const url = '/register'
         // when
-        const { container } = createApp('/register');
+        const { container } = renderAppComponent(url);
         // then
         const header = container.querySelector('h1');
         expect(header).toHaveTextContent('Zarejestruj się');
+    });
+
+    it('displays user profile page when url is /user/:username', () => {
+        // given
+        const url = '/user/:username1'
+        // when
+        const { queryByTestId } = renderAppComponent(url);
+        // then
+        const userProfileDiv = queryByTestId('userprofilepage');
+        expect(userProfileDiv).toBeInTheDocument();
+    });
+
+    it('displays notice page when url is /notice/:noticeid', () => {
+        // given
+        const url = '/notice/:123'
+        // when
+        const { queryByTestId } = renderAppComponent(url);
+        // then
+        const noticePageDiv = queryByTestId('noticepage');
+        expect(noticePageDiv).toBeInTheDocument();
+    });
+
+    it('displays notice form page when url is /mynotice/:noticeid', () => {
+        // given
+        const url = '/mynotice/:123'
+        // when
+        const { queryByTestId } = renderAppComponent(url);
+        // then
+        const noticeFormPageDiv = queryByTestId('noticeformpage');
+        expect(noticeFormPageDiv).toBeInTheDocument();
+    });
+
+    it('displays error page when url is diffrent', () => {
+        // given
+        const url = '/asfdsd'
+        // when
+        const { queryByTestId } = renderAppComponent(url);
+        // then
+        const errorPageDiv = queryByTestId('errorpage');
+        expect(errorPageDiv).toBeInTheDocument();
     });
 });
