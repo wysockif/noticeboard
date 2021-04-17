@@ -11,5 +11,10 @@ const initialState = {
 
 
 export default function authenticationReducer(state = initialState, action) {
-    return state;
+    switch (action.type) {
+        case 'LOGOUT_SUCCESS':
+            return { ...initialState };
+        default:
+            return state;
+    }
 }

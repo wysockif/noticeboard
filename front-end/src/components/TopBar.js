@@ -4,8 +4,15 @@ import noticeboardLogo from '../assets/logo.png';
 import { Container, Image, Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-
 class TopBar extends Component {
+
+    onClickLogout = () => {
+        const logoutAction = {
+            type: 'LOGOUT_SUCCESS'
+        }
+        this.props.dispatch(logoutAction);
+    }
+
     render() {
         return (
             <Navbar variant="light" expand="lg"
@@ -26,7 +33,9 @@ class TopBar extends Component {
                         </Nav>}
                         {this.props.user.isLoggedIn && <Nav className="ms-auto">
                             <Link to={"/user/" + this.props.user.username} className="nav-link ms-3">Moja tablica</Link>
-                            <Link className="nav-link ms-3 me-3" to="/login">Wyloguj się</Link>
+                            <div className="nav-link ms-3 me-3" style={{ cursor: 'pointer' }} onClick={this.onClickLogout}>
+                                Wyloguj się
+                            </div>
                         </Nav>}
                     </Navbar.Collapse>
                 </Container>

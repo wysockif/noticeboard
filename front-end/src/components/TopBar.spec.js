@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import TopBar from './TopBar';
 import { MemoryRouter } from 'react-router';
 import authenticationReducer from '../redux/authenticationReducer';
@@ -41,61 +41,71 @@ const renderTopbar = (state = userNotLoggedInState) => {
 };
 
 describe('TopBar', () => {
-    describe('Layout', () => {
 
-        it('has link to home', () => {
-            // given
-            const { container } = renderTopbar();
-            // when
-            const image = container.querySelector('img');
-            // then
-            const link = image.parentElement;
-            expect(link).toHaveAttribute('href', '/')
-        });
-
-        it('has app logo', () => {
-            // given
-            const { container } = renderTopbar();
-            // when
-            const image = container.querySelector('img');
-            // then
-            expect(image.src).toContain('logo.png');
-        });
-
-        it('has link to register', () => {
-            // given
-            const { queryByText } = renderTopbar();
-            // when
-            const registerLink = queryByText('Rejestracja');
-            // then
-            expect(registerLink.getAttribute('href')).toBe('/register')
-        });
-
-        it('has link to login', () => {
-            // given
-            const { queryByText } = renderTopbar();
-            // when
-            const loginLink = queryByText('Logowanie');
-            // then
-            expect(loginLink.getAttribute('href')).toBe('/login')
-        });
-
-        it('has link to user profile when user logged in', () => {
-            // given
-            const { queryByText } = renderTopbar(userLoggedInState);
-            // when
-            const profileLink = queryByText('Moja tablica');
-            // then
-            expect(profileLink.getAttribute('href')).toBe('/user/' + userLoggedInState.username);
-        });
-
-        it('has link to logout when user logged in', () => {
-            // given
-            const { queryByText } = renderTopbar(userLoggedInState);
-            // when
-            const logoutLink = queryByText('Wyloguj się');
-            // then
-            expect(logoutLink).toBeInTheDocument();
-        });
+    it('has link to home', () => {
+        // given
+        const { container } = renderTopbar();
+        // when
+        const image = container.querySelector('img');
+        // then
+        const link = image.parentElement;
+        expect(link).toHaveAttribute('href', '/')
     });
+
+    it('has app logo', () => {
+        // given
+        const { container } = renderTopbar();
+        // when
+        const image = container.querySelector('img');
+        // then
+        expect(image.src).toContain('logo.png');
+    });
+
+    it('has link to register', () => {
+        // given
+        const { queryByText } = renderTopbar();
+        // when
+        const registerLink = queryByText('Rejestracja');
+        // then
+        expect(registerLink.getAttribute('href')).toBe('/register')
+    });
+
+    it('has link to login', () => {
+        // given
+        const { queryByText } = renderTopbar();
+        // when
+        const loginLink = queryByText('Logowanie');
+        // then
+        expect(loginLink.getAttribute('href')).toBe('/login')
+    });
+
+    it('has link to user profile when user logged in', () => {
+        // given
+        const { queryByText } = renderTopbar(userLoggedInState);
+        // when
+        const profileLink = queryByText('Moja tablica');
+        // then
+        expect(profileLink.getAttribute('href')).toBe('/user/' + userLoggedInState.username);
+    });
+
+    it('has link to logout when user logged in', () => {
+        // given
+        const { queryByText } = renderTopbar(userLoggedInState);
+        // when
+        const logoutLink = queryByText('Wyloguj się');
+        // then
+        expect(logoutLink).toBeInTheDocument();
+    });
+
+    it('has link to login and register after clicking logout', () => {
+        // given
+        const { queryByText } = renderTopbar(userLoggedInState);
+        // when
+        const logoutLink = queryByText('Wyloguj się');
+        fireEvent.click(logoutLink);
+        // then
+        const registerLink = queryByText('Rejestracja');
+        expect(registerLink).toBeInTheDocument();
+    });
+
 });

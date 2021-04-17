@@ -6,8 +6,9 @@ import { HashRouter } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import authenticationReducer from './redux/authenticationReducer';
+import logger from 'redux-logger';
 
 
 const userLoggedInState = {
@@ -20,7 +21,7 @@ const userLoggedInState = {
   image: 'profile.png',
   password: 'Password123'
 }
-const store = createStore(authenticationReducer, userLoggedInState);
+const store = createStore(authenticationReducer, userLoggedInState, applyMiddleware(logger));
 
 ReactDOM.render(
   <React.StrictMode>
