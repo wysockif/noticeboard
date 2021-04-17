@@ -15,6 +15,10 @@ const changeEvent = content => {
     };
 };
 
+beforeEach(() => {
+    localStorage.clear();
+})
+
 let store;
 const renderAppComponent = url => {
     store = createStore(authenticationReducer);
@@ -107,6 +111,4 @@ describe('App', () => {
         const errorPageDiv = queryByTestId('errorpage');
         expect(errorPageDiv).toBeInTheDocument();
     });
-
-
 });

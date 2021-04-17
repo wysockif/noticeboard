@@ -6,21 +6,9 @@ import { HashRouter } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import authenticationReducer from './redux/authenticationReducer';
+import configureStore from './redux/configureStore';
 
-const userLoggedInState = {
-  isLoggedIn: true,
-  id: 5,
-  username: 'user5',
-  firstName: 'first5',
-  lastName: 'last5',
-  email: 'email5@mail.com',
-  image: 'profile.png',
-  password: 'Password123'
-}
-const store = createStore(authenticationReducer, userLoggedInState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
