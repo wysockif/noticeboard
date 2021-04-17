@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import InputWithValidation from '../components/InputWithValidation';
 import { Container, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,9 +19,13 @@ export class LoginPage extends Component {
             username: this.state.username,
             password: this.state.password
         }
-        this.setState({ ongoingApiCall: true })
+        this.setState({ ongoingApiCall: true });
         this.props.actions.postLogin(body)
-            .then(() => {
+            .then((response) => {
+                this.props.dispatch({
+                    type: 'LOGIN_SUCCESS',
+                    payload: { ...response.data, isLoggedIn: true, password: body.password }
+                });
                 this.setState({ ongoingApiCall: false }, () => {
                     this.props.history.push('/');
                 });
@@ -81,6 +86,8 @@ export class LoginPage extends Component {
 LoginPage.defaultProps = {
     actions: {
         postLogin: () => new Promise((resolve, reject) => { })
-    }
-}
-export default LoginPage;
+    },
+    dispatch: () => { }
+};
+
+export default connect()(LoginPage);

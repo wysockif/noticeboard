@@ -1,10 +1,19 @@
 import React from 'react';
+import axios from 'axios';
 import authenticationReducer from '../redux/authenticationReducer';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
+
+const changeEvent = content => {
+    return {
+        target: {
+            value: content
+        }
+    };
+};
 
 let store;
 const renderAppComponent = url => {
@@ -98,4 +107,6 @@ describe('App', () => {
         const errorPageDiv = queryByTestId('errorpage');
         expect(errorPageDiv).toBeInTheDocument();
     });
+
+
 });

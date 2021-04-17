@@ -11,7 +11,7 @@ class TopBar extends Component {
             type: 'LOGOUT_SUCCESS'
         }
         this.props.dispatch(logoutAction);
-    }
+    };
 
     render() {
         return (
@@ -21,18 +21,19 @@ class TopBar extends Component {
             >
                 <Container >
                     <Navbar.Brand >
-                        <Link to="/">
+                        <Link to="/" replace>
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140" />
                         </Link>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" className="my-1 mx-3 p-1" />
                     <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                         {!this.props.user.isLoggedIn && <Nav className="ms-auto">
-                            <Link to="/register" className="nav-link ms-3">Rejestracja</Link>
-                            <Link className="nav-link ms-3 me-3" to="/login">Logowanie</Link>
+                            <Link to="/register" replace className="nav-link ms-3">Rejestracja</Link>
+                            <Link to="/login" replace className="nav-link ms-3 me-3" >Logowanie</Link>
                         </Nav>}
                         {this.props.user.isLoggedIn && <Nav className="ms-auto">
-                            <Link to={"/user/" + this.props.user.username} className="nav-link ms-3">Moja tablica</Link>
+                            <Link to={"/mynotice/1"} replace className="nav-link ms-3">Dodaj ogłoszenie</Link>
+                            <Link to={"/user/" + this.props.user.username} replace className="nav-link ms-3">Moja tablica</Link>
                             <div className="nav-link ms-3 me-3" style={{ cursor: 'pointer' }} onClick={this.onClickLogout}>
                                 Wyloguj się
                             </div>
