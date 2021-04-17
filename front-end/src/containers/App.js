@@ -18,8 +18,8 @@ const actions = {
 function App() {
   return (
     <div>
+      <TopBar />
       <div className="container">
-        <TopBar />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/login" component={props => <LoginPage {...props} actions={actions} />} />

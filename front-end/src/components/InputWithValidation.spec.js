@@ -13,20 +13,12 @@ describe('Layout', () => {
 
     it('displays the label provided in props', () => {
         // given
-        const { queryByText } = render(<InputWithValidation label="Test label" />);
+        const { queryAllByText } = render(<InputWithValidation label="Test label" />);
         // when
-        const label = queryByText('Test label');
+        const label = queryAllByText('Test label')
+            .find(element => element.parentElement.classList.contains('d-none'));
         // then
         expect(label).toBeInTheDocument();
-    });
-
-    it('does not display the label when no label provided in props', () => {
-        // given
-        const { container } = render(<InputWithValidation />);
-        // when
-        const label = container.querySelector('label');
-        // then
-        expect(label).not.toBeInTheDocument();
     });
 
     it('has text type for input when type is not provided as prop', () => {

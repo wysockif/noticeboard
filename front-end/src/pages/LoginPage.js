@@ -45,7 +45,7 @@ export class LoginPage extends Component {
         const disableSubmit = this.state.username && this.state.password ? false : true;
 
         return (
-            <Container className="col-11 col-sm-10 col-md-7 col-lg-5 mt-5">
+            <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"
@@ -64,7 +64,7 @@ export class LoginPage extends Component {
                     <FontAwesomeIcon icon={["far", "frown-open"]} className="ms-1" />
                 </Alert>}
 
-                <div className="mb-3 text-center" >
+                <div className="mb-3 mt-4 text-center" >
                     <ButtonWithSpinner
                         onClick={this.onClickLoginButton}
                         disabled={disableSubmit || this.state.ongoingApiCall}

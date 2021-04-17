@@ -81,7 +81,7 @@ export class RegistrationPage extends Component {
 
     render() {
         return (
-            <Container className="col-11 col-sm-10 col-md-7 col-lg-6 mt-5">
+            <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
                 <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
@@ -127,7 +127,7 @@ export class RegistrationPage extends Component {
                     isCorrect={this.state.isPasswordRepeatCorrect && this.state.passwordRepeat !== ''}
                     error="Hasła nie są identyczne"
                 />
-                <div className="mb-3 text-center" >
+                <div className="mb-3 mt-4 text-center" >
                     <ButtonWithSpinner
                         onClick={this.onClickRegister}
                         disabled={this.state.ongoingApiCall || !this.state.isPasswordRepeatCorrect}

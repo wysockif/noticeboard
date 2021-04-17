@@ -6,25 +6,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
     return (
-        <InputGroup className="mb-3">
-            <InputGroup.Prepend style={{ minWidth: '200px' }}>
-                <InputGroup.Text>
-                    <FontAwesomeIcon icon={props.icon} className="my-2 me-2" /> {props.label}
-                </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-                placeholder={props.placeholder}
-                value={props.value}
-                onChange={props.onChange}
-                type={type}
-                isInvalid={props.hasError}
-                isValid={props.isCorrect && true}
-            />
-            <FormControl.Feedback type="invalid" className="text-center">
-                {props.hasError && props.error}
-            </FormControl.Feedback>
-
-        </InputGroup>
+        <div>
+            <label htmlFor={props.value} className="d-block d-sm-none mb-1">{props.label}</label>
+            <InputGroup className="mb-3">
+                <InputGroup.Prepend style={{ minWidth: '200px' }} className="d-none d-sm-block">
+                    <InputGroup.Text>
+                        <FontAwesomeIcon icon={props.icon} className="my-2 me-2" /> {props.label}
+                    </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                    className="rounded-1"
+                    id={props.value}
+                    placeholder={props.placeholder}
+                    value={props.value}
+                    onChange={props.onChange}
+                    type={type}
+                    isInvalid={props.hasError}
+                    isValid={props.isCorrect && true}
+                />
+                <FormControl.Feedback type="invalid" className="text-center">
+                    {props.hasError && props.error}
+                </FormControl.Feedback>
+            </InputGroup >
+        </div >
     );
 }
 
