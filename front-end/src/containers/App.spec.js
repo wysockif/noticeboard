@@ -1,13 +1,20 @@
 import React from 'react';
+import authenticationReducer from '../redux/authenticationReducer';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
+let store;
 const renderAppComponent = url => {
+    store = createStore(authenticationReducer);
     return render(
-        <MemoryRouter initialEntries={[url]}>
-            <App />
-        </MemoryRouter>
+        <Provider store={store}>
+            <MemoryRouter initialEntries={[url]}>
+                <App />
+            </MemoryRouter>
+        </Provider>
     );
 };
 

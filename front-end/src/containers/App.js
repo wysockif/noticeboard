@@ -9,6 +9,7 @@ import UserProfilePage from '../pages/UserProfilePage';
 import ErrorPage from '../pages/ErrorPage';
 import TopBar from '../components/TopBar';
 import * as apiCalls from '../api/apiCalls';
+import { Container } from 'react-bootstrap';
 
 const actions = {
   postLogin: apiCalls.login,
@@ -19,7 +20,7 @@ function App() {
   return (
     <div>
       <TopBar />
-      <div className="container">
+      <Container>
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/login" component={props => <LoginPage {...props} actions={actions} />} />
@@ -29,7 +30,7 @@ function App() {
           <Route path="/mynotice/:id" component={NoticeFormPage} />
           <Route path="*" component={ErrorPage} />
         </Switch>
-      </div>
+      </Container>
     </div>
   );
 }
