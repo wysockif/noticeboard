@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import noticeboardLogo from '../assets/logo.png';
 import { Container, Image, Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 class TopBar extends Component {
 
@@ -11,6 +11,7 @@ class TopBar extends Component {
             type: 'LOGOUT_SUCCESS'
         }
         this.props.dispatch(logoutAction);
+        this.props.history.push('/');
     };
 
     render() {
@@ -19,7 +20,7 @@ class TopBar extends Component {
                 className="shadow-sm border border-2 rounded mb-3 mt-1 "
                 bg="light"
             >
-                <Container >
+                <Container className="col-sm-11 col-md-9">
                     <Navbar.Brand >
                         <Link to="/" replace>
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140" />
@@ -52,4 +53,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(TopBar);
+export default withRouter(connect(mapStateToProps)(TopBar));

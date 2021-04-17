@@ -61,7 +61,7 @@ describe('LoginPage', () => {
                     value: content
                 }
             };
-        }
+        };
         let usernameInput, passwordInput, button;
 
         const renderLoginPage = props => {

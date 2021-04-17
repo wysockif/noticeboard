@@ -6,9 +6,9 @@ import { HashRouter } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import { Provider } from 'react-redux';
-import configureStore from './redux/configureStore';
+import setupStore from './redux/configureStore';
 
-const store = configureStore();
+const store = setupStore();
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
-import {connect} from 'react-redux';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
 
@@ -83,6 +82,7 @@ export class RegistrationPage extends Component {
     render() {
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
+                
                 <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
@@ -152,4 +152,4 @@ RegistrationPage.defaultProps = {
     }
 };
 
-export default connect()(RegistrationPage);
+export default RegistrationPage;
