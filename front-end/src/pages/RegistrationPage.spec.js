@@ -131,7 +131,7 @@ describe('RegistrationPage', () => {
             });
         }
 
-        it('redirects to home page after successful login', async () => {
+        it('redirects to login page after successful registration', async () => {
             // given
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
@@ -144,7 +144,7 @@ describe('RegistrationPage', () => {
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
             // then
-            expect(history.push).toHaveBeenCalledWith('/');
+            expect(history.push).toHaveBeenCalledWith('/login');
         });
 
         it('sets the first name value into state', () => {

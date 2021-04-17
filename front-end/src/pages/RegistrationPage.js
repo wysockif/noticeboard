@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
+import {connect} from 'react-redux';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
-
 
 export class RegistrationPage extends Component {
     state = {
@@ -67,8 +67,9 @@ export class RegistrationPage extends Component {
         this.props.actions.postRegister(user)
             .then(response => {
                 this.setState({ ongoingApiCall: false }, () => {
-                    this.props.history.push('/');
+                    this.props.history.push('/login');
                 });
+
             })
             .catch(apiError => {
                 let errors = { ...this.state.errors };
@@ -151,4 +152,4 @@ RegistrationPage.defaultProps = {
     }
 };
 
-export default RegistrationPage;
+export default connect()(RegistrationPage);

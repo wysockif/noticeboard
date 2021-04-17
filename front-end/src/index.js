@@ -9,7 +9,6 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import authenticationReducer from './redux/authenticationReducer';
 
-
 const userLoggedInState = {
   isLoggedIn: true,
   id: 5,
