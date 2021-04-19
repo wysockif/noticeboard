@@ -33,7 +33,7 @@ class TopBar extends Component {
                             <Link to="/login" replace className="nav-link ms-3 me-3" >Logowanie</Link>
                         </Nav>}
                         {this.props.user.isLoggedIn && <Nav className="ms-auto">
-                            <Link to={"/mynotice/1"} replace className="nav-link ms-3">Dodaj ogłoszenie</Link>
+                            <Link to={"/notice/new"} replace className="nav-link ms-3">Dodaj ogłoszenie</Link>
                             <Link to={"/user/" + this.props.user.username} replace className="nav-link ms-3">Moja tablica</Link>
                             <div className="nav-link ms-3 me-3" style={{ cursor: 'pointer' }} onClick={this.onClickLogout}>
                                 Wyloguj się

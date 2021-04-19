@@ -74,7 +74,7 @@ describe('App', () => {
 
     it('displays user profile page when url is /user/:username', () => {
         // given
-        const url = '/user/:username1'
+        const url = '/user/username1'
         // when
         const { queryByTestId } = renderAppComponent(url);
         // then
@@ -84,7 +84,7 @@ describe('App', () => {
 
     it('displays notice page when url is /notice/:noticeid', () => {
         // given
-        const url = '/notice/:123'
+        const url = '/notice/123'
         // when
         const { queryByTestId } = renderAppComponent(url);
         // then
@@ -92,13 +92,23 @@ describe('App', () => {
         expect(noticePageDiv).toBeInTheDocument();
     });
 
-    it('displays notice form page when url is /mynotice/:noticeid', () => {
+    it('displays create notice page when url is /notice/new', () => {
         // given
-        const url = '/mynotice/:123'
+        const url = '/notice/new'
         // when
         const { queryByTestId } = renderAppComponent(url);
         // then
-        const noticeFormPageDiv = queryByTestId('noticeformpage');
+        const noticeFormPageDiv = queryByTestId('createnoticepage');
+        expect(noticeFormPageDiv).toBeInTheDocument();
+    });
+
+    it('displays edit notice page when url is /notice/edit/123', () => {
+        // given
+        const url = '/notice/edit/123'
+        // when
+        const { queryByTestId } = renderAppComponent(url);
+        // then
+        const noticeFormPageDiv = queryByTestId('editnoticepage');
         expect(noticeFormPageDiv).toBeInTheDocument();
     });
 

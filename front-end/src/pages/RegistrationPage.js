@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
+import { Redirect } from 'react-router';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
+import { connect } from 'react-redux';
 
 export class RegistrationPage extends Component {
     state = {
@@ -13,7 +15,7 @@ export class RegistrationPage extends Component {
         passwordRepeat: '',
         ongoingApiCall: false,
         errors: [],
-        isPasswordRepeatCorrect: true
+        isPasswordRepeatCorrect: true,
     }
 
     onChangeFirstName = event => {
@@ -79,10 +81,20 @@ export class RegistrationPage extends Component {
             });
     }
 
+    everyFieldHasBeenCompleted = () => {
+        const { firstName, lastName, username, email, password, passwordRepeat } = this.state;
+        if (firstName !== '' && lastName !== '' && username !== ''
+            && email !== '' & password !== '' && passwordRepeat !== '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     render() {
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
-                
+                {this.props.isLoggedIn && <Redirect to="/" />}
                 <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
@@ -131,7 +143,10 @@ export class RegistrationPage extends Component {
                 <div className="mb-3 mt-4 text-center" >
                     <ButtonWithSpinner
                         onClick={this.onClickRegister}
-                        disabled={this.state.ongoingApiCall || !this.state.isPasswordRepeatCorrect}
+                        disabled={
+                            !this.everyFieldHasBeenCompleted() ||
+                            this.state.ongoingApiCall ||
+                            !this.state.isPasswordRepeatCorrect}
                         content="Zarejestruj się"
                         ongoingApiCall={this.state.ongoingApiCall}
                     />
@@ -152,4 +167,11 @@ RegistrationPage.defaultProps = {
     }
 };
 
-export default RegistrationPage;
+const mapStateToProps = state => {
+    return {
+        isLoggedIn: state.isLoggedIn
+    }
+}
+
+
+export default connect(mapStateToProps)(RegistrationPage);

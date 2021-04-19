@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InputWithValidation from '../components/InputWithValidation';
+import { Redirect } from 'react-router';
 import { Container, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
-
 
 export class LoginPage extends Component {
     state = {
@@ -51,6 +51,7 @@ export class LoginPage extends Component {
 
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
+                {this.props.isLoggedIn && <Redirect to="/" />}
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation
                     label="Nazwa użytkownika:" placeholder="Nazwa użytkownika" icon="at"
@@ -90,4 +91,11 @@ LoginPage.defaultProps = {
     dispatch: () => { }
 };
 
-export default connect()(LoginPage);
+const mapStateToProps = state => {
+    return {
+        isLoggedIn: state.isLoggedIn
+    }
+}
+
+
+export default connect(mapStateToProps)(LoginPage);
