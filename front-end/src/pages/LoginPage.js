@@ -22,12 +22,12 @@ export class LoginPage extends Component {
         this.setState({ ongoingApiCall: true });
         this.props.actions.postLogin(body)
             .then((response) => {
-                this.props.dispatch({
-                    type: 'LOGIN_SUCCESS',
-                    payload: { ...response.data, isLoggedIn: true, password: body.password }
-                });
                 this.setState({ ongoingApiCall: false }, () => {
                     this.props.history.push('/');
+                    this.props.dispatch({
+                        type: 'LOGIN_SUCCESS',
+                        payload: { ...response.data, isLoggedIn: true, password: body.password }
+                    });
                 });
             })
             .catch(error => {
@@ -94,7 +94,7 @@ LoginPage.defaultProps = {
 const mapStateToProps = state => {
     return {
         isLoggedIn: state.isLoggedIn
-    }
+    };
 }
 
 

@@ -11,7 +11,7 @@ class TopBar extends Component {
             type: 'LOGOUT_SUCCESS'
         }
         this.props.dispatch(logoutAction);
-        this.props.history.push('/');
+        this.props.history.replace('/');
     };
 
     render() {
