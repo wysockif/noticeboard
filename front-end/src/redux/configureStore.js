@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 import * as apiCalls from '../api/apiCalls';
 import { createStore } from 'redux';
 import authenticationReducer from './authenticationReducer';
@@ -23,7 +23,7 @@ const setupStore = () => {
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
     store.subscribe(() => {
-        axios.setAuthHeader(store.getState);
+        apiCalls.setAuthHeader(store.getState);
         localStorage.setItem('noticeboard-user', JSON.stringify(store.getState()));
     });
 
