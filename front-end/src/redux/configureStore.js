@@ -1,3 +1,5 @@
+import axios from 'axios';
+import * as apiCalls from '../api/apiCalls';
 import { createStore } from 'redux';
 import authenticationReducer from './authenticationReducer';
 
@@ -21,9 +23,8 @@ const setupStore = () => {
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
     store.subscribe(() => {
-        localStorage.setItem('noticeboard-user',
-            JSON.stringify(store.getState())
-        )
+        axios.setAuthHeader(store.getState);
+        localStorage.setItem('noticeboard-user', JSON.stringify(store.getState()));
     });
 
     return store;
@@ -36,6 +37,7 @@ const checkIfUserDataAreStoredInLocalStorage = () => {
     if (loadedUserFromLocalStorage) {
         try {
             loadedUserFromLocalStorage = JSON.parse(loadedUserFromLocalStorage);
+            apiCalls.setAuthHeader(loadedUserFromLocalStorage);
         } catch {
             loadedUserFromLocalStorage = null;
         }

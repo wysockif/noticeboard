@@ -3,7 +3,7 @@ import axios from 'axios';
 import authenticationReducer from '../redux/authenticationReducer';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
@@ -16,8 +16,9 @@ const changeEvent = content => {
 };
 
 beforeEach(() => {
+    delete axios.defaults.headers.common['Authorization'];
     localStorage.clear();
-})
+});
 
 let store;
 const renderAppComponent = url => {
