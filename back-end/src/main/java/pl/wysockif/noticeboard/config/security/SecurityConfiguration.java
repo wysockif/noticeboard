@@ -31,7 +31,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-    // https://stackoverflow.com/questions/31424196/disable-browser-authentication-dialog-in-spring-security/50023070
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint());

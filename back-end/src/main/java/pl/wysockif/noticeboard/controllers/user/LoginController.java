@@ -14,7 +14,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public AppUserSnapshot login() {
-        // https://stackoverflow.com/questions/31159075/how-to-find-out-the-currently-logged-in-user-in-spring-boot
         AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return AppUserMapper.INSTANCE.appUserToSnapshot(loggedInUser);
     }

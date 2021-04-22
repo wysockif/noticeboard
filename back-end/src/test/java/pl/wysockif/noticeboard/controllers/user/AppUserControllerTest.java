@@ -6,32 +6,41 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
+import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.errors.ApiError;
+import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppUserControllerTest {
     private static final String ADD_USER_PATH = "/api/1.0/users";
+    private static final String GET_USER_BY_USERNAME_PATH = "/api/1.0/users";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
     private AppUserRepository userRepository;
+
+    @Autowired
+    private AppUserService userService;
 
     @Before
     public void setUp() {
@@ -47,6 +56,50 @@ public class AppUserControllerTest {
         postUserRequest.setLastName("Lastname");
         postUserRequest.setPassword("Password123");
         return postUserRequest;
+    }
+
+    private PostUserRequest createValidPostUserRequest(String username) {
+        PostUserRequest postUserRequest = createValidPostUserRequest();
+        postUserRequest.setUsername(username);
+        return postUserRequest;
+    }
+
+
+    @Test
+    public void getUserByUsername_whenUserExists_receiveOk() {
+        // given
+        String username = "username1";
+        PostUserRequest postUserRequest = createValidPostUserRequest(username);
+        userService.save(postUserRequest);
+        // when
+        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void getUserByUsername_whenUserExists_receiveUserDataWithoutPassword() {
+        // given
+        String username = "username1";
+        PostUserRequest postUserRequest = createValidPostUserRequest(username);
+        userService.save(postUserRequest);
+        // when
+        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);
+        // then
+        assertThat(response.getBody().contains("password")).isFalse();
+    }
+
+    @Test
+    public void getUserByUsername_whenUserDoesNotExist_receiveNotFound() {
+        // given
+        String username = "username1";
+        // when
+        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
     }
 
     @Test
@@ -426,7 +479,7 @@ public class AppUserControllerTest {
         assertThat(response.getBody().getMessage()).isEqualTo("Validation error");
     }
 
-    // https://stackoverflow.com/questions/2804827/create-a-string-with-n-characters
+
     private String generateLongString(int length) {
         return new String(new char[length]).replace('\0', 'u');
     }
