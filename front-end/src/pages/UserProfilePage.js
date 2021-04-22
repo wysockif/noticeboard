@@ -11,10 +11,21 @@ class UserProfilePage extends Component {
     }
 
     componentDidMount() {
+        this.loadUserToState();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.match.params.username !== prevProps.match.params.username) {
+            this.loadUserToState();
+        }
+    }
+
+    loadUserToState() {
         const username = this.props.match.params.username;
         if (!username) {
             return;
         }
+        this.setState({errorMessage: false});
         apiCalls.getUser(username)
             .then(response => {
                 this.setState({user: response.data});
@@ -22,6 +33,12 @@ class UserProfilePage extends Component {
             .catch(error => {
                 this.setState({errorMessage: true})
             });
+    }
+
+    userNotFoundAlert() {
+        return (
+            <ErrorAlert image={userNotFoundImage}/>
+        );
     }
 
     render() {
@@ -32,12 +49,6 @@ class UserProfilePage extends Component {
             <div data-testid="userprofilepage" className="text-center">
                 {this.state.user && <div>{this.state.user.firstName} {this.state.user.lastName}</div>}
             </div>
-        );
-    }
-
-    userNotFoundAlert() {
-        return (
-            <ErrorAlert image={userNotFoundImage}/>
         );
     }
 }
