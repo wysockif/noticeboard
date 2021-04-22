@@ -1,6 +1,5 @@
-// import axios from 'axios';
 import * as apiCalls from '../api/apiCalls';
-import { createStore } from 'redux';
+import {createStore} from 'redux';
 import authenticationReducer from './authenticationReducer';
 
 const notLoggedInUser = {
@@ -17,7 +16,7 @@ const notLoggedInUser = {
 
 const setupStore = () => {
     let loadedUserFromLocalStorage = checkIfUserDataAreStoredInLocalStorage();
-    const state = loadedUserFromLocalStorage ? loadedUserFromLocalStorage : { ...notLoggedInUser };
+    const state = loadedUserFromLocalStorage ? loadedUserFromLocalStorage : {...notLoggedInUser};
 
     const store = createStore(authenticationReducer, state,
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

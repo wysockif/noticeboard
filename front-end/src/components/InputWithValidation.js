@@ -1,6 +1,6 @@
 import React from 'react';
-import { InputGroup, FormControl } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FormControl, InputGroup} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
 const InputWithValidation = props => {
@@ -9,9 +9,9 @@ const InputWithValidation = props => {
         <div>
             <label htmlFor={props.value} className="d-block d-sm-none mb-1">{props.label}</label>
             <InputGroup className="mb-3">
-                <InputGroup.Prepend style={{ minWidth: '200px' }} className="d-none d-sm-block">
+                <InputGroup.Prepend style={{minWidth: '200px'}} className="d-none d-sm-block">
                     <InputGroup.Text>
-                        <FontAwesomeIcon icon={props.icon} className="my-2 me-2" /> {props.label}
+                        <FontAwesomeIcon icon={props.icon} className="my-2 me-2"/> {props.label}
                     </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
@@ -27,13 +27,14 @@ const InputWithValidation = props => {
                 <FormControl.Feedback type="invalid" className="text-center">
                     {props.hasError && props.error}
                 </FormControl.Feedback>
-            </InputGroup >
-        </div >
+            </InputGroup>
+        </div>
     );
 }
 
 InputWithValidation.defaultProps = {
-    onChange: () => { }
+    onChange: () => {
+    }
 };
 
 export default InputWithValidation;
