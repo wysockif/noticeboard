@@ -2,6 +2,7 @@ import React from 'react';
 import {render, waitFor} from '@testing-library/react';
 import UserProfilePage from './UserProfilePage';
 import * as apiCalls from '../api/apiCalls';
+import {MemoryRouter} from "react-router-dom";
 
 const mockCorrectResponse = {
     data: {
@@ -11,6 +12,14 @@ const mockCorrectResponse = {
         email: 'email@mail.com',
         username: 'username1',
         image: 'testImage.png'
+    }
+};
+
+const mockFailResponse = {
+    response: {
+        data: {
+            message: 'User not found'
+        }
     }
 };
 
@@ -49,5 +58,19 @@ describe('UserProfilePage', () => {
         // then
         const userFirstAndLastName = queryByText('First Last');
         expect(userFirstAndLastName).toBeInTheDocument();
+    });
+
+    it('displays ErrorAlert when user not found', async () => {
+        // given
+        apiCalls.getUser = jest.fn().mockRejectedValue(mockFailResponse);
+        // when
+        const {findAllByTestId, queryByTestId} = render(
+            <MemoryRouter>
+                <UserProfilePage match={mockMatch}/>
+            </MemoryRouter>);
+        await waitFor(() => findAllByTestId('error-alert'));
+        // then
+        const errorDiv = queryByTestId('error-alert');
+        expect(errorDiv).toBeInTheDocument();
     });
 })
