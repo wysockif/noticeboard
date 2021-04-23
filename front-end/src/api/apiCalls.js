@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const apiUrl = '/api/1.0';
+
 export const setAuthHeader = ({isLoggedIn, username, password}) => {
     if (!isLoggedIn) {
         delete axios.defaults.headers.common['Authorization'];
@@ -8,15 +10,18 @@ export const setAuthHeader = ({isLoggedIn, username, password}) => {
     }
 }
 
+export const updateUser = (id, body) => {
+    return axios.patch(apiUrl + `/users/${id}`, body);
+}
 
 export const register = user => {
-    return axios.post('/api/1.0/users', user);
+    return axios.post(apiUrl + '/users', user);
 };
 
 export let getUser = username => {
-    return axios.get(`/api/1.0/users/${username}`);
+    return axios.get(apiUrl + `/users/${username}`);
 }
 
 export const login = user => {
-    return axios.post('/api/1.0/login', {}, {auth: user});
+    return axios.post(apiUrl + '/login', {}, {auth: user});
 }

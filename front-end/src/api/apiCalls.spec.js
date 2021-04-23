@@ -15,6 +15,21 @@ describe('apiCalls', () => {
         });
     });
 
+    describe('updateUser', () => {
+        it('calls /api/1.0/users/123 when the 123 is provided for the function', () => {
+            // given
+            const id = '123';
+            const mockUpdateUser = jest.fn();
+            axios.patch = mockUpdateUser;
+            // when
+            apiCalls.updateUser(id);
+            // then
+            const calledPath = mockUpdateUser.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/users/123');
+        });
+    });
+
+
     describe('Login', () => {
         it('calls /api/1.0/login', () => {
             // given
