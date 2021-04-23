@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {Button, Card, Collapse, Image, Alert, Spinner} from 'react-bootstrap';
+import {Alert, Card, Spinner} from 'react-bootstrap';
 import ErrorAlert from "../components/ErrorAlert";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as apiCalls from '../api/apiCalls';
 import userNotFoundImage from '../assets/user-not-found.jpeg';
 import defaultProfilePicture from '../assets/default-profile-image.jpeg';
-import temp from '../assets/temp.svg';
+import NoticeboardItem from "../components/NoticeboardItem";
+import UserProfilePageHeader from "../components/UserProfilePageHeader";
 
 
 class UserProfilePage extends Component {
@@ -44,148 +44,55 @@ class UserProfilePage extends Component {
             });
     }
 
-    userNotFoundAlert() {
+    displaySpinner() {
+        return <div className="text-center">
+            <Spinner animation="border" size="sm" role="status" className="ms-1">
+                <span className="sr-only">Loading...</span>
+            </Spinner>
+        </div>;
+    }
+
+    displayUserNotFoundAlert() {
         return (
             <ErrorAlert image={userNotFoundImage}/>
         );
     }
 
-    render() {
+    displayConnectionError() {
+        return (<div className="text-center">
+            <Alert className="col-5 mx-auto" variant="danger">Nie można załadować strony. Spróbuj ponownie
+                później.</Alert>
+        </div>);
+    }
+
+    displayMainContent() {
         let profileImage = defaultProfilePicture;
         if (this.state.user && this.state.user.image) {
             profileImage = this.state.user.image;
         }
-        let className = "col-12 col-md-6 col-lg-4 my-2"
+        return <div data-testid="homepage">
+            <Card>
+                <UserProfilePageHeader profileImage={profileImage} user={this.state.user}/>
+                <div className="row m-4">
+                    <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
+                    <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>
+                    <NoticeboardItem title="Zabawki dla psa" price="140" location="Warszawa" id={"15"}/>
+                </div>
+            </Card>
+        </div>;
+    }
+
+    render() {
         let content;
+
         if (this.state.isLoading) {
-            content = (
-                <div className="text-center">
-                    <Spinner animation="border" size="sm" role="status" className="ms-1">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                </div>
-            );
+            content = this.displaySpinner();
         } else if (this.state.errorMessage) {
-            content = this.userNotFoundAlert();
+            content = this.displayUserNotFoundAlert();
         } else if (this.state.connectionError) {
-            content = (
-                <div className="text-center">
-                    <Alert className="col-5 mx-auto" variant="danger">Nie można załadować strony. Spróbuj ponownie
-                        później.</Alert>
-                </div>
-            );
-
+            content = this.displayConnectionError();
         } else {
-            content = (
-                <div data-testid="homepage">
-                    <Card>
-                        <Card.Header className="text-center">
-                            <div className="col-10 col-sm-9 col-md-8 mx-auto">
-                                {this.state.user && <span>
-                                    <Image src={profileImage} alt="profile-picture"
-                                           md={4}
-                                           className="shadow-sm"
-                                           width="100"
-                                           height="100"
-                                           roundedCircle
-                                           onError={event => event.target.src = defaultProfilePicture}
-                                    />
-                                    <Card.Title
-                                        className="mt-1">{this.state.user.firstName} {this.state.user.lastName}</Card.Title>
-                                    <Card.Subtitle
-                                        className="text-muted">{`@${this.state.user.username}`}</Card.Subtitle>
-                                </span>}
-                                <div className="text-center mt-2">
-                                    <Button
-                                        size="sm"
-                                        onClick={() => this.setState({open: !this.state.open})}
-                                        aria-controls="example-collapse-text"
-                                        aria-expanded={this.state.open}
-                                        variant="light"
-                                    >
-                                        {!this.state.open && <div className="text-muted">
-                                            <small>Pokaż opcje edycji</small>
-                                            <FontAwesomeIcon icon="arrow-down" className="mx-1"/>
-                                        </div>}
-                                        {this.state.open && <div className="text-muted">
-                                            <small>Ukryj opcje edycji</small>
-                                            <FontAwesomeIcon icon="arrow-up" className="mx-1"/>
-                                        </div>}
-
-                                    </Button>
-                                </div>
-                                <div className="text-center">
-                                    <Collapse in={this.state.open}>
-                                        <div id="example-collapse-text">
-                                            Jakieś opcje edycji
-                                        </div>
-                                    </Collapse>
-                                </div>
-                            </div>
-                        </Card.Header>
-
-
-                        <div className="row m-4">
-                            <div className={className}>
-                                <Card className="col-11 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
-                                    <div className="mx-auto">
-                                        <h6><FontAwesomeIcon icon="map-pin"/></h6>
-                                    </div>
-                                    <Card.Img variant="top" src={temp}/>
-                                    <Card.Body>
-                                        <Card.Title>Sprzedam opla</Card.Title>
-                                        <Card.Text as="span">
-                                            <div><FontAwesomeIcon icon="wallet" className="mx-1"/>2000 zł</div>
-                                            <div><FontAwesomeIcon icon="map-marker-alt" className="mx-1"/>Warszawa</div>
-                                        </Card.Text>
-                                    </Card.Body>
-                                    <Card.Footer>
-                                        <small className="text-muted">Opublikowano: 3 minuty temu</small>
-                                    </Card.Footer>
-                                </Card>
-                            </div>
-                            <div className={className}>
-                                <Card className="col-11 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
-                                    <div className="mx-auto">
-                                        <h6><FontAwesomeIcon icon="map-pin"/></h6>
-                                    </div>
-                                    <Card.Img variant="top" src={temp}/>
-                                    <Card.Body>
-                                        <Card.Title>Laptop</Card.Title>
-                                        <Card.Text as="span">
-                                            <div>2200 zł</div>
-                                            <div>Kraków</div>
-                                        </Card.Text>
-                                    </Card.Body>
-                                    <Card.Footer>
-                                        <small className="text-muted">Opublikowano: 3 minuty temu</small>
-                                    </Card.Footer>
-                                </Card>
-                            </div>
-                            <div className={className}>
-                                <Card className="col-11 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
-                                    <div className="mx-auto">
-                                        <h6><FontAwesomeIcon icon="map-pin"/></h6>
-                                    </div>
-
-                                    <Card.Img variant="top" src={temp}/>
-                                    <Card.Body>
-                                        <Card.Title>Zabawki dla dziecka</Card.Title>
-                                        <Card.Text as="span">
-                                            <div>140 zł</div>
-                                            <div>Warszawa</div>
-                                        </Card.Text>
-                                    </Card.Body>
-                                    <Card.Footer>
-                                        <small className="text-muted">Opublikowano: 3 minuty temu</small>
-                                    </Card.Footer>
-                                </Card>
-                            </div>
-
-                        </div>
-                    </Card>
-                </div>
-            );
+            content = this.displayMainContent();
         }
 
         return (

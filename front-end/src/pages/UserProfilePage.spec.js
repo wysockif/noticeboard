@@ -30,10 +30,18 @@ const mockMatch = {
     }
 };
 
+const renderProfilePageInRouter = props => {
+    return render(
+        <MemoryRouter>
+            <UserProfilePage {...props}/>
+        </MemoryRouter>
+    );
+};
+
 describe('UserProfilePage', () => {
     it('has div with test id userprofilepage', () => {
         // given
-        const {queryByTestId} = render(<UserProfilePage/>);
+        const {queryByTestId} = renderProfilePageInRouter();
         // when
         const userProfileDiv = queryByTestId('userprofilepage');
         // then
@@ -45,7 +53,7 @@ describe('UserProfilePage', () => {
         const mockGetUser = jest.fn().mockResolvedValue(mockCorrectResponse)
         apiCalls.getUser = mockGetUser;
         // when
-        render(<UserProfilePage match={mockMatch}/>);
+        renderProfilePageInRouter({match: mockMatch});
         // then
         expect(mockGetUser).toHaveBeenCalledWith(mockCorrectResponse.data.username);
     });
@@ -54,7 +62,7 @@ describe('UserProfilePage', () => {
         // given
         apiCalls.getUser = jest.fn().mockResolvedValue(mockCorrectResponse);
         // when
-        const {queryByText, findByText} = render(<UserProfilePage match={mockMatch}/>);
+        const {queryByText, findByText} = renderProfilePageInRouter({match: mockMatch});
         await waitFor(() => findByText('First Last'));
         // then
         const userFirstAndLastName = queryByText('First Last');
@@ -65,11 +73,7 @@ describe('UserProfilePage', () => {
         // given
         apiCalls.getUser = jest.fn().mockRejectedValue(mockFailResponse);
         // when
-        const {findByTestId, queryByTestId} = render(
-            <MemoryRouter>
-                <UserProfilePage match={mockMatch}/>
-            </MemoryRouter>
-        );
+        const {findByTestId, queryByTestId} = renderProfilePageInRouter({match: mockMatch});
         await waitFor(() => findByTestId('error-alert'));
         // then
         const errorDiv = queryByTestId('error-alert');
