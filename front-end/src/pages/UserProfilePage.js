@@ -5,6 +5,7 @@ import * as apiCalls from '../api/apiCalls';
 import userNotFoundImage from '../assets/user-not-found.jpeg';
 import NoticeboardItem from "../components/NoticeboardItem";
 import UserProfilePageHeader from "../components/profile-page/UserProfilePageHeader";
+import {connect} from "react-redux";
 
 
 class UserProfilePage extends Component {
@@ -66,11 +67,11 @@ class UserProfilePage extends Component {
     }
 
     displayMainContent() {
-
+        const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
         return <div data-testid="homepage">
             <Card>
-                <UserProfilePageHeader user={this.state.user}/>
-                <div className="row m-4 ">
+                <UserProfilePageHeader user={this.state.user} canBeModified={canBeModified}/>
+                <div className="row m-4">
                     <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
                     <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>
                     <NoticeboardItem title="Zabawki dla psa" price="140 zł" location="Warszawa" id={"15"}/>
@@ -111,4 +112,10 @@ UserProfilePage.defaultProps = {
     }
 };
 
-export default UserProfilePage;
+const mapStateToProps = state => {
+    return {
+        loggedInUser: state
+    };
+};
+
+export default connect(mapStateToProps)(UserProfilePage);

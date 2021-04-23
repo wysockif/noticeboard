@@ -15,8 +15,9 @@ class UserProfilePageHeader extends Component {
                 <div className="col-10 col-sm-9 col-md-8 mx-auto">
                     {this.props.user &&
                     <UserProfilePageInfo user={this.props.user}/>}
-                    <div className="text-center mt-2">
+                    {this.props.canBeModified && <div className="text-center mt-2">
                         <Button
+                            data-testid="collapse-button"
                             size="sm"
                             onClick={() => this.setState({open: !this.state.open})}
                             aria-controls="example-collapse-text"
@@ -33,7 +34,7 @@ class UserProfilePageHeader extends Component {
                             </div>}
 
                         </Button>
-                    </div>
+                    </div>}
                     <UserProfilePageCollapse open={this.state.open} user={this.props.user}/>
                 </div>
             </Card.Header>

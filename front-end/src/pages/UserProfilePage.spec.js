@@ -1,8 +1,11 @@
 import React from 'react';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
 import {render, waitFor} from '@testing-library/react';
 import UserProfilePage from './UserProfilePage';
 import * as apiCalls from '../api/apiCalls';
 import {MemoryRouter} from "react-router-dom";
+import authenticationReducer from "../redux/authenticationReducer";
 
 const mockCorrectResponse = {
     data: {
@@ -31,10 +34,13 @@ const mockMatch = {
 };
 
 const renderProfilePageInRouter = props => {
+    let store = createStore(authenticationReducer);
     return render(
-        <MemoryRouter>
-            <UserProfilePage {...props}/>
-        </MemoryRouter>
+        <Provider store={store}>
+            <MemoryRouter>
+                <UserProfilePage {...props}/>
+            </MemoryRouter>
+        </Provider>
     );
 };
 

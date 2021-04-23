@@ -9,7 +9,7 @@ import App from './App';
 import * as apiCalls from '../api/apiCalls'
 
 beforeEach(() => {
-    delete axios.defaults.headers.common['Authorization'];
+    // delete axios.defaults.headers.common['Authorization'];
     localStorage.clear();
     apiCalls.getUser = jest.fn().mockResolvedValue({
         data: {
