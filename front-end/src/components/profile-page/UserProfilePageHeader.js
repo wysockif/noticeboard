@@ -35,7 +35,7 @@ class UserProfilePageHeader extends Component {
 
                         </Button>
                     </div>}
-                    <UserProfilePageCollapse open={this.state.open} user={this.props.user}/>
+                    <UserProfilePageCollapse open={this.state.open} user={this.props.user} />
                 </div>
             </Card.Header>
         ))

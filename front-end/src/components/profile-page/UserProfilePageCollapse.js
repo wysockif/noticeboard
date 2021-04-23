@@ -23,10 +23,16 @@ class UserProfilePageCollapse extends Component {
         this.setState({lastName: event.target.value});
     }
 
+    onExitedCollapse = () => {
+        if (this.props.user) {
+            this.setState({firstName: this.props.user.firstName, lastName: this.props.user.lastName})
+        }
+    }
+
     render() {
         return (
             <div>
-                <Collapse in={this.props.open}>
+                <Collapse in={this.props.open} onExited={this.onExitedCollapse}>
                     <div id="example-collapse-text" className="mt-3">
                         <Container className="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
 
