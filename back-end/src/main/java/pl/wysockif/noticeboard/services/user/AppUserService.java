@@ -3,6 +3,7 @@ package pl.wysockif.noticeboard.services.user;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
@@ -43,5 +44,15 @@ public class AppUserService {
         AppUserSnapshot snapshot = AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
         LOGGER.info("Got user: " + snapshot.getId());
         return snapshot;
+    }
+
+    public AppUserSnapshot update(Long id, PatchUserRequest patchUserRequest) {
+        LOGGER.info("Updating user: " + id);
+        AppUser appUser = userRepository.getOne(id);
+        appUser.setFirstName(patchUserRequest.getFirstName());
+        appUser.setLastName(patchUserRequest.getLastName());
+        userRepository.save(appUser);
+        LOGGER.info("Updated user: " + id);
+        return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
     }
 }

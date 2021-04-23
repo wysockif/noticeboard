@@ -6,10 +6,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
@@ -19,19 +22,22 @@ import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppUserControllerTest {
-    private static final String ADD_USER_PATH = "/api/1.0/users";
-    private static final String GET_USER_BY_USERNAME_PATH = "/api/1.0/users";
+    private static final String USERS_URL = "/api/1.0/users";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -64,6 +70,69 @@ public class AppUserControllerTest {
         return postUserRequest;
     }
 
+    @Test
+    public void patchUser_whenUserIsUnauthorized_receiveUnauthorizedStatus() {
+        // given
+        String id = "10";
+        // when
+        String url = USERS_URL + "/" + id;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PATCH, null, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+    }
+
+    @Test
+    public void patchUser_whenAuthorizedUserChangesFirstNameAndLastName_receiveOkStatus() {
+        // given
+        PostUserRequest user = createValidPostUserRequest("username1");
+        Long currentUserId = userService.save(user);
+        testRestTemplate.getRestTemplate().getInterceptors()
+                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        String id = String.valueOf(currentUserId);
+        PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
+        HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
+        // when
+        String url = USERS_URL + "/" + id;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PATCH, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void patchUser_whenAuthorizedUserChangesFirstNameAndLastName_fieldsUpdated() {
+        // given
+        PostUserRequest user = createValidPostUserRequest("username1");
+        Long currentUserId = userService.save(user);
+        testRestTemplate.getRestTemplate().getInterceptors()
+                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
+        HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
+        String id = String.valueOf(currentUserId);
+        // when
+        String url = USERS_URL + "/" + id;
+        testRestTemplate.exchange(url, PATCH, requestHttpEntity, Object.class);
+        // then
+        Optional<AppUser> updatedUser = userRepository.findById(currentUserId);
+        assertThat(updatedUser.get().getFirstName()).isEqualTo(patchUserRequest.getFirstName());
+        assertThat(updatedUser.get().getLastName()).isEqualTo(patchUserRequest.getLastName());
+    }
+
+    @Test
+    public void patchUser_whenUserIsUpdatingAnotherUser_receiveForbiddenStatus() {
+        // given
+        PostUserRequest user = createValidPostUserRequest("username1");
+        Long currentUserId = userService.save(user);
+        testRestTemplate.getRestTemplate().getInterceptors()
+                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
+        HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
+        String anotherUserId = String.valueOf(currentUserId) + '1';
+        // when
+        String url = USERS_URL + "/" + anotherUserId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PATCH, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    }
 
     @Test
     public void getUserByUsername_whenUserExists_receiveOk() {
@@ -72,7 +141,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest(username);
         userService.save(postUserRequest);
         // when
-        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        String url = USERS_URL + "/" + username;
         ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(OK);
@@ -85,18 +154,18 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest(username);
         userService.save(postUserRequest);
         // when
-        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        String url = USERS_URL + "/" + username;
         ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);
         // then
         assertThat(response.getBody().contains("password")).isFalse();
     }
 
     @Test
-    public void getUserByUsername_whenUserDoesNotExist_receiveNotFound() {
+    public void getUserByUsername_whenUserDoesNotExist_receiveNotFoundStatus() {
         // given
         String username = "username1";
         // when
-        String url = GET_USER_BY_USERNAME_PATH + "/" + username;
+        String url = USERS_URL + "/" + username;
         ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
@@ -107,7 +176,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
     }
@@ -117,7 +186,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(userRepository.count()).isEqualTo(1);
     }
@@ -127,7 +196,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        ResponseEntity<Long> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Long.class);
+        ResponseEntity<Long> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Long.class);
         // then
         assertThat(response.getBody()).isNotNegative();
     }
@@ -137,7 +206,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = createValidPostUserRequest();
         // when
-        testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Long.class);
+        testRestTemplate.postForEntity(USERS_URL, postUserRequest, Long.class);
         // then
         List<AppUser> users = userRepository.findAll();
         AppUser userInDatabase = users.get(0);
@@ -150,7 +219,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setUsername(null);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -161,7 +230,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setUsername(null);
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("username")).isEqualTo("To pole nie może być puste");
     }
@@ -172,7 +241,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setUsername("abc");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -184,7 +253,7 @@ public class AppUserControllerTest {
         String username = "tooLongUsername" + generateLongString(64);
         postUserRequest.setUsername(username);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -197,7 +266,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail("sameUserNameButDifferentEmail@mail.com");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -210,7 +279,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail("sameUserNameButDifferentEmail@mail.com");
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("username"))
                 .isEqualTo("Podana nazwa użytkownika jest już zajęta");
@@ -222,7 +291,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setFirstName(null);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -233,7 +302,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setFirstName(null);
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("firstName")).isEqualTo("To pole nie może być puste");
     }
@@ -244,7 +313,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setFirstName("Im");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -255,7 +324,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setFirstName("Im");
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("firstName"))
                 .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 64 znaki");
@@ -268,7 +337,7 @@ public class AppUserControllerTest {
         String firstName = "tooLongFirstName" + generateLongString(60);
         postUserRequest.setFirstName(firstName);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -279,7 +348,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setLastName(null);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -290,7 +359,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setLastName(null);
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("lastName")).isEqualTo("To pole nie może być puste");
     }
@@ -301,7 +370,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setLastName("Im");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -313,7 +382,7 @@ public class AppUserControllerTest {
         String lastName = "tooLongLastName" + generateLongString(60);
         postUserRequest.setLastName(lastName);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -324,7 +393,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail(null);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -335,7 +404,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail(null);
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("email")).isEqualTo("To pole nie może być puste");
     }
@@ -346,7 +415,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail("notValidEmail");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -357,7 +426,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setEmail("a@a");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -369,7 +438,7 @@ public class AppUserControllerTest {
         String email = "too@long.email" + generateLongString(60);
         postUserRequest.setEmail(email);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -382,7 +451,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setUsername("sameEmailButDifferentUsername");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -395,7 +464,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setUsername("sameEmailButDifferentUsername");
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("email"))
                 .isEqualTo("Podany adres email został już zarejestrowany");
@@ -407,7 +476,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setPassword(null);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -418,7 +487,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setPassword(null);
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("password")).isEqualTo("To pole nie może być puste");
     }
@@ -429,7 +498,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setPassword("Ab3");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -441,7 +510,7 @@ public class AppUserControllerTest {
         String password = "tooLongPassword" + generateLongString(60);
         postUserRequest.setPassword(password);
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -452,7 +521,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setPassword("withoutuppercaseandnumber");
         // when
-        ResponseEntity<Object> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -463,7 +532,7 @@ public class AppUserControllerTest {
         PostUserRequest postUserRequest = createValidPostUserRequest();
         postUserRequest.setPassword("withoutuppercaseandnumber");
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("password"))
                 .isEqualTo("Musi mieć conajmniej jedną małą i wielką literę oraz cyfrę");
@@ -474,7 +543,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest postUserRequest = new PostUserRequest();
         // when
-        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(ADD_USER_PATH, postUserRequest, ApiError.class);
+        ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getMessage()).isEqualTo("Validation error");
     }

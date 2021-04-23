@@ -3,18 +3,25 @@ package pl.wysockif.noticeboard.config.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AuthUserService authUserService;
+    public static final String API_URL = "/api/1.0";
 
     public SecurityConfiguration(AuthUserService authUserService) {
         this.authUserService = authUserService;
@@ -35,7 +42,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic().authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint());
 
-        http.authorizeRequests().antMatchers(POST, "/api/1.0/login").authenticated()
+        http.authorizeRequests()
+                .antMatchers(POST, API_URL + "/login").authenticated()
+                .antMatchers(PATCH, API_URL + "/users/{id:[0-9]+}").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().permitAll();
 
@@ -44,3 +53,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 }
+
+
+
