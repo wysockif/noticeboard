@@ -3,9 +3,8 @@ import {Alert, Card, Spinner} from 'react-bootstrap';
 import ErrorAlert from "../components/ErrorAlert";
 import * as apiCalls from '../api/apiCalls';
 import userNotFoundImage from '../assets/user-not-found.jpeg';
-import defaultProfilePicture from '../assets/default-profile-image.jpeg';
 import NoticeboardItem from "../components/NoticeboardItem";
-import UserProfilePageHeader from "../components/UserProfilePageHeader";
+import UserProfilePageHeader from "../components/profile-page/UserProfilePageHeader";
 
 
 class UserProfilePage extends Component {
@@ -66,13 +65,10 @@ class UserProfilePage extends Component {
     }
 
     displayMainContent() {
-        let profileImage = defaultProfilePicture;
-        if (this.state.user && this.state.user.image) {
-            profileImage = this.state.user.image;
-        }
+
         return <div data-testid="homepage">
             <Card>
-                <UserProfilePageHeader profileImage={profileImage} user={this.state.user}/>
+                <UserProfilePageHeader user={this.state.user}/>
                 <div className="row m-4">
                     <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
                     <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>

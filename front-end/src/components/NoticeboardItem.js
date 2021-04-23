@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 
 const NoticeboardItem = (props) => {
     return (
-        <Link to={`/notice/${props.id}`} className="col-12 col-md-6 col-lg-4 my-2">
+        <Link to={`/notice/${props.id}`} className="col-12 col-md-6 col-lg-4 my-2 nav-link">
             <Card className="col-11 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
                 <div className="mx-auto">
                     <h6><FontAwesomeIcon icon="map-pin"/></h6>
