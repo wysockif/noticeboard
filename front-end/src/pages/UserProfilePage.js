@@ -59,8 +59,9 @@ class UserProfilePage extends Component {
 
     displayConnectionError() {
         return (<div className="text-center">
-            <Alert className="col-5 mx-auto" variant="danger">Nie można załadować strony. Spróbuj ponownie
-                później.</Alert>
+            <Alert className="col-5 mx-auto" variant="danger">
+                Nie można załadować strony. Spróbuj ponownie później.
+            </Alert>
         </div>);
     }
 
@@ -69,10 +70,15 @@ class UserProfilePage extends Component {
         return <div data-testid="homepage">
             <Card>
                 <UserProfilePageHeader user={this.state.user}/>
-                <div className="row m-4">
+                <div className="row m-4 ">
                     <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
                     <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>
-                    <NoticeboardItem title="Zabawki dla psa" price="140" location="Warszawa" id={"15"}/>
+                    <NoticeboardItem title="Zabawki dla psa" price="140 zł" location="Warszawa" id={"15"}/>
+                    {/*<NoticeboardItem title="Zabawki dla kota" price="140 zł" location="Warszawa" id={"16"}/>*/}
+                    {/*<NoticeboardItem title="Sofa" price="140 zł" location="Warszawa" id={"17"}/>*/}
+                    {/*<NoticeboardItem title="Kaloryfer" price="140 zł" location="Warszawa" id={"18"}/>*/}
+                    {/*<NoticeboardItem title="Monitor" price="140 zł" location="Warszawa" id={"19"}/>*/}
+                    <NoticeboardItem title="Poduszka" price="140 zł" location="Warszawa" id={"20"}/>
                 </div>
             </Card>
         </div>;

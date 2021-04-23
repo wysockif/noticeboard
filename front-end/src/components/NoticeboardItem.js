@@ -14,9 +14,15 @@ const NoticeboardItem = (props) => {
                 <Card.Img variant="top" src={temp}/>
                 <Card.Body>
                     <Card.Title>{props.title}</Card.Title>
-                    <Card.Text as="span">
-                        <div><FontAwesomeIcon icon="wallet" className="mx-1"/>{props.price}</div>
-                        <div><FontAwesomeIcon icon="map-marker-alt" className="mx-1"/>{props.location}</div>
+                    <Card.Text as="div">
+                        <div>
+                            <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
+                            {props.price}
+                        </div>
+                        <div>
+                            <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
+                            {props.location}
+                        </div>
                     </Card.Text>
                 </Card.Body>
                 <Card.Footer>
