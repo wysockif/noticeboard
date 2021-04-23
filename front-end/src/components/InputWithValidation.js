@@ -5,11 +5,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
+    const labelWidth = props.width ? props.width : '200px';
     return (
         <div>
             <label htmlFor={props.value} className="d-block d-sm-none mb-1">{props.label}</label>
             <InputGroup className="mb-3">
-                <InputGroup.Prepend style={{minWidth: '200px'}} className="d-none d-sm-block">
+                <InputGroup.Prepend style={{minWidth: labelWidth}} className="d-none d-sm-block">
                     <InputGroup.Text>
                         <FontAwesomeIcon icon={props.icon} className="my-2 me-2"/> {props.label}
                     </InputGroup.Text>
