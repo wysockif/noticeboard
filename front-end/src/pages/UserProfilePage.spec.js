@@ -17,6 +17,7 @@ const mockCorrectResponse = {
 
 const mockFailResponse = {
     response: {
+        status: 404,
         data: {
             message: 'User not found'
         }
@@ -64,11 +65,12 @@ describe('UserProfilePage', () => {
         // given
         apiCalls.getUser = jest.fn().mockRejectedValue(mockFailResponse);
         // when
-        const {findAllByTestId, queryByTestId} = render(
+        const {findByTestId, queryByTestId} = render(
             <MemoryRouter>
                 <UserProfilePage match={mockMatch}/>
-            </MemoryRouter>);
-        await waitFor(() => findAllByTestId('error-alert'));
+            </MemoryRouter>
+        );
+        await waitFor(() => findByTestId('error-alert'));
         // then
         const errorDiv = queryByTestId('error-alert');
         expect(errorDiv).toBeInTheDocument();

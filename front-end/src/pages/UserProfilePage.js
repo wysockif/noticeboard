@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Collapse, Image, Alert} from 'react-bootstrap';
+import {Button, Card, Collapse, Image, Alert, Spinner} from 'react-bootstrap';
 import ErrorAlert from "../components/ErrorAlert";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as apiCalls from '../api/apiCalls';
@@ -11,6 +11,7 @@ import temp from '../assets/temp.svg';
 class UserProfilePage extends Component {
     state = {
         errorMessage: false,
+        isLoading: false,
         user: undefined
     }
 
@@ -29,16 +30,16 @@ class UserProfilePage extends Component {
         if (!username) {
             return;
         }
-        this.setState({errorMessage: false});
+        this.setState({errorMessage: false, isLoading: true});
         apiCalls.getUser(username)
             .then(response => {
-                this.setState({user: response.data});
+                this.setState({user: response.data, isLoading: false});
             })
             .catch(error => {
                 if (error.response.status === 404) {
-                    this.setState({errorMessage: true})
+                    this.setState({errorMessage: true, isLoading: false})
                 } else {
-                    this.setState({connectionError: true})
+                    this.setState({connectionError: true, isLoading: false})
                 }
             });
     }
@@ -50,25 +51,32 @@ class UserProfilePage extends Component {
     }
 
     render() {
-        if (this.state.errorMessage) {
-            return this.userNotFoundAlert();
-        } else if (this.state.connectionError) {
-            return (
-                <div className="text-center">
-                    <Alert className="col-5 mx-auto" variant="danger">Nie można załadować strony. Spróbuj ponownie
-                        później.</Alert>
-                </div>
-            );
-        }
-
         let profileImage = defaultProfilePicture;
         if (this.state.user && this.state.user.image) {
             profileImage = this.state.user.image;
         }
         let className = "col-12 col-md-6 col-lg-4 my-2"
-        return (
-            <div data-testid="userprofilepage">
+        let content;
+        if (this.state.isLoading) {
+            content = (
+                <div className="text-center">
+                    <Spinner animation="border" size="sm" role="status" className="ms-1">
+                        <span className="sr-only">Loading...</span>
+                    </Spinner>
+                </div>
+            );
+        } else if (this.state.errorMessage) {
+            content = this.userNotFoundAlert();
+        } else if (this.state.connectionError) {
+            content = (
+                <div className="text-center">
+                    <Alert className="col-5 mx-auto" variant="danger">Nie można załadować strony. Spróbuj ponownie
+                        później.</Alert>
+                </div>
+            );
 
+        } else {
+            content = (
                 <div data-testid="homepage">
                     <Card>
                         <Card.Header className="text-center">
@@ -177,8 +185,12 @@ class UserProfilePage extends Component {
                         </div>
                     </Card>
                 </div>
+            );
+        }
 
-
+        return (
+            <div data-testid="userprofilepage">
+                {content}
             </div>
         );
     }
