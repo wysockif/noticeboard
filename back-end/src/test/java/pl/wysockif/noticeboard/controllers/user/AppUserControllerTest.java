@@ -1,11 +1,13 @@
 package pl.wysockif.noticeboard.controllers.user;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,8 +90,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest user = createValidPostUserRequest("username1");
         Long currentUserId = userService.save(user);
-        testRestTemplate.getRestTemplate().getInterceptors()
-                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        addAuthenticationInterceptor(user);
         String id = String.valueOf(currentUserId);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
@@ -103,8 +106,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest user = createValidPostUserRequest("username1");
         Long currentUserId = userService.save(user);
-        testRestTemplate.getRestTemplate().getInterceptors()
-                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        addAuthenticationInterceptor(user);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
         String id = String.valueOf(currentUserId);
@@ -122,8 +124,7 @@ public class AppUserControllerTest {
         // given
         PostUserRequest user = createValidPostUserRequest("username1");
         Long currentUserId = userService.save(user);
-        testRestTemplate.getRestTemplate().getInterceptors()
-                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+        addAuthenticationInterceptor(user);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
         String anotherUserId = String.valueOf(currentUserId) + '1';
@@ -132,6 +133,32 @@ public class AppUserControllerTest {
         ResponseEntity<Object> response = testRestTemplate.exchange(url, PATCH, requestHttpEntity, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    }
+
+    @Test
+    public void patchUser_whenAuthorizedUserChangesImage_fieldUpdated() throws IOException {
+        // given
+        PostUserRequest user = createValidPostUserRequest("username1");
+        Long currentUserId = userService.save(user);
+        addAuthenticationInterceptor(user);
+        PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
+        ClassPathResource profileImage = new ClassPathResource("default-profile-image.jpeg");
+        byte[] imageAsByteArray = FileUtils.readFileToByteArray(profileImage.getFile());
+        String imageAsEncodedString = Base64.getEncoder().encodeToString(imageAsByteArray);
+        patchUserRequest.setProfileImage(imageAsEncodedString);
+        HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
+        String id = String.valueOf(currentUserId);
+        // when
+        String url = USERS_URL + "/" + id;
+        testRestTemplate.exchange(url, PATCH, requestHttpEntity, Object.class);
+        // then
+        Optional<AppUser> updatedUser = userRepository.findById(currentUserId);
+        assertThat(updatedUser.get().getImage()).isNotNull();
+    }
+
+    private void addAuthenticationInterceptor(PostUserRequest user) {
+        testRestTemplate.getRestTemplate().getInterceptors()
+                .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
     }
 
     @Test

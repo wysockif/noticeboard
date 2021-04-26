@@ -18,12 +18,12 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AuthUserService authUserService;
+    private final AuthenticationUserService authUserService;
     public static final String API_URL = "/api/1.0";
 
-    public SecurityConfiguration(AuthUserService authUserService) {
+    public SecurityConfig(AuthenticationUserService authUserService) {
         this.authUserService = authUserService;
     }
 

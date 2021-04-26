@@ -8,11 +8,11 @@ import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 
 @Service
-public class AuthUserService implements UserDetailsService {
+public class AuthenticationUserService implements UserDetailsService {
 
     private final AppUserRepository userRepository;
 
-    public AuthUserService(AppUserRepository userRepository) {
+    public AuthenticationUserService(AppUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

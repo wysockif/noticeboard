@@ -11,17 +11,24 @@ import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
 public class AppUserService {
+
     private final AppUserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
+
+    private final StaticFileService staticFileService;
+
     private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
 
-    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder, StaticFileService staticFileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.staticFileService = staticFileService;
     }
 
     public Long save(PostUserRequest postUserRequest) {
@@ -51,6 +58,10 @@ public class AppUserService {
         AppUser appUser = userRepository.getOne(id);
         appUser.setFirstName(patchUserRequest.getFirstName());
         appUser.setLastName(patchUserRequest.getLastName());
+        if (patchUserRequest.getProfileImage() != null) {
+            String profileImageName = staticFileService.saveProfileImage(appUser.getUsername(), patchUserRequest.getProfileImage());
+            appUser.setImage(profileImageName);
+        }
         userRepository.save(appUser);
         LOGGER.info("Updated user: " + id);
         return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);

@@ -26,6 +26,7 @@ spring:
           validation:
             mode: none
     show-sql: true
+upload-folder-path: static-uploads-dev
 ---
 spring:
   config:
@@ -49,6 +50,7 @@ spring:
         persistance:
           validation:
             mode: none
+upload-folder-path: static-uploads-prod
 ---
 spring:
   config:
@@ -69,3 +71,4 @@ spring:
         persistance:
           validation:
             mode: none
+upload-folder-path: static-uploads-test
