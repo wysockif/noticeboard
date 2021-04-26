@@ -17,7 +17,7 @@ describe('UserProfilePageHeader', () => {
         // given
         const {queryByText} = renderProfilePageHeaderInRouter({canBeModified: true});
         // when
-        const collapseButton = queryByText('Pokaż opcje edycji');
+        const collapseButton = queryByText('Pokaż panel edycji');
         // then
         expect(collapseButton).toBeInTheDocument();
     });
@@ -26,7 +26,7 @@ describe('UserProfilePageHeader', () => {
         // given
         const {queryByText} = renderProfilePageHeaderInRouter();
         // when
-        const collapseButton = queryByText('Pokaż opcje edycji');
+        const collapseButton = queryByText('Pokaż panel edycji');
         // then
         expect(collapseButton).not.toBeInTheDocument();
     });

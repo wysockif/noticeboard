@@ -12,7 +12,10 @@ class UserProfilePage extends Component {
     state = {
         errorMessage: false,
         isLoading: false,
-        user: undefined
+        user: undefined,
+        open: false,
+        ongoingApiCall: false,
+        errors: []
     }
 
     componentDidMount() {
@@ -23,6 +26,21 @@ class UserProfilePage extends Component {
         if (this.props.match.params.username !== prevProps.match.params.username) {
             this.loadUserToState();
         }
+    }
+
+    onClickUpdateUser = (id, body) => {
+        this.setState({ongoingApiCall: true});
+        return apiCalls.updateUser(id, body)
+            .then(response => {
+                this.setState({user: response.data, open: false, ongoingApiCall: false, errors: []});
+            })
+            .catch(apiError => {
+                let errors = { ...this.state.errors };
+                if (apiError.response.data && apiError.response.data.validationErrors) {
+                    errors = { ...apiError.response.data.validationErrors }
+                }
+                this.setState({ ongoingApiCall: false, errors });
+            });
     }
 
     loadUserToState() {
@@ -66,11 +84,20 @@ class UserProfilePage extends Component {
         </div>);
     }
 
+
     displayMainContent() {
         const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
         return <div data-testid="homepage">
             <Card>
-                <UserProfilePageHeader user={this.state.user} canBeModified={canBeModified}/>
+                <UserProfilePageHeader
+                    open={this.state.open}
+                    user={this.state.user}
+                    canBeModified={canBeModified}
+                    onClickUpdateUser={this.onClickUpdateUser}
+                    onClickCollapseButton={() => this.setState({open: !this.state.open})}
+                    ongoingApiCall={this.state.ongoingApiCall}
+                    errors={this.state.errors}
+                />
                 <div className="row m-4">
                     <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
                     <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>

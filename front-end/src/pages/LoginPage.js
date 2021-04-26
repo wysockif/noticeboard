@@ -47,7 +47,7 @@ export class LoginPage extends Component {
     }
 
     render() {
-        const disableSubmit = this.state.username && this.state.password ? false : true;
+        const disableSubmit = !(this.state.username && this.state.password);
 
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
