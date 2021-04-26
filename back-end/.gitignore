@@ -16,3 +16,8 @@ target/
 *.iws
 *.iml
 *.ipr
+
+
+static-uploads-test
+static-uploads-dev
+static-uploads-prod
