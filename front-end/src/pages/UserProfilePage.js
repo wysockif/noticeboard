@@ -15,7 +15,8 @@ class UserProfilePage extends Component {
         user: undefined,
         open: false,
         ongoingApiCall: false,
-        errors: []
+        errors: [],
+        selectedImage: undefined
     }
 
     componentDidMount() {
@@ -30,17 +31,34 @@ class UserProfilePage extends Component {
 
     onClickUpdateUser = (id, body) => {
         this.setState({ongoingApiCall: true});
+        if (this.state.selectedImage) {
+            body.profileImage = this.state.selectedImage.split(',')[1];
+        }
         return apiCalls.updateUser(id, body)
             .then(response => {
-                this.setState({user: response.data, open: false, ongoingApiCall: false, errors: []});
+                this.setState({
+                    user: response.data,
+                    open: false,
+                    ongoingApiCall: false,
+                    errors: [],
+                    selectedImage: undefined
+                });
             })
             .catch(apiError => {
-                let errors = { ...this.state.errors };
+                let errors = {...this.state.errors};
                 if (apiError.response.data && apiError.response.data.validationErrors) {
-                    errors = { ...apiError.response.data.validationErrors }
+                    errors = {...apiError.response.data.validationErrors}
                 }
-                this.setState({ ongoingApiCall: false, errors });
+                this.setState({ongoingApiCall: false, errors, selectedImage: undefined});
             });
+    }
+
+    onClickCollapseButton = () => {
+        if (this.state.open === true) {
+            this.setState({selectedImage: undefined, open: false});
+        } else {
+            this.setState({open: !this.state.open});
+        }
     }
 
     loadUserToState() {
@@ -60,6 +78,18 @@ class UserProfilePage extends Component {
                     this.setState({connectionError: true, isLoading: false})
                 }
             });
+    }
+
+
+    onImageSelect = event => {
+        if (event.target.files.length > 0) {
+            const file = event.target.files[0];
+            let fileReader = new FileReader();
+            fileReader.onloadend = () => {
+                this.setState({selectedImage: fileReader.result});
+            }
+            fileReader.readAsDataURL(file);
+        }
     }
 
     displaySpinner() {
@@ -94,9 +124,11 @@ class UserProfilePage extends Component {
                     user={this.state.user}
                     canBeModified={canBeModified}
                     onClickUpdateUser={this.onClickUpdateUser}
-                    onClickCollapseButton={() => this.setState({open: !this.state.open})}
+                    onClickCollapseButton={this.onClickCollapseButton}
                     ongoingApiCall={this.state.ongoingApiCall}
                     errors={this.state.errors}
+                    selectedImage={this.state.selectedImage}
+                    onImageSelect={this.onImageSelect}
                 />
                 <div className="row m-4">
                     <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>

@@ -9,7 +9,7 @@ const UserProfilePageHeader = props => {
         <Card.Header className="text-center">
             <div className="col-10 col-sm-9 col-md-8 mx-auto">
                 {props.user &&
-                <UserProfilePageInfo user={props.user}/>}
+                <UserProfilePageInfo user={props.user} selectedImage={props.selectedImage}/>}
                 {props.canBeModified && <div className="text-center mt-2">
                     <Button
                         data-testid="collapse-button"
@@ -36,6 +36,7 @@ const UserProfilePageHeader = props => {
                     user={props.user}
                     onClickUpdateUser={props.onClickUpdateUser}
                     errors={props.errors}
+                    onImageSelect={props.onImageSelect}
                 />
             </div>
         </Card.Header>

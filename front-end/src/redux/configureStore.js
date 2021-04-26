@@ -22,8 +22,8 @@ const setupStore = () => {
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
     store.subscribe(() => {
-        apiCalls.setAuthHeader(store.getState);
         localStorage.setItem('noticeboard-user', JSON.stringify(store.getState()));
+        apiCalls.setAuthHeader(store.getState());
     });
 
     return store;
@@ -37,6 +37,7 @@ const checkIfUserDataAreStoredInLocalStorage = () => {
         try {
             loadedUserFromLocalStorage = JSON.parse(loadedUserFromLocalStorage);
             apiCalls.setAuthHeader(loadedUserFromLocalStorage);
+            return loadedUserFromLocalStorage;
         } catch {
             loadedUserFromLocalStorage = null;
         }

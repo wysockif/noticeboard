@@ -3,10 +3,10 @@ import axios from 'axios';
 const apiUrl = '/api/1.0';
 
 export const setAuthHeader = ({isLoggedIn, username, password}) => {
-    if (!isLoggedIn) {
-        delete axios.defaults.headers.common['Authorization'];
-    } else {
+    if (isLoggedIn) {
         axios.defaults.headers.common['Authorization'] = `Basic ${btoa(username + ":" + password)}`;
+    } else {
+        delete axios.defaults.headers.common['Authorization'];
     }
 }
 

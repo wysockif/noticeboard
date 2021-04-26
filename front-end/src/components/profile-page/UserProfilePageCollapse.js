@@ -80,8 +80,11 @@ class UserProfilePageCollapse extends Component {
                                 Zdjęcie profilowe
                             </div>
                             <div className="custom-file mb-3 mx-auto">
-                                <input type="file" className="custom-file-input col-12 col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto"
-                                       id="inputGroupFile02" style={{cursor: "pointer"}}/>
+                                <input type="file"
+                                       className="custom-file-input col-12 col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto"
+                                       id="inputGroupFile02" style={{cursor: "pointer"}}
+                                       onChange={this.props.onImageSelect}
+                                />
                             </div>
                             <div>
                                 <ButtonWithSpinner
