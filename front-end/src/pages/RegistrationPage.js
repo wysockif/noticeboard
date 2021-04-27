@@ -52,7 +52,7 @@ export class RegistrationPage extends Component {
     onChangePasswordRepeat = event => {
         const errors = { ...this.state.errors };
         delete errors.passwordRepeat;
-        const isPasswordRepeatCorrect = this.state.password === event.target.value ? true : false;
+        const isPasswordRepeatCorrect = this.state.password === event.target.value;
         this.setState({ passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors });
     }
 

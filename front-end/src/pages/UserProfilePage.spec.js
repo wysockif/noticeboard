@@ -7,7 +7,7 @@ import * as apiCalls from '../api/apiCalls';
 import {MemoryRouter} from "react-router-dom";
 import authenticationReducer from "../redux/authenticationReducer";
 
-const mockCorrectResponse = {
+const mockCorrectGetUserResponse = {
     data: {
         id: 4,
         firstName: 'First',
@@ -18,7 +18,7 @@ const mockCorrectResponse = {
     }
 };
 
-const mockFailResponse = {
+const mockFailGetUserResponse = {
     response: {
         status: 404,
         data: {
@@ -56,17 +56,17 @@ describe('UserProfilePage', () => {
 
     it('makes an api call to load user details', () => {
         // given
-        const mockGetUser = jest.fn().mockResolvedValue(mockCorrectResponse)
+        const mockGetUser = jest.fn().mockResolvedValue(mockCorrectGetUserResponse)
         apiCalls.getUser = mockGetUser;
         // when
         renderProfilePageInRouter({match: mockMatch});
         // then
-        expect(mockGetUser).toHaveBeenCalledWith(mockCorrectResponse.data.username);
+        expect(mockGetUser).toHaveBeenCalledWith(mockCorrectGetUserResponse.data.username);
     });
 
     it('displays first name and last name when user data loaded', async () => {
         // given
-        apiCalls.getUser = jest.fn().mockResolvedValue(mockCorrectResponse);
+        apiCalls.getUser = jest.fn().mockResolvedValue(mockCorrectGetUserResponse);
         // when
         const {queryByText, findByText} = renderProfilePageInRouter({match: mockMatch});
         await waitFor(() => findByText('First Last'));
@@ -77,7 +77,7 @@ describe('UserProfilePage', () => {
 
     it('displays ErrorAlert when user not found', async () => {
         // given
-        apiCalls.getUser = jest.fn().mockRejectedValue(mockFailResponse);
+        apiCalls.getUser = jest.fn().mockRejectedValue(mockFailGetUserResponse);
         // when
         const {findByTestId, queryByTestId} = renderProfilePageInRouter({match: mockMatch});
         await waitFor(() => findByTestId('error-alert'));

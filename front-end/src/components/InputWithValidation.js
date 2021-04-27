@@ -6,7 +6,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
     const labelWidth = props.width ? props.width : '200px';
-    let classList = props.type === 'file' ? 'rounded-1 p-2 form-control inp' : 'rounded-1';
     return (
         <div>
             <label htmlFor={props.value} className="d-block d-sm-none mb-1">{props.label}</label>
@@ -18,7 +17,7 @@ const InputWithValidation = props => {
                     </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
-                    className={classList}
+                    className={"rounded-1"}
                     id={props.value}
                     placeholder={props.placeholder}
                     value={props.value}

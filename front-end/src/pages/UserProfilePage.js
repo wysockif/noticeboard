@@ -49,13 +49,16 @@ class UserProfilePage extends Component {
                 if (apiError.response.data && apiError.response.data.validationErrors) {
                     errors = {...apiError.response.data.validationErrors}
                 }
-                this.setState({ongoingApiCall: false, errors, selectedImage: undefined});
+                this.setState({ongoingApiCall: false, errors});
+                if (errors.profileImage) {
+                    this.setState({selectedImage: undefined});
+                }
             });
     }
 
     onClickCollapseButton = () => {
         if (this.state.open === true) {
-            this.setState({selectedImage: undefined, open: false});
+            this.setState({selectedImage: undefined, open: false, errors: []});
         } else {
             this.setState({open: !this.state.open});
         }
@@ -82,13 +85,26 @@ class UserProfilePage extends Component {
 
 
     onImageSelect = event => {
+        delete this.state.errors.profileImage;
         if (event.target.files.length > 0) {
             const file = event.target.files[0];
-            let fileReader = new FileReader();
-            fileReader.onloadend = () => {
-                this.setState({selectedImage: fileReader.result});
+            if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
+
+                let fileReader = new FileReader();
+                fileReader.onloadend = () => {
+                    this.setState({selectedImage: fileReader.result});
+                }
+                fileReader.readAsDataURL(file);
+            } else {
+                let errors = {...this.state.errors};
+                this.setState({
+                    errors: {
+                        ...errors,
+                        profileImage: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
+                    }
+                });
             }
-            fileReader.readAsDataURL(file);
+
         }
     }
 

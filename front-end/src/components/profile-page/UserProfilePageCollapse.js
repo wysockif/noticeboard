@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Collapse, Container} from 'react-bootstrap';
+import {Collapse, Container, FormControl} from 'react-bootstrap';
 import InputWithValidation from '../InputWithValidation';
 import ButtonWithSpinner from '../ButtonWithSpinner';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -9,7 +9,8 @@ class UserProfilePageCollapse extends Component {
     state = {
         id: undefined,
         firstName: '',
-        lastName: ''
+        lastName: '',
+        selectedFile: ''
     }
 
     componentDidMount() {
@@ -40,6 +41,7 @@ class UserProfilePageCollapse extends Component {
                     lastName: this.props.user.lastName
                 });
         }
+        this.setState({selectedFile: ''});
     }
     onClickSubmitButton = () => {
         const body = {
@@ -49,8 +51,19 @@ class UserProfilePageCollapse extends Component {
         this.props.onClickUpdateUser(this.state.id, body);
     }
 
+    onImageSelect = event => {
+        this.props.onImageSelect(event);
+        this.setState({selectedFile: event.target.value})
+    }
+
 
     render() {
+        let disabled = this.props.ongoingApiCall ||
+            this.state.lastName === '' ||
+            this.state.firstName === '' ||
+            this.props.errors.hasOwnProperty('firstName') ||
+            this.props.errors.hasOwnProperty('lastName') ||
+            this.props.errors.hasOwnProperty('profileImage');
         return (
             <div>
                 <Collapse in={this.props.open} onExited={this.onExitedCollapse}>
@@ -61,14 +74,14 @@ class UserProfilePageCollapse extends Component {
                                 Dane osobowe
                             </div>
                             <InputWithValidation
-                                label="Imię:" placeholder="Imię" width="115px"
+                                label="Imię:" placeholder="Imię" width="100px"
                                 value={this.state.firstName}
                                 onChange={this.onChangeFirstName}
                                 hasError={this.props.errors.firstName !== undefined}
                                 error={this.props.errors.firstName}
                             />
                             <InputWithValidation
-                                label="Nazwisko:" placeholder="Nazwisko" width="115px"
+                                label="Nazwisko:" placeholder="Nazwisko" width="100px"
                                 value={this.state.lastName}
                                 onChange={this.onChangeLastName}
                                 hasError={this.props.errors.lastName !== undefined}
@@ -80,21 +93,22 @@ class UserProfilePageCollapse extends Component {
                                 Zdjęcie profilowe
                             </div>
                             <div className="custom-file mb-3 mx-auto">
-                                <input type="file"
-                                       className="custom-file-input col-12 col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto"
-                                       id="inputGroupFile02" style={{cursor: "pointer"}}
-                                       onChange={this.props.onImageSelect}
+                                <FormControl type="file"
+                                             className="custom-file-input col-12 col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto"
+                                             id="inputGroupFile02" style={{cursor: "pointer"}}
+                                             onChange={this.onImageSelect}
+                                             isInvalid={this.props.errors.profileImage !== undefined}
+                                             value={this.state.selectedFile}
                                 />
+                                <FormControl.Feedback type="invalid" className="text-center">
+                                    {this.props.errors.profileImage && this.props.errors.profileImage}
+                                </FormControl.Feedback>
                             </div>
                             <div>
                                 <ButtonWithSpinner
                                     content="Zatwierdź zmiany"
                                     onClick={this.onClickSubmitButton}
-                                    disabled={
-                                        this.props.ongoingApiCall ||
-                                        this.state.lastName === '' ||
-                                        this.state.firstName === ''
-                                    }
+                                    disabled={disabled}
                                     ongoingApiCall={this.props.ongoingApiCall}
                                 />
                             </div>
