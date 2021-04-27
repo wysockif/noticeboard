@@ -14,6 +14,8 @@ import pl.wysockif.noticeboard.services.StaticFileService;
 
 import java.util.logging.Logger;
 
+import static java.lang.String.valueOf;
+
 @Service
 public class AppUserService {
 
@@ -58,8 +60,11 @@ public class AppUserService {
         AppUser appUser = userRepository.getOne(id);
         appUser.setFirstName(patchUserRequest.getFirstName());
         appUser.setLastName(patchUserRequest.getLastName());
+
         if (patchUserRequest.getProfileImage() != null) {
-            String profileImageName = staticFileService.saveProfileImage(appUser.getUsername(), patchUserRequest.getProfileImage());
+            String profileImageName = staticFileService
+                    .saveProfileImage(valueOf(appUser.getId()), patchUserRequest.getProfileImage());
+            staticFileService.deleteOldProfileImage(appUser.getImage());
             appUser.setImage(profileImageName);
         }
         userRepository.save(appUser);

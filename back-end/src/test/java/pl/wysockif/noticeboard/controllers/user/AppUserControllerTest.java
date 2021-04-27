@@ -1,10 +1,12 @@
 package pl.wysockif.noticeboard.controllers.user;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ClassPathResource;
@@ -21,6 +23,7 @@ import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -40,6 +43,9 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppUserControllerTest {
     private static final String USERS_URL = "/api/1.0/users";
+
+    @Value("${upload-folder-path}")
+    private String uploadFolderPath;
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -573,6 +579,11 @@ public class AppUserControllerTest {
         assertThat(response.getBody().getMessage()).isEqualTo("Validation error");
     }
 
+    @After
+    public void cleanUp() throws IOException {
+        FileUtils.cleanDirectory(new File(uploadFolderPath + "/profile-images"));
+        FileUtils.cleanDirectory(new File(uploadFolderPath + "/notice-images"));
+    }
 
     private String generateLongString(int length) {
         return new String(new char[length]).replace('\0', 'u');
