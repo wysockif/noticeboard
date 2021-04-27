@@ -22,33 +22,35 @@ public class StaticFileService {
     private final Logger LOGGER = Logger.getLogger(StaticFileService.class.getName());
 
 
-    public String saveProfileImage(String id, String imageAsEncodedString) {
-        LOGGER.info("Saving profile image (userId: " + id + ")");
-        String profileImageFileName = id + "-" +
+    public String saveProfileImage(String userId, String username, String imageAsEncodedString) {
+        String profileImageFileName = username + "-" +
                 UUID.randomUUID().toString().replace("-", "") + ".png";
+        LOGGER.info("Saving profile image (userId: " + userId + ", imageName: " + profileImageFileName + ")");
 
         byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);
         File file = new File(uploadFolderPath + "/profile-images/" + profileImageFileName);
-        tryToCreateFile(decodedImage, file);
-        LOGGER.info("Saved profile image (userId: " + id + ")");
+        tryToCreateFile(decodedImage, file, userId);
+        LOGGER.info("Saved profile image (userId: " + userId + ", imageName: " + file.getName() + ")");
         return profileImageFileName;
     }
 
-    private void tryToCreateFile(byte[] decodedImage, File file) throws FileIOException {
+    private void tryToCreateFile(byte[] decodedImage, File file, String userId) throws FileIOException {
         try {
             FileUtils.writeByteArrayToFile(file, decodedImage);
         } catch (IOException e) {
-            LOGGER.warning("Cannot create user image (name: " + file.getName() + ")");
+            LOGGER.warning("Cannot create user image (userId: " + userId + ", imageName: " + file.getName() + ")");
             throw new FileIOException();
         }
     }
 
-    public void deleteOldProfileImage(String image) {
+    public void deleteOldProfileImage(String userId, String image) {
         if (image != null) {
+            LOGGER.info("Deleting old user image (userId: " + userId + ", imageName: " + image + ")");
             try {
                 Files.deleteIfExists(Paths.get(uploadFolderPath + "/profile-images/" + image));
+                LOGGER.info("Deleting old user image (userId: " + userId + ", imageName: " + image + ")");
             } catch (IOException e) {
-                LOGGER.warning("Cannot delete old user image (name: " + image + ")");
+                LOGGER.warning("Cannot delete old user image (userId: " + userId + ", imageName: " + image + ")");
             }
         }
     }

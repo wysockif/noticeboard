@@ -63,8 +63,8 @@ public class AppUserService {
 
         if (patchUserRequest.getProfileImage() != null) {
             String profileImageName = staticFileService
-                    .saveProfileImage(valueOf(appUser.getId()), patchUserRequest.getProfileImage());
-            staticFileService.deleteOldProfileImage(appUser.getImage());
+                    .saveProfileImage(valueOf(appUser.getId()), appUser.getUsername(), patchUserRequest.getProfileImage());
+            staticFileService.deleteOldProfileImage(valueOf(appUser.getId()), appUser.getImage());
             appUser.setImage(profileImageName);
         }
         userRepository.save(appUser);
