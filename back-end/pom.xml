@@ -24,6 +24,7 @@
         <org.apache.maven.plugins.version>2.22.0</org.apache.maven.plugins.version>
         <org.apache.maven.maven-compiler-plugin>3.8.1</org.apache.maven.maven-compiler-plugin>
         <org.apache.httpcomponents.version>4.5.13</org.apache.httpcomponents.version>
+        <org.apache.tika.version>1.26</org.apache.tika.version>
         <common-io.version>2.8.0</common-io.version>
     </properties>
 
@@ -126,11 +127,20 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+        <!--        handling ResourceAccessException-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${org.apache.httpcomponents.version}</version>
+            <scope>test</scope>
         </dependency>
+        <!--        file type detection-->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>${org.apache.tika.version}</version>
+        </dependency>
+        <!--        file operations-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

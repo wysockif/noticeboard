@@ -10,8 +10,8 @@ import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
+import pl.wysockif.noticeboard.services.StaticFileService;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
