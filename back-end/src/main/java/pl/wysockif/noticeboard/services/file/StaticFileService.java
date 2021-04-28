@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.services;
+package pl.wysockif.noticeboard.services.file;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;

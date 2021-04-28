@@ -1,7 +1,6 @@
 package pl.wysockif.noticeboard.dto.user.requests;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import pl.wysockif.noticeboard.constraints.user.email.UniqueEmail;
 import pl.wysockif.noticeboard.constraints.user.username.UniqueUsername;
 
@@ -11,7 +10,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
 public class PostUserRequest {
 
     @NotNull
