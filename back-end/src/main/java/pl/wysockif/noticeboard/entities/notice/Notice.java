@@ -35,6 +35,8 @@ public class Notice {
 
     private String location;
 
+    private String price;
+
     private String keywords;
 
 }

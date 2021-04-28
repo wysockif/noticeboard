@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,8 +21,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @ActiveProfiles("test")
@@ -53,7 +52,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveOkStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveCreatedStatus() {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -63,7 +62,7 @@ public class NoticeControllerTest {
         // when
         ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
         // then
-        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
     }
 
     @Test
@@ -200,7 +199,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsBelowTheLimit_receiveOkStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsBelowTheLimit_receiveCreatedStatus() {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -211,7 +210,7 @@ public class NoticeControllerTest {
         // when
         ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
         // then
-        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
     }
 
     @Test
@@ -293,6 +292,7 @@ public class NoticeControllerTest {
         PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
         postNoticeRequest.setTitle("Notice title");
         postNoticeRequest.setDescription("Notice description " + generateLongString(60));
+        postNoticeRequest.setPrice("12.23");
         postNoticeRequest.setLocation("Notice Location");
         postNoticeRequest.setPrimaryImage("NoticePrimaryImage.png");
         postNoticeRequest.setSecondaryImage("NoticeSecondaryImage.png");
