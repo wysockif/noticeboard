@@ -5,14 +5,17 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.wysockif.noticeboard.entities.notice.Notice;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -41,6 +44,9 @@ public class AppUser implements Serializable, UserDetails {
     private String password;
 
     private String image;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Notice> notices;
 
     @Transient
     @Override

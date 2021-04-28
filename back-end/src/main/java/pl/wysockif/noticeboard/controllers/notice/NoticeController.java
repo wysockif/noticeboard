@@ -1,12 +1,13 @@
 package pl.wysockif.noticeboard.controllers.notice;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
+import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
 
 import javax.validation.Valid;
@@ -30,7 +31,8 @@ public class NoticeController {
     @ResponseStatus(CREATED)
     public Long createNotice(@Valid @RequestBody PostNoticeRequest postNoticeRequest) {
         LOGGER.info("Request postNotice started");
-        Long savedNoticeId = noticeService.save(postNoticeRequest);
+        AppUser creator = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long savedNoticeId = noticeService.save(postNoticeRequest, creator);
         LOGGER.info("Request postNotice finished");
         return savedNoticeId;
     }

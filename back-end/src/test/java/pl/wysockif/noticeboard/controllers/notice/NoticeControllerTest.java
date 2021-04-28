@@ -10,8 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
+import pl.wysockif.noticeboard.entities.notice.Notice;
+import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
@@ -51,6 +55,7 @@ public class NoticeControllerTest {
         noticeRepository.deleteAll();
         userRepository.deleteAll();
     }
+
 
     @Test
     public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveCreatedStatus() {
@@ -643,6 +648,41 @@ public class NoticeControllerTest {
         ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    @Transactional
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_creatorHasConnectionToNotice() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        // when
+        testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        TestTransaction.start();
+        AppUser creator = userRepository.findByUsername(username);
+        Notice savedNotice = noticeRepository.findAll().get(0);
+        assertThat(creator.getNotices().get(0)).isEqualTo(savedNotice);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_savedNoticeHasConnectionToCreator() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        // when
+        testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        Notice savedNotice = noticeRepository.findAll().get(0);
+        assertThat(savedNotice.getCreator().getUsername()).isEqualTo(username);
     }
 
     private PostNoticeRequest createValidPostNoticeRequest() {
