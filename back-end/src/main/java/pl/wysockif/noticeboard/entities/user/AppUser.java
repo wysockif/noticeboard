@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,14 +25,19 @@ public class AppUser implements Serializable, UserDetails {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(length = 60)
     private String username;
 
+    @Column(length = 60)
     private String email;
 
+    @Column(length = 60)
     private String firstName;
 
+    @Column(length = 60)
     private String lastName;
 
+    @Column(length = 60)
     private String password;
 
     private String image;

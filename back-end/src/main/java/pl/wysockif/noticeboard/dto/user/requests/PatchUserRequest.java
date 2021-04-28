@@ -11,11 +11,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class PatchUserRequest {
     @NotNull
-    @Size(min = 3, max = 64)
+    @Size(min = 3, max = 60)
     private String firstName;
 
     @NotNull
-    @Size(min = 3, max = 64)
+    @Size(min = 3, max = 60)
     private String lastName;
 
     @ImageWithSupportedExtension

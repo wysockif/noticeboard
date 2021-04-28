@@ -13,27 +13,28 @@ import javax.validation.constraints.Size;
 public class PostUserRequest {
 
     @NotNull
-    @Size(min = 6, max = 64)
+    @Size(min = 6, max = 60)
     @UniqueUsername
     private String username;
 
     @NotNull
     @Email
     @UniqueEmail
-    @Size(min = 6, max = 64)
+    @Size(min = 6, max = 60)
     private String email;
 
     @NotNull
-    @Size(min = 3, max = 64)
+    @Size(min = 3, max = 60)
     private String firstName;
 
     @NotNull
-    @Size(min = 3, max = 64)
+    @Size(min = 3, max = 60)
     private String lastName;
 
     @NotNull
-    @Size(min = 8, max = 64)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
+    @Size(min = 8, max = 60)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",
+            message = "{noticeboard.constraints.Pattern.Password.message}")
     private String password;
 
     @Override

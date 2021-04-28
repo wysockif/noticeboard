@@ -22,21 +22,24 @@ public class Notice {
     @Temporal(TIMESTAMP)
     private Date createdAt;
 
+    @Column(length = 60)
     private String title;
 
     @Column(length = 2000)
     private String description;
+
+    @Column(length = 60)
+    private String location;
+
+    @Column(length = 12)
+    private String price;
+
+    @Column(length = 360)
+    private String keywords;
 
     private String primaryImage;
 
     private String secondaryImage;
 
     private String tertiaryImage;
-
-    private String location;
-
-    private String price;
-
-    private String keywords;
-
 }

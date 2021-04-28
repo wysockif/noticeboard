@@ -359,7 +359,7 @@ public class AppUserControllerTest {
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("firstName"))
-                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 64 znaki");
+                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 60 znaków");
     }
 
     @Test

@@ -12,7 +12,7 @@ import java.util.List;
 public class PostNoticeRequest {
 
     @NotNull
-    @Size(min = 8, max = 50)
+    @Size(min = 8, max = 60)
     private String title;
 
     @NotNull
@@ -20,7 +20,8 @@ public class PostNoticeRequest {
     private String description;
 
     @NotNull
-    @Pattern(regexp = "^[0-9]+(\\.[0-9]{1,2})?$")
+    @Pattern(regexp = "^[0-9]+(\\.[0-9]{1,2})?$",
+            message = "{noticeboard.constraints.Pattern.Price.message}")
     @Size(min = 1, max = 10)
     private String price;
 
@@ -37,11 +38,11 @@ public class PostNoticeRequest {
     private String tertiaryImage;
 
     @NotNull
-    @Size(min = 3, max = 64)
+    @Size(min = 3, max = 60)
     private String location;
 
     @NotNull
-    @Size(min = 3, max = 12)
-    private List<@NotNull @Size(min = 3, max = 30) String> keywords;
+    @Size(min = 3, max = 12, message = "{noticeboard.constraints.Size.KeywordsList.message}")
+    private List<@NotNull @Size(min = 3, max = 30, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
 
 }
