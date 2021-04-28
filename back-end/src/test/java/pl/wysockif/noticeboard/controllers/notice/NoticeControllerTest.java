@@ -130,7 +130,7 @@ public class NoticeControllerTest {
         userService.save(validPostUserRequest);
         addAuthenticationInterceptor(validPostUserRequest);
         PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
-        postNoticeRequest.setTitle("more Than 30 characters " + generateLongString(30));
+        postNoticeRequest.setTitle("more than 50 characters" + generateLongString(28));
         // when
         ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
         // then
@@ -229,6 +229,66 @@ public class NoticeControllerTest {
     }
 
     @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooShort_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        postNoticeRequest.setLocation("2c");
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooLong_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        postNoticeRequest.setLocation("more than 64 characters" + generateLongString(42));
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        postNoticeRequest.setPrice(null);
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsTooLong_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        postNoticeRequest.setPrice("10000000.00");
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
     public void postNotice_whenUserIsAuthorizedAndNoticePrimaryImageIsNull_receiveBadRequestStatus() {
         // given
         String username = "test-username";
@@ -288,6 +348,70 @@ public class NoticeControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
 
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooShort_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        postNoticeRequest.setKeywords(List.of("key1", "key2"));
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooLong_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        List<String> keywords = List.of("key1", "key2", "key3", "key4", "key5", "key6", "key7",
+                "key8", "key9", "key10", "key11", "key12", "key13");
+        postNoticeRequest.setKeywords(keywords);
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        List<String> keywords = List.of("key1", "2", "key3");
+        postNoticeRequest.setKeywords(keywords);
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooLong_receiveBadRequestStatus() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        List<String> keywords = List.of("key1", "key2", generateLongString(31));
+        postNoticeRequest.setKeywords(keywords);
+        // when
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
     private PostNoticeRequest createValidPostNoticeRequest() {
         PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
         postNoticeRequest.setTitle("Notice title");
@@ -297,7 +421,7 @@ public class NoticeControllerTest {
         postNoticeRequest.setPrimaryImage("NoticePrimaryImage.png");
         postNoticeRequest.setSecondaryImage("NoticeSecondaryImage.png");
         postNoticeRequest.setTertiaryImage("NoticeTertiaryImage.png");
-        postNoticeRequest.setKeywords(List.of("NoticeKeyword1", "NoticeKeyword2"));
+        postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
         return postNoticeRequest;
     }
 
