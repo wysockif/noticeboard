@@ -89,7 +89,6 @@ class UserProfilePage extends Component {
         if (event.target.files.length > 0) {
             const file = event.target.files[0];
             if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
-
                 let fileReader = new FileReader();
                 fileReader.onloadend = () => {
                     this.setState({selectedImage: fileReader.result});

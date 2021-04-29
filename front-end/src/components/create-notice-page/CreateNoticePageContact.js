@@ -1,0 +1,21 @@
+import React from 'react';
+import {Card} from "react-bootstrap";
+import InputWithValidation from "../InputWithValidation";
+
+const CreateReactPageContact = () => {
+    return (
+        <Card className="my-3">
+            <div className="col-11 mx-auto">
+                <Card.Title className="m-3 mb-1"><small>Dane kontaktowe</small></Card.Title>
+                <Card.Text as="div" className="mx-3 my-2">
+                    <InputWithValidation
+                        label="Adres email:" placeholder="Adres email" icon="at" width="170px"
+                        disabled={true}
+                    />
+                </Card.Text>
+            </div>
+        </Card>
+    );
+};
+
+export default CreateReactPageContact;

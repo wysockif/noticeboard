@@ -2,7 +2,6 @@ import React from 'react';
 import {FormControl, InputGroup} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-
 const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
     const labelWidth = props.width ? props.width : '200px';
