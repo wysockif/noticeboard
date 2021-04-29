@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import {Button, Spinner} from 'react-bootstrap';
 
 const ButtonWithSpinner = props => {
     return (
         <Button
-            style={{ backgroundColor: '#B84' }}
+            style={{backgroundColor: '#B84'}}
             variant="outline-light"
             onClick={props.onClick}
             disabled={props.disabled}

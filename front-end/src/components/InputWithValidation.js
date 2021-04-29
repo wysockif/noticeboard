@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
     const labelWidth = props.width ? props.width : '200px';
+    const style = props.readOnly ? {backgroundColor: "white"} : {};
     return (
         <div>
             <label htmlFor={props.value} className="d-block d-sm-none mb-1">{props.label}</label>
@@ -16,6 +17,7 @@ const InputWithValidation = props => {
                     </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl
+                    style={style}
                     className={"rounded-1"}
                     id={props.value}
                     placeholder={props.placeholder}
@@ -24,6 +26,7 @@ const InputWithValidation = props => {
                     type={type}
                     isInvalid={props.hasError}
                     isValid={props.isCorrect && true}
+                    readOnly={props.readOnly}
                 />
                 <FormControl.Feedback type="invalid" className="text-center">
                     {props.hasError && props.error}

@@ -2,12 +2,12 @@ import React from 'react';
 import {Card, Image} from "react-bootstrap";
 import defaultProfilePicture from "../../assets/default-profile-image.jpeg";
 
-const UserProfilePageInfo = (props) => {
+const UserDetailsHeader = (props) => {
     let profileImage;
     if (props.selectedImage) {
         profileImage = props.selectedImage;
     } else if (props.user && props.user.image) {
-        profileImage = "/images/profile/" +  props.user.image;
+        profileImage = "/images/profile/" + props.user.image;
     } else {
         profileImage = defaultProfilePicture;
     }
@@ -31,4 +31,4 @@ const UserProfilePageInfo = (props) => {
     );
 };
 
-export default UserProfilePageInfo;
+export default UserDetailsHeader;

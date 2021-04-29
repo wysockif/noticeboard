@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 class HomePage extends Component {
     render() {
         return (
-            <div data-testid="homepage" className="text-center" >
+            <div data-testid="homepage" className="text-center">
                 Strona główna
-            </div >
+            </div>
         )
     };
 };

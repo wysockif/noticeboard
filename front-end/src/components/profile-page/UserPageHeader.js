@@ -1,15 +1,15 @@
 import React from 'react';
 import {Button, Card} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import UserProfilePageCollapse from "./UserProfilePageCollapse";
-import UserProfilePageInfo from "./UserProfilePageInfo";
+import EditFormCollapse from "./EditFormCollapse";
+import UserDetailsHeader from "./UserDetailsHeader";
 
-const UserProfilePageHeader = props => {
+const UserPageHeader = props => {
     return ((
         <Card.Header className="text-center">
             <div className="col-10 col-sm-9 col-md-8 mx-auto">
                 {props.user &&
-                <UserProfilePageInfo user={props.user} selectedImage={props.selectedImage}/>}
+                <UserDetailsHeader user={props.user} selectedImage={props.selectedImage}/>}
                 {props.canBeModified && <div className="text-center mt-2">
                     <Button
                         data-testid="collapse-button"
@@ -30,7 +30,7 @@ const UserProfilePageHeader = props => {
 
                     </Button>
                 </div>}
-                <UserProfilePageCollapse
+                <EditFormCollapse
                     ongoingApiCall={props.ongoingApiCall}
                     open={props.open}
                     user={props.user}
@@ -43,4 +43,4 @@ const UserProfilePageHeader = props => {
     ));
 }
 
-export default UserProfilePageHeader;
+export default UserPageHeader;

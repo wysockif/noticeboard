@@ -1,10 +1,10 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import TopBar from './TopBar';
-import { MemoryRouter } from 'react-router';
+import {MemoryRouter} from 'react-router';
 import authenticationReducer from '../redux/authenticationReducer';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
 
 const userNotLoggedInState = {
     isLoggedIn: false,
@@ -34,7 +34,7 @@ const renderTopbar = (state = userNotLoggedInState) => {
     return render(
         <Provider store={store}>
             <MemoryRouter>
-                <TopBar />
+                <TopBar/>
             </MemoryRouter>
         </Provider>
     );
@@ -44,7 +44,7 @@ describe('TopBar', () => {
 
     it('has link to home', () => {
         // given
-        const { container } = renderTopbar();
+        const {container} = renderTopbar();
         // when
         const image = container.querySelector('img');
         // then
@@ -54,7 +54,7 @@ describe('TopBar', () => {
 
     it('has app logo', () => {
         // given
-        const { container } = renderTopbar();
+        const {container} = renderTopbar();
         // when
         const image = container.querySelector('img');
         // then
@@ -63,7 +63,7 @@ describe('TopBar', () => {
 
     it('has link to register', () => {
         // given
-        const { queryByText } = renderTopbar();
+        const {queryByText} = renderTopbar();
         // when
         const registerLink = queryByText('Rejestracja');
         // then
@@ -72,7 +72,7 @@ describe('TopBar', () => {
 
     it('has link to login', () => {
         // given
-        const { queryByText } = renderTopbar();
+        const {queryByText} = renderTopbar();
         // when
         const loginLink = queryByText('Logowanie');
         // then
@@ -81,7 +81,7 @@ describe('TopBar', () => {
 
     it('has link to user profile when user logged in', () => {
         // given
-        const { queryByText } = renderTopbar(userLoggedInState);
+        const {queryByText} = renderTopbar(userLoggedInState);
         // when
         const profileLink = queryByText('Moja tablica');
         // then
@@ -90,7 +90,7 @@ describe('TopBar', () => {
 
     it('has link to logout when user logged in', () => {
         // given
-        const { queryByText } = renderTopbar(userLoggedInState);
+        const {queryByText} = renderTopbar(userLoggedInState);
         // when
         const logoutLink = queryByText('Wyloguj się');
         // then
@@ -99,7 +99,7 @@ describe('TopBar', () => {
 
     it('has link to login and register after clicking logout', () => {
         // given
-        const { queryByText } = renderTopbar(userLoggedInState);
+        const {queryByText} = renderTopbar(userLoggedInState);
         // when
         const logoutLink = queryByText('Wyloguj się');
         fireEvent.click(logoutLink);

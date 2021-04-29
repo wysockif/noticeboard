@@ -4,7 +4,7 @@ import ErrorAlert from "../components/ErrorAlert";
 import * as apiCalls from '../api/apiCalls';
 import userNotFoundImage from '../assets/user-not-found.jpeg';
 import NoticeboardItem from "../components/NoticeboardItem";
-import UserProfilePageHeader from "../components/profile-page/UserProfilePageHeader";
+import UserPageHeader from "../components/profile-page/UserPageHeader";
 import {connect} from "react-redux";
 
 
@@ -134,7 +134,7 @@ class UserProfilePage extends Component {
         const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
         return <div data-testid="homepage">
             <Card>
-                <UserProfilePageHeader
+                <UserPageHeader
                     open={this.state.open}
                     user={this.state.user}
                     canBeModified={canBeModified}

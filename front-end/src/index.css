@@ -1,3 +1,38 @@
-/*input[type="file"] {*/
-/*    position: absolute ;*/
-/*}*/
+.croppedImage {
+    width: 100%;
+    object-fit: cover;
+    max-height: 240px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+@media (min-width: 300px) {
+    .croppedImage {
+        max-height: 160px;
+    }
+}
+
+@media (min-width: 448px) {
+    .croppedImage {
+        max-height: 250px;
+    }
+}
+
+@media (min-width: 992px) {
+    .croppedImage {
+        max-height: 215px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .croppedImage {
+        max-height: 200px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .croppedImage {
+        max-height: 240px;
+    }
+}

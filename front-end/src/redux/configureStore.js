@@ -14,7 +14,7 @@ const notLoggedInUser = {
 }
 
 
-const setupStore = () => {
+const configureStore = () => {
     let loadedUserFromLocalStorage = checkIfUserDataAreStoredInLocalStorage();
     const state = loadedUserFromLocalStorage ? loadedUserFromLocalStorage : {...notLoggedInUser};
 
@@ -29,7 +29,7 @@ const setupStore = () => {
     return store;
 };
 
-export default setupStore;
+export default configureStore;
 
 const checkIfUserDataAreStoredInLocalStorage = () => {
     let loadedUserFromLocalStorage = localStorage.getItem('noticeboard-user');

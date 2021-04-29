@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
-import { Redirect } from 'react-router';
+import React, {Component} from 'react';
+import {Container} from 'react-bootstrap';
+import {Redirect} from 'react-router';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 import InputWithValidation from '../components/InputWithValidation';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 export class RegistrationPage extends Component {
     state = {
@@ -19,41 +19,41 @@ export class RegistrationPage extends Component {
     }
 
     onChangeFirstName = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.firstName;
-        this.setState({ firstName: event.target.value, errors });
+        this.setState({firstName: event.target.value, errors});
     }
 
     onChangeLastName = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.lastName;
-        this.setState({ lastName: event.target.value, errors });
+        this.setState({lastName: event.target.value, errors});
     }
 
     onChangeUsername = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.username;
-        this.setState({ username: event.target.value, errors });
+        this.setState({username: event.target.value, errors});
     }
 
     onChangeEmail = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.email;
-        this.setState({ email: event.target.value, errors });
+        this.setState({email: event.target.value, errors});
     }
 
     onChangePassword = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.password;
         const isPasswordRepeatCorrect = this.state.passwordRepeat === event.target.value ? true : false;
-        this.setState({ password: event.target.value, isPasswordRepeatCorrect, errors });
+        this.setState({password: event.target.value, isPasswordRepeatCorrect, errors});
     }
 
     onChangePasswordRepeat = event => {
-        const errors = { ...this.state.errors };
+        const errors = {...this.state.errors};
         delete errors.passwordRepeat;
         const isPasswordRepeatCorrect = this.state.password === event.target.value;
-        this.setState({ passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors });
+        this.setState({passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors});
     }
 
     onClickRegister = () => {
@@ -64,25 +64,25 @@ export class RegistrationPage extends Component {
             email: this.state.email,
             password: this.state.password
         }
-        this.setState({ ongoingApiCall: true });
+        this.setState({ongoingApiCall: true});
         this.props.actions.postRegister(user)
             .then(response => {
-                this.setState({ ongoingApiCall: false }, () => {
+                this.setState({ongoingApiCall: false}, () => {
                     this.props.history.push('/login');
                 });
 
             })
             .catch(apiError => {
-                let errors = { ...this.state.errors };
+                let errors = {...this.state.errors};
                 if (apiError.response.data && apiError.response.data.validationErrors) {
-                    errors = { ...apiError.response.data.validationErrors }
+                    errors = {...apiError.response.data.validationErrors}
                 }
-                this.setState({ ongoingApiCall: false, errors });
+                this.setState({ongoingApiCall: false, errors});
             });
     }
 
     everyFieldHasBeenCompleted = () => {
-        const { firstName, lastName, username, email, password, passwordRepeat } = this.state;
+        const {firstName, lastName, username, email, password, passwordRepeat} = this.state;
         if (firstName !== '' && lastName !== '' && username !== ''
             && email !== '' & password !== '' && passwordRepeat !== '') {
             return true;
@@ -94,7 +94,7 @@ export class RegistrationPage extends Component {
     render() {
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
-                {this.props.isLoggedIn && <Redirect to="/" />}
+                {this.props.isLoggedIn && <Redirect to="/"/>}
                 <h1 className="text-center my-4">Zarejestruj się</h1>
 
                 <InputWithValidation
@@ -140,7 +140,7 @@ export class RegistrationPage extends Component {
                     isCorrect={this.state.isPasswordRepeatCorrect && this.state.passwordRepeat !== ''}
                     error="Hasła nie są identyczne"
                 />
-                <div className="mb-3 mt-4 text-center" >
+                <div className="mb-3 mt-4 text-center">
                     <ButtonWithSpinner
                         onClick={this.onClickRegister}
                         disabled={
@@ -151,10 +151,11 @@ export class RegistrationPage extends Component {
                         ongoingApiCall={this.state.ongoingApiCall}
                     />
                 </div>
-            </Container >
+            </Container>
         );
     }
 }
+
 RegistrationPage.defaultProps = {
     actions: {
         postRegister: () =>
@@ -163,7 +164,8 @@ RegistrationPage.defaultProps = {
             })
     },
     history: {
-        push: () => { }
+        push: () => {
+        }
     }
 };
 

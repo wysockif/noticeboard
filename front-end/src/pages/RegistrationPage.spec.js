@@ -1,11 +1,11 @@
-import { render, fireEvent, waitForElementToBeRemoved, waitFor } from '@testing-library/react';
-import { RegistrationPage } from './RegistrationPage';
+import {fireEvent, render, waitFor, waitForElementToBeRemoved} from '@testing-library/react';
+import {RegistrationPage} from './RegistrationPage';
 
 describe('RegistrationPage', () => {
     describe('Layout', () => {
         it('has registration header', () => {
             // given
-            const { container } = render(<RegistrationPage />);
+            const {container} = render(<RegistrationPage/>);
             // when
             const header = container.querySelector('h1');
             // then
@@ -14,7 +14,7 @@ describe('RegistrationPage', () => {
 
         it('has input for first name', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const firstNameInput = queryByPlaceholderText('Imię');
             // then
@@ -23,7 +23,7 @@ describe('RegistrationPage', () => {
 
         it('has input for last name', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const lastNameInput = queryByPlaceholderText('Nazwisko');
             // then
@@ -32,7 +32,7 @@ describe('RegistrationPage', () => {
 
         it('has input for username', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const usernameInput = queryByPlaceholderText('Nazwa użytkownika');
             // then
@@ -41,7 +41,7 @@ describe('RegistrationPage', () => {
 
         it('has input for email', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const usernameInput = queryByPlaceholderText('Adres email');
             // then
@@ -50,7 +50,7 @@ describe('RegistrationPage', () => {
 
         it('has input for password', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const passwordInput = queryByPlaceholderText('Hasło');
             // then
@@ -59,7 +59,7 @@ describe('RegistrationPage', () => {
 
         it('has password type for input for password', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const passwordInput = queryByPlaceholderText('Hasło');
             // then
@@ -68,7 +68,7 @@ describe('RegistrationPage', () => {
 
         it('has input for password repeat', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const passwordRepeatInput = queryByPlaceholderText('Powtórz hasło');
             // then
@@ -77,7 +77,7 @@ describe('RegistrationPage', () => {
 
         it('has password type for input for password repeat', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             // when
             const passwordRepeatInput = queryByPlaceholderText('Powtórz hasło');
             // then
@@ -86,7 +86,7 @@ describe('RegistrationPage', () => {
 
         it('has submit button', () => {
             // given
-            const { container } = render(<RegistrationPage />);
+            const {container} = render(<RegistrationPage/>);
             // when
             const button = container.querySelector('button');
             // then
@@ -106,7 +106,7 @@ describe('RegistrationPage', () => {
 
         const renderRegistrationPage = props => {
             const rendered = render(<RegistrationPage {...props} />);
-            const { container, queryByPlaceholderText } = rendered;
+            const {container, queryByPlaceholderText} = rendered;
             firstNameInput = queryByPlaceholderText('Imię');
             lastNameInput = queryByPlaceholderText('Nazwisko');
             usernameInput = queryByPlaceholderText('Nazwa użytkownika');
@@ -139,7 +139,7 @@ describe('RegistrationPage', () => {
             const history = {
                 push: jest.fn()
             }
-            const { queryByText } = renderRegistrationPage({ actions, history });
+            const {queryByText} = renderRegistrationPage({actions, history});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -149,7 +149,7 @@ describe('RegistrationPage', () => {
 
         it('sets the first name value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const firstNameInput = queryByPlaceholderText('Imię');
             // when
             fireEvent.change(firstNameInput, changeEvent('Updatedfirstname'));
@@ -159,7 +159,7 @@ describe('RegistrationPage', () => {
 
         it('sets the last name value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const lastNameInput = queryByPlaceholderText('Nazwisko');
             // when
             fireEvent.change(lastNameInput, changeEvent('Updatedlastname'));
@@ -169,7 +169,7 @@ describe('RegistrationPage', () => {
 
         it('sets the username value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const usernameInput = queryByPlaceholderText('Nazwa użytkownika');
             // when
             fireEvent.change(usernameInput, changeEvent('updatedusername'));
@@ -179,7 +179,7 @@ describe('RegistrationPage', () => {
 
         it('sets the email value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const emailInput = queryByPlaceholderText('Adres email');
             // when
             fireEvent.change(emailInput, changeEvent('updatedemail@mail.com'));
@@ -189,7 +189,7 @@ describe('RegistrationPage', () => {
 
         it('sets the password value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const passwordInput = queryByPlaceholderText('Hasło');
             // when
             fireEvent.change(passwordInput, changeEvent('NoweHaslo123'));
@@ -199,7 +199,7 @@ describe('RegistrationPage', () => {
 
         it('sets the password repeat value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<RegistrationPage />);
+            const {queryByPlaceholderText} = render(<RegistrationPage/>);
             const passwordRepeatInput = queryByPlaceholderText('Powtórz hasło');
             // when
             fireEvent.change(passwordRepeatInput, changeEvent('NoweHaslo123'));
@@ -212,7 +212,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
             };
-            renderRegistrationPage({ actions });
+            renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -233,7 +233,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
             };
-            renderRegistrationPage({ actions });
+            renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -252,7 +252,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             }
-            renderRegistrationPage({ actions });
+            renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             fireEvent.click(button);
@@ -265,7 +265,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             };
-            const { queryByText } = renderRegistrationPage({ actions });
+            const {queryByText} = renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -278,7 +278,7 @@ describe('RegistrationPage', () => {
             const actions = {
                 postRegister: mockAsyncDelayed()
             };
-            const { queryByText } = renderRegistrationPage({ actions });
+            const {queryByText} = renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -293,12 +293,12 @@ describe('RegistrationPage', () => {
                 postRegister: jest.fn().mockImplementation(() => {
                     return new Promise((resolve, reject) => {
                         setTimeout(() => reject({
-                            response: { data: {} }
+                            response: {data: {}}
                         }), 300);
                     });
                 })
             };
-            const { queryByText } = renderRegistrationPage({ actions });
+            const {queryByText} = renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -320,7 +320,7 @@ describe('RegistrationPage', () => {
                     }
                 })
             };
-            const { queryByText, findByText } = renderRegistrationPage({ actions });
+            const {queryByText, findByText} = renderRegistrationPage({actions});
             // when
             fireEvent.click(button);
             const errorMessage = await waitFor(() => findByText('Cannot be null'));
@@ -350,4 +350,5 @@ describe('RegistrationPage', () => {
 
     });
 });
-console.error = () => { }
+console.error = () => {
+}

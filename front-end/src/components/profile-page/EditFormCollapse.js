@@ -5,7 +5,7 @@ import ButtonWithSpinner from '../ButtonWithSpinner';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
-class UserProfilePageCollapse extends Component {
+class EditFormCollapse extends Component {
     state = {
         id: undefined,
         firstName: '',
@@ -64,6 +64,7 @@ class UserProfilePageCollapse extends Component {
             this.props.errors.hasOwnProperty('firstName') ||
             this.props.errors.hasOwnProperty('lastName') ||
             this.props.errors.hasOwnProperty('profileImage');
+
         return (
             <div>
                 <Collapse in={this.props.open} onExited={this.onExitedCollapse}>
@@ -120,9 +121,9 @@ class UserProfilePageCollapse extends Component {
     }
 }
 
-UserProfilePageCollapse.defaultProps = {
+EditFormCollapse.defaultProps = {
     errors: []
 }
 
 
-export default UserProfilePageCollapse;
+export default EditFormCollapse;

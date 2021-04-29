@@ -1,10 +1,10 @@
-import { render } from '@testing-library/react';
+import {render} from '@testing-library/react';
 import InputWithValidation from './InputWithValidation';
 
 describe('Layout', () => {
     it('has input', () => {
         // given
-        const { container } = render(<InputWithValidation />);
+        const {container} = render(<InputWithValidation/>);
         // when  
         const input = container.querySelector('input');
         // then
@@ -13,7 +13,7 @@ describe('Layout', () => {
 
     it('displays the label provided in props', () => {
         // given
-        const { queryAllByText } = render(<InputWithValidation label="Test label" />);
+        const {queryAllByText} = render(<InputWithValidation label="Test label"/>);
         // when
         const label = queryAllByText('Test label')
             .find(element => element.parentElement.classList.contains('d-none'));
@@ -23,7 +23,7 @@ describe('Layout', () => {
 
     it('has text type for input when type is not provided as prop', () => {
         // given
-        const { container } = render(<InputWithValidation />);
+        const {container} = render(<InputWithValidation/>);
         // when
         const input = container.querySelector('input');
         // then
@@ -32,7 +32,7 @@ describe('Layout', () => {
 
     it('has password type for input when password type is provided as prop', () => {
         // given
-        const { container } = render(<InputWithValidation type="password" />);
+        const {container} = render(<InputWithValidation type="password"/>);
         // when
         const input = container.querySelector('input');
         // then
@@ -41,7 +41,7 @@ describe('Layout', () => {
 
     it('displays placeholder when it is provided as prop', () => {
         // given
-        const { container } = render(<InputWithValidation placeholder="Test placeholder" />);
+        const {container} = render(<InputWithValidation placeholder="Test placeholder"/>);
         // when
         const input = container.querySelector('input');
         // then
@@ -50,7 +50,7 @@ describe('Layout', () => {
 
     it('displays the error text when it is provided', () => {
         // given
-        const { queryByText } = render(<InputWithValidation hasError={true} error="Cannot be null" />);
+        const {queryByText} = render(<InputWithValidation hasError={true} error="Cannot be null"/>);
         // when
         const errorText = queryByText('Cannot be null');
         // then
@@ -59,7 +59,7 @@ describe('Layout', () => {
 
     it('does not display the error text when it hasError not provided', () => {
         // given
-        const { queryByText } = render(<InputWithValidation error="Cannot be null" />);
+        const {queryByText} = render(<InputWithValidation error="Cannot be null"/>);
         // when
         const errorText = queryByText('Cannot be null');
         // then
@@ -67,4 +67,5 @@ describe('Layout', () => {
     });
 });
 
-console.error = () => { }
+console.error = () => {
+}

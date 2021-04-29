@@ -3,19 +3,28 @@ import {Button, Card, ListGroup} from "react-bootstrap";
 import InputWithValidation from "../InputWithValidation";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-class CreateNoticePageKeywords extends Component {
+class KeywordsInput extends Component {
 
     state = {
         inputValue: '',
-        keywords: []
+        keywords: ['rower'],
+        errors: undefined
     };
 
     onChangeInputValue = event => {
-        this.setState({inputValue: event.target.value});
+        this.setState({inputValue: event.target.value, errors: undefined});
     }
 
     onClickAddButton = () => {
-        this.setState({keywords: [...this.state.keywords, this.state.inputValue], inputValue: ''});
+        if (this.state.inputValue.length < 3) {
+            this.setState({errors: 'Słowa-klucze muszą się składać conajmniej z 3 znaków'});
+            return;
+        }
+        if (!this.state.keywords.includes(this.state.inputValue)) {
+            this.setState({keywords: [...this.state.keywords, this.state.inputValue], inputValue: ''});
+        } else {
+            this.setState({errors: 'Słowa-klucze nie mogą się powtarzać'})
+        }
     }
 
 
@@ -23,6 +32,7 @@ class CreateNoticePageKeywords extends Component {
         let keywords = [...this.state.keywords].filter(value => value !== key)
         this.setState({keywords});
     }
+
 
     render() {
         return (
@@ -36,11 +46,12 @@ class CreateNoticePageKeywords extends Component {
                     <Card.Text as="div" className="mx-3 my-1">
                         <ListGroup className="my-2 justify-content-center row" horizontal>
                             {this.state.keywords.map(key =>
-                                <ListGroup.Item key={key} className="col-11 col-sm-6 col-md-3 m-1 border-1 rounded">
-                                    <Button className="btn-sm btn-close me-2" aria-label="Close"
+                                <ListGroup.Item key={key} className="col-11 col-sm-6 col-md-3 m-1
+                                border-1 rounded d-flex justify-content-between align-items-center">
+                                    {key}
+                                    <Button className="btn-sm btn-close" aria-label="Close"
                                             onClick={() => this.onClickDeleteButton(key)}
                                     />
-                                    {key}
                                 </ListGroup.Item>
                             )}
                         </ListGroup>
@@ -52,9 +63,12 @@ class CreateNoticePageKeywords extends Component {
                                 width="140px"
                                 value={this.state.inputValue}
                                 onChange={this.onChangeInputValue}
+                                hasError={this.state.errors && true}
+                                error={this.state.errors}
                             />
                             <Button variant="outline-secondary" className="mb-3" onClick={this.onClickAddButton}>
-                                <div className="mx-3">Dodaj <FontAwesomeIcon className="ms-1" icon="plus"/>
+                                <div className="mx-3">
+                                    Dodaj<FontAwesomeIcon className="ms-1" icon="plus"/>
                                 </div>
                             </Button>
                         </div>
@@ -65,4 +79,4 @@ class CreateNoticePageKeywords extends Component {
     };
 }
 
-export default CreateNoticePageKeywords;
+export default KeywordsInput;

@@ -1,12 +1,10 @@
 import React from 'react';
-import axios from 'axios';
-import authenticationReducer from '../redux/authenticationReducer';
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import App from './App';
 import * as apiCalls from '../api/apiCalls'
+import configureStore from "../redux/configureStore";
 
 beforeEach(() => {
     localStorage.clear();
@@ -24,7 +22,7 @@ beforeEach(() => {
 
 let store;
 const renderAppComponent = url => {
-    store = createStore(authenticationReducer);
+    store = configureStore();
     return render(
         <Provider store={store}>
             <MemoryRouter initialEntries={[url]}>
@@ -32,6 +30,18 @@ const renderAppComponent = url => {
             </MemoryRouter>
         </Provider>
     );
+
+};
+
+const setUser1LoggedInStorage = () => {
+    localStorage.setItem('noticeboard-user', JSON.stringify({
+        id: 1,
+        username: 'user1',
+        displayName: 'display1',
+        image: 'profile1.png',
+        password: 'Password123',
+        isLoggedIn: true
+    }));
 };
 
 describe('App', () => {
@@ -97,6 +107,7 @@ describe('App', () => {
 
     it('displays create notice page when url is /notice/new', () => {
         // given
+        setUser1LoggedInStorage();
         const url = '/notice/new';
         // when
         const {queryByTestId} = renderAppComponent(url);

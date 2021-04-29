@@ -1,18 +1,18 @@
 import React from 'react';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from "react-router-dom";
-import UserProfilePageHeader from "./UserProfilePageHeader";
+import UserPageHeader from "./UserPageHeader";
 
 
 const renderProfilePageHeaderInRouter = props => {
     return render(
         <MemoryRouter>
-            <UserProfilePageHeader {...props}/>
+            <UserPageHeader {...props}/>
         </MemoryRouter>
     );
 };
 
-describe('UserProfilePageHeader', () => {
+describe('UserPageHeader', () => {
     it('displays the collapse button when canBeModified is true', () => {
         // given
         const {queryByText} = renderProfilePageHeaderInRouter({canBeModified: true});

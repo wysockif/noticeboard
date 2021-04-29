@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, FormControl, InputGroup} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-const CreateNoticePageDescription = () => {
+const DescriptionForm = () => {
     return (
         <Card className="my-3">
             <div className="col-11 mx-auto">
@@ -27,4 +27,4 @@ const CreateNoticePageDescription = () => {
     );
 };
 
-export default CreateNoticePageDescription;
+export default DescriptionForm;

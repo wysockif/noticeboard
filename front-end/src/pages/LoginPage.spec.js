@@ -1,14 +1,13 @@
 import React from 'react';
-import { render, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
-import { LoginPage } from './LoginPage';
-
+import {fireEvent, render, waitFor, waitForElementToBeRemoved} from '@testing-library/react';
+import {LoginPage} from './LoginPage';
 
 
 describe('LoginPage', () => {
     describe('Layout', () => {
         it('has login header', () => {
             // given
-            const { container } = render(<LoginPage />);
+            const {container} = render(<LoginPage/>);
             // when
             const header = container.querySelector('h1');
             // then
@@ -17,7 +16,7 @@ describe('LoginPage', () => {
 
         it('has input for username', () => {
             // given
-            const { queryByPlaceholderText } = render(<LoginPage />);
+            const {queryByPlaceholderText} = render(<LoginPage/>);
             // when
             const input = queryByPlaceholderText('Nazwa użytkownika')
             // then
@@ -26,7 +25,7 @@ describe('LoginPage', () => {
 
         it('has input for password', () => {
             // given
-            const { queryByPlaceholderText } = render(<LoginPage />);
+            const {queryByPlaceholderText} = render(<LoginPage/>);
             // when
             const input = queryByPlaceholderText('Hasło')
             // then
@@ -35,7 +34,7 @@ describe('LoginPage', () => {
 
         it('has password type for input for password', () => {
             // given
-            const { queryByPlaceholderText } = render(<LoginPage />);
+            const {queryByPlaceholderText} = render(<LoginPage/>);
             // when
             const passwordInput = queryByPlaceholderText('Hasło');
             // then
@@ -45,7 +44,7 @@ describe('LoginPage', () => {
 
         it('has login button', () => {
             // given
-            const { container } = render(<LoginPage />);
+            const {container} = render(<LoginPage/>);
             // when
             const header = container.querySelector('button');
             // then
@@ -66,7 +65,7 @@ describe('LoginPage', () => {
 
         const renderLoginPage = props => {
             const rendered = render(<LoginPage {...props} />);
-            const { container, queryByPlaceholderText } = rendered;
+            const {container, queryByPlaceholderText} = rendered;
             usernameInput = queryByPlaceholderText('Nazwa użytkownika');
             passwordInput = queryByPlaceholderText('Hasło');
             button = container.querySelector('button');
@@ -85,7 +84,7 @@ describe('LoginPage', () => {
 
         it('sets the username value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<LoginPage />);
+            const {queryByPlaceholderText} = render(<LoginPage/>);
             const usernameInput = queryByPlaceholderText('Nazwa użytkownika');
             // when
             fireEvent.change(usernameInput, changeEvent('newusername'));
@@ -95,7 +94,7 @@ describe('LoginPage', () => {
 
         it('sets the password value into state', () => {
             // given
-            const { queryByPlaceholderText } = render(<LoginPage />);
+            const {queryByPlaceholderText} = render(<LoginPage/>);
             const passwordInput = queryByPlaceholderText('Hasło');
             // when
             fireEvent.change(passwordInput, changeEvent('newPassword123'));
@@ -108,7 +107,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: jest.fn().mockResolvedValue({})
             }
-            renderLoginPage({ actions });
+            renderLoginPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -120,7 +119,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: jest.fn().mockResolvedValue({})
             }
-            renderLoginPage({ actions });
+            renderLoginPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -142,7 +141,7 @@ describe('LoginPage', () => {
                     }
                 })
             }
-            const { queryByText, findByText } = renderLoginPage({ actions });
+            const {queryByText, findByText} = renderLoginPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -157,7 +156,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             }
-            renderLoginPage({ actions });
+            renderLoginPage({actions});
             // when
             fireEvent.click(button);
             fireEvent.click(button);
@@ -170,7 +169,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             };
-            const { queryByText } = renderLoginPage({ actions });
+            const {queryByText} = renderLoginPage({actions});
             // when
             fireEvent.click(button);
             // then
@@ -183,7 +182,7 @@ describe('LoginPage', () => {
             const actions = {
                 postLogin: mockAsyncDelayed()
             };
-            const { queryByText } = renderLoginPage({ actions });
+            const {queryByText} = renderLoginPage({actions});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -198,12 +197,12 @@ describe('LoginPage', () => {
                 postLogin: jest.fn().mockImplementation(() => {
                     return new Promise((resolve, reject) => {
                         setTimeout(() => reject({
-                            response: { data: {} }
+                            response: {data: {}}
                         }), 300);
                     });
                 })
             };
-            const { queryByText } = renderLoginPage({ actions });
+            const {queryByText} = renderLoginPage({actions});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -215,7 +214,7 @@ describe('LoginPage', () => {
 
         it('does not throw error when actions not provided in props', () => {
             // given
-            const { container, queryByPlaceholderText } = renderLoginPage();
+            const {container, queryByPlaceholderText} = renderLoginPage();
             // when
             const clicking = () => fireEvent.click(button);
             // then
@@ -260,7 +259,7 @@ describe('LoginPage', () => {
             const history = {
                 push: jest.fn()
             }
-            const { queryByText } = renderLoginPage({ actions, history });
+            const {queryByText} = renderLoginPage({actions, history});
             // when
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
@@ -270,4 +269,5 @@ describe('LoginPage', () => {
     });
 });
 
-console.error = () => { }
+console.error = () => {
+}
