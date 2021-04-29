@@ -1,5 +1,8 @@
 package pl.wysockif.noticeboard.services.notice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.entities.notice.Notice;
@@ -30,5 +33,9 @@ public class NoticeService {
         return savedNotice.getId();
     }
 
-
+    public Page<Notice> getNotices(Pageable pageable) {
+        LOGGER.info("Getting notices");
+//        Pageable pageable = PageRequest.of(0, 18);
+        return noticeRepository.findAll(pageable);
+    }
 }

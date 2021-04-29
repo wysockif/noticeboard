@@ -6,28 +6,34 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
+import pl.wysockif.noticeboard.controllers.TestPage;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.ApiError;
+import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
+import pl.wysockif.noticeboard.services.notice.NoticeService;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @ActiveProfiles("test")
@@ -48,6 +54,9 @@ public class NoticeControllerTest {
 
     @Autowired
     private NoticeRepository noticeRepository;
+
+    @Autowired
+    private NoticeService noticeService;
 
     @Before
     public void setUp() {
@@ -697,6 +706,82 @@ public class NoticeControllerTest {
         postNoticeRequest.setTertiaryImage("NoticeTertiaryImage.png");
         postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
         return postNoticeRequest;
+    }
+
+    @Test
+    public void getNotices_whenThereAreNoNoticesInDatabase_receiveOkStatus() {
+        // given
+        // when
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(NOTICES_URL, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void getNotices_whenThereAreNoNoticesInDatabase_receiveEmptyPage() {
+        // given
+        // when
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    public void getNotices_whenThereIsANoticeInDatabase_receivePageWithOneNotice() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        noticeRepository.save(createValidNotice());
+        // when
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsEqual10_receivePageWith10Notices() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        saveNValidNotices(15);
+        // when
+        String urlFor10Notices = NOTICES_URL + "?size=12";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(urlFor10Notices, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(12);
+    }
+
+    @Test
+    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith10Notices() {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        saveNValidNotices(20);
+        // when
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(18);
+    }
+
+    private void saveNValidNotices(int n) {
+        for (int i = 0; i < n; i++) {
+            noticeRepository.save(createValidNotice());
+        }
+    }
+
+    private Notice createValidNotice() {
+        return NoticeMapper.INSTANCE.postNoticeRequestToNotice(createValidPostNoticeRequest());
     }
 
     private PostUserRequest createValidPostUserRequest(String username) {

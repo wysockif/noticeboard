@@ -1,7 +1,7 @@
 spring:
   profiles:
     active:
-      - dev
+    - dev
 ---
 spring:
   config:
@@ -26,6 +26,11 @@ spring:
           validation:
             mode: none
     show-sql: true
+  data:
+    web:
+      pageable:
+        default-page-size: 18
+        max-page-size: 30
 upload-folder-path: static-uploads-dev
 ---
 spring:
@@ -50,6 +55,11 @@ spring:
         persistance:
           validation:
             mode: none
+  data:
+    web:
+      pageable:
+        default-page-size: 18
+        max-page-size: 30
 upload-folder-path: static-uploads-prod
 ---
 spring:
@@ -71,4 +81,9 @@ spring:
         persistance:
           validation:
             mode: none
+  data:
+    web:
+      pageable:
+        default-page-size: 18
+        max-page-size: 36
 upload-folder-path: static-uploads-test
