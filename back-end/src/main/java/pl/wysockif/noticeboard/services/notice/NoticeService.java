@@ -38,8 +38,15 @@ public class NoticeService {
         return savedNoticeId;
     }
 
-    public Page<Notice> getNotices(Pageable pageable) {
+    public Page<Notice> getNotices(Pageable pageable, Long userId) {
         LOGGER.info("Getting notices");
-        return noticeRepository.findAll(pageable);
+        Page<Notice> noticePage;
+        if (userId != null) {
+            noticePage = noticeRepository.findAllByCreatorId(pageable, userId);
+        } else {
+            noticePage = noticeRepository.findAll(pageable);
+        }
+        LOGGER.info("Got notices");
+        return noticePage;
     }
 }

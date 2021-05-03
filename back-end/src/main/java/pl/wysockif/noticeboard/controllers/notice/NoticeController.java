@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
@@ -43,9 +44,9 @@ public class NoticeController {
     }
 
     @GetMapping("/notices")
-    public Page<NoticeSnapshot> getNotices(Pageable pageable) {
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, @RequestParam(required = false) Long userId) {
         LOGGER.info("Request getNotices started");
-        Page<NoticeSnapshot> page = noticeService.getNotices(pageable)
+        Page<NoticeSnapshot> page = noticeService.getNotices(pageable, userId)
                 .map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
         LOGGER.info("Request getNotices finished");
         return page;
