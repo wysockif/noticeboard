@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, FormControl, Image} from "react-bootstrap";
+import {Card, Image} from "react-bootstrap";
 import defaultNoticeImage from "../../assets/default-notice-image.jpg";
 
 const SimpleImage = ({image, onSelectImage, content, error}) => {

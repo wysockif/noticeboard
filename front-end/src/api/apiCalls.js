@@ -26,6 +26,11 @@ export const postNotice = notice => {
     return axios.post(apiUrl + '/notices', notice);
 }
 
+export const getNoticesByUsername = username => {
+    return axios.get(apiUrl + `/notices?username=${username}`);
+}
+
+
 export const login = user => {
     return axios.post(apiUrl + '/login', {}, {auth: user});
 }

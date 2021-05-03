@@ -16,16 +16,31 @@ class UserProfilePage extends Component {
         open: false,
         ongoingApiCall: false,
         errors: [],
-        selectedImage: undefined
+        selectedImage: undefined,
+        page: {
+            content: [],
+            number: 0,
+            size: 18
+        }
     }
 
     componentDidMount() {
-        this.loadUserToState();
+        const username = this.props.match.params.username;
+        if (!username) {
+            return;
+        }
+        this.loadUserToState(username);
+        this.loadUserNotices(username);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.match.params.username !== prevProps.match.params.username) {
-            this.loadUserToState();
+            const username = this.props.match.params.username;
+            if (!username) {
+                return;
+            }
+            this.loadUserToState(username);
+            this.loadUserNotices(username);
         }
     }
 
@@ -64,11 +79,7 @@ class UserProfilePage extends Component {
         }
     }
 
-    loadUserToState() {
-        const username = this.props.match.params.username;
-        if (!username) {
-            return;
-        }
+    loadUserToState(username) {
         this.setState({errorMessage: false, isLoading: true});
         apiCalls.getUser(username)
             .then(response => {
@@ -83,6 +94,15 @@ class UserProfilePage extends Component {
             });
     }
 
+    loadUserNotices(username) {
+        apiCalls.getNoticesByUsername(username)
+            .then(response => {
+                this.setState({page: response.data});
+            })
+            .catch(error => {
+
+            });
+    }
 
     onImageSelect = event => {
         delete this.state.errors.profileImage;
@@ -121,6 +141,7 @@ class UserProfilePage extends Component {
         );
     }
 
+
     displayConnectionError() {
         return (<div className="text-center">
             <Alert className="col-5 mx-auto" variant="danger">
@@ -128,7 +149,6 @@ class UserProfilePage extends Component {
             </Alert>
         </div>);
     }
-
 
     displayMainContent() {
         const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
@@ -146,14 +166,15 @@ class UserProfilePage extends Component {
                     onImageSelect={this.onImageSelect}
                 />
                 <div className="row m-4">
-                    <NoticeboardItem title="Sprzedam Opla" price="3000 zł" location="Warszawa" id="12"/>
-                    <NoticeboardItem title="Komputer" price="2200 zł" location="Kraków" id="14"/>
-                    <NoticeboardItem title="Zabawki dla psa" price="140 zł" location="Warszawa" id={"15"}/>
-                    {/*<NoticeboardItem title="Zabawki dla kota" price="140 zł" location="Warszawa" id={"16"}/>*/}
-                    {/*<NoticeboardItem title="Sofa" price="140 zł" location="Warszawa" id={"17"}/>*/}
-                    {/*<NoticeboardItem title="Kaloryfer" price="140 zł" location="Warszawa" id={"18"}/>*/}
-                    {/*<NoticeboardItem title="Monitor" price="140 zł" location="Warszawa" id={"19"}/>*/}
-                    <NoticeboardItem title="Poduszka" price="140 zł" location="Warszawa" id={"20"}/>
+                    {this.state.page.content.map(notice =>
+                        <NoticeboardItem
+                            title={notice.title}
+                            price={notice.price}
+                            location={notice.location}
+                            image={notice.primaryImage}
+                            id={notice.id}
+                        />
+                    )}
                 </div>
             </Card>
         </div>;
