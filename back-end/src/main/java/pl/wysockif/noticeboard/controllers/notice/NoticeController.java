@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
+import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeWithDetailsSnapshot;
+import pl.wysockif.noticeboard.entities.notice.Notice;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
@@ -50,5 +53,14 @@ public class NoticeController {
                 .map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
         LOGGER.info("Request getNotices finished");
         return page;
+    }
+
+    @GetMapping("/notices/{id:[0-9]+}")
+    public NoticeWithDetailsSnapshot getNotice(@PathVariable Long id) {
+        LOGGER.info("Request getNotice started");
+        NoticeWithDetailsSnapshot noticeWithDetailsSnapshot = NoticeMapper.INSTANCE
+                .noticeToNoticeWithDetailsSnapshot(noticeService.getNotice(id));
+        LOGGER.info("Request getNotice finished");
+        return noticeWithDetailsSnapshot;
     }
 }

@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 import pl.wysockif.noticeboard.entities.user.AppUser;
+import pl.wysockif.noticeboard.errors.notice.NoticeNotFoundException;
 import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -48,5 +50,16 @@ public class NoticeService {
         }
         LOGGER.info("Got notices");
         return noticePage;
+    }
+
+    public Notice getNotice(Long noticeId) {
+        LOGGER.info("Getting notice (noticeId: " + noticeId + ")");
+        Optional<Notice> foundNotice = noticeRepository.findById(noticeId);
+        if (foundNotice.isEmpty()) {
+            LOGGER.info("Notice not found (noticeId: " + noticeId + ")");
+            throw new NoticeNotFoundException("Nie znaleziono ogłoszenia o id: " + noticeId);
+        }
+        LOGGER.info("Got notice (noticeId: " + noticeId + ")");
+        return foundNotice.get();
     }
 }

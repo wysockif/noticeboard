@@ -7,6 +7,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
+import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeWithDetailsSnapshot;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 
 import java.util.List;
@@ -26,5 +27,7 @@ public interface NoticeMapper {
     default String keywordsListToKeywordsString(List<String> keywordsList) {
         return StringUtils.join(keywordsList, ' ');
     }
+
+    NoticeWithDetailsSnapshot noticeToNoticeWithDetailsSnapshot(Notice notice);
 
 }

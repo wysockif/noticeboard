@@ -37,6 +37,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -706,6 +707,33 @@ public class NoticeControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(OK);
     }
+
+    @Test
+    public void getNoticeById_whenThereIsNoticeWithProvidedId_receiveOkStatus() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void getNoticeById_whenThereIsNotNoticeWithProvidedId_receiveNotFoundStatus() {
+        // given
+        String nonExistingNoticeId = "123";
+        // when
+        String url = NOTICES_URL + '/' + nonExistingNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
 
     @Test
     public void getNotices_whenThereAreNoNoticesInDatabase_receiveEmptyPage() {
