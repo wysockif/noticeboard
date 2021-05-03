@@ -79,6 +79,12 @@ class CreateNoticePage extends Component {
     onChangeDescription = event => {
         const errors = {...this.state.errors};
         delete errors.description;
+        const value = event.target.value;
+        if (value.length > 2000) {
+            errors.description = 'Opis ogłoszenia nie może być dłuższy niż 2000 znaków';
+            this.setState({errors});
+            return;
+        }
         this.setState({description: event.target.value, errors});
     }
 
