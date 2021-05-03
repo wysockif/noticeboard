@@ -1,7 +1,7 @@
 import {render} from '@testing-library/react';
 import InputWithValidation from './InputWithValidation';
 
-describe('Layout', () => {
+describe('InputWithValidation', () => {
     it('has input', () => {
         // given
         const {container} = render(<InputWithValidation/>);

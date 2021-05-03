@@ -22,6 +22,10 @@ export let getUser = username => {
     return axios.get(apiUrl + `/users/${username}`);
 }
 
+export const postNotice = notice => {
+    return axios.post(apiUrl + '/notices', notice);
+}
+
 export const login = user => {
     return axios.post(apiUrl + '/login', {}, {auth: user});
 }

@@ -43,6 +43,7 @@ class EditFormCollapse extends Component {
         }
         this.setState({selectedFile: ''});
     }
+
     onClickSubmitButton = () => {
         const body = {
             firstName: this.state.firstName,

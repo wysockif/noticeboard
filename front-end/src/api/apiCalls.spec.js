@@ -56,4 +56,17 @@ describe('apiCalls', () => {
             expect(calledPath).toBe('/api/1.0/users/username123');
         });
     });
+
+    describe('postNotice', () => {
+        it('calls /api/1.0/notices', () => {
+            // given
+            const mockPostNotice = jest.fn();
+            axios.post = mockPostNotice;
+            // when
+            apiCalls.postNotice({});
+            // then
+            const calledPath = mockPostNotice.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices');
+        });
+    });
 });

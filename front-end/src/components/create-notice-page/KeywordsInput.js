@@ -7,7 +7,7 @@ class KeywordsInput extends Component {
 
     state = {
         inputValue: '',
-        keywords: ['rower'],
+        keywords: [],
         errors: undefined
     };
 
@@ -39,10 +39,12 @@ class KeywordsInput extends Component {
             <Card className="my-3">
                 <div className="col-11 mx-auto">
                     <Card.Title className="m-3 mb-1"><small>Słowa-klucze</small></Card.Title>
-                    <small className="mx-3 text-muted">
-                        Słowa-klucze umożliwiają wyszukiwanie ogłoszenia na stronie głównej.
-                        Musi być ich conajmniej trzy.
-                    </small>
+                    <div className="mx-3 ">
+                        <small className="text-muted">
+                            Słowa-klucze umożliwiają wyszukiwanie ogłoszenia na stronie głównej.
+                            Musi być ich conajmniej trzy.
+                        </small>
+                    </div>
                     <Card.Text as="div" className="mx-3 my-1">
                         <ListGroup className="my-2 justify-content-center row" horizontal>
                             {this.state.keywords.map(key =>
