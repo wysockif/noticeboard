@@ -172,6 +172,7 @@ class UserProfilePage extends Component {
                             price={notice.price}
                             location={notice.location}
                             image={notice.primaryImage}
+                            createdAt={notice.createdAt}
                             id={notice.id}
                         />
                     )}
