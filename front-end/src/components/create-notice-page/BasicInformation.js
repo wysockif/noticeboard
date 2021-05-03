@@ -2,7 +2,7 @@ import React from 'react';
 import {Card} from "react-bootstrap";
 import InputWithValidation from "../InputWithValidation";
 
-const AdvertiserInfo = () => {
+const BasicInformation = () => {
     return (
         <Card>
             <div className="col-11 mx-auto">
@@ -28,4 +28,4 @@ const AdvertiserInfo = () => {
     );
 };
 
-export default AdvertiserInfo;
+export default BasicInformation;

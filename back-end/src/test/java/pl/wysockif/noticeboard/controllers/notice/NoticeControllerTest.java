@@ -1,5 +1,6 @@
 package pl.wysockif.noticeboard.controllers.notice;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,6 +27,8 @@ import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,7 +71,7 @@ public class NoticeControllerTest {
 
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveCreatedStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveCreatedStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -81,7 +85,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_noticeSavedToDatabase() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_noticeSavedToDatabase() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -95,7 +99,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveUnauthorizedStatus() {
+    public void postNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveUnauthorizedStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -108,7 +112,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -121,7 +125,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -136,7 +140,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -151,7 +155,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsTooShort_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsTooShort_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -166,7 +170,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTitleIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -181,7 +185,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTitleLengthIsIncorrect_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTitleLengthIsIncorrect_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -197,7 +201,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -212,7 +216,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -228,7 +232,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooShort_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooShort_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -243,7 +247,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionLengthIsIncorrect_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionLengthIsIncorrect_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -259,7 +263,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsLongerThan255Chars_doesNotThrowJdbcSQLDataException() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsLongerThan255Chars_doesNotThrowJdbcSQLDataException() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -274,7 +278,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsBelowTheLimit_receiveCreatedStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsBelowTheLimit_receiveCreatedStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -289,7 +293,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -304,7 +308,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -319,7 +323,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -334,7 +338,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooShort_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooShort_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -349,7 +353,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -364,7 +368,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeLocationLengthIsIncorrect_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeLocationLengthIsIncorrect_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -380,7 +384,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -395,7 +399,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -410,7 +414,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -425,7 +429,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsTooLong_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePriceIsTooLong_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -441,7 +445,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePrimaryImageIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePrimaryImageIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -456,7 +460,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticePrimaryImageIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticePrimaryImageIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -471,7 +475,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeSecondaryImageIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeSecondaryImageIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -486,7 +490,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeSecondaryImageIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeSecondaryImageIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -501,7 +505,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTertiaryImageIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTertiaryImageIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -516,7 +520,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeTertiaryImageIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeTertiaryImageIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -531,7 +535,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -546,7 +550,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -561,7 +565,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooShort_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooShort_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -576,7 +580,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -593,7 +597,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListSizeIsIncorrect_receiveApiError() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListSizeIsIncorrect_receiveApiError() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -610,7 +614,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -626,7 +630,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveApiErrorMessage() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveApiErrorMessage() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -644,7 +648,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooLong_receiveBadRequestStatus() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooLong_receiveBadRequestStatus() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -661,7 +665,7 @@ public class NoticeControllerTest {
 
     @Test
     @Transactional
-    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_creatorHasConnectionToNotice() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_creatorHasConnectionToNotice() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -680,7 +684,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_savedNoticeHasConnectionToCreator() {
+    public void postNotice_whenUserIsAuthorizedAndNoticeIsValid_savedNoticeHasConnectionToCreator() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -692,20 +696,6 @@ public class NoticeControllerTest {
         // then
         Notice savedNotice = noticeRepository.findAll().get(0);
         assertThat(savedNotice.getCreator().getUsername()).isEqualTo(username);
-    }
-
-    private PostNoticeRequest createValidPostNoticeRequest() {
-        String noticeDescription = "Notice description " + generateLongString(60);
-        PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
-        postNoticeRequest.setTitle("Notice title");
-        postNoticeRequest.setDescription(noticeDescription);
-        postNoticeRequest.setPrice("12.23");
-        postNoticeRequest.setLocation("Notice Location");
-        postNoticeRequest.setPrimaryImage("NoticePrimaryImage.png");
-        postNoticeRequest.setSecondaryImage("NoticeSecondaryImage.png");
-        postNoticeRequest.setTertiaryImage("NoticeTertiaryImage.png");
-        postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
-        return postNoticeRequest;
     }
 
     @Test
@@ -729,12 +719,13 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void getNotices_whenThereIsANoticeInDatabase_receivePageWithOneNotice() {
+    public void getNotices_whenThereIsANoticeInDatabase_receivePageWithOneNotice() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
-        noticeRepository.save(createValidNotice());
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        noticeService.save(createValidPostNoticeRequest(), creator);
         // when
         ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
                 new ParameterizedTypeReference<>() {
@@ -744,12 +735,14 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsEqual10_receivePageWith10Notices() {
+    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsEqual10_receivePageWith10Notices() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         userService.save(validPostUserRequest);
-        saveNValidNotices(15);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        saveNValidNotices(creator, 15);
         // when
         String urlFor10Notices = NOTICES_URL + "?size=12";
         ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(urlFor10Notices, GET, null,
@@ -760,12 +753,14 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith10Notices() {
+    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith10Notices() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         userService.save(validPostUserRequest);
-        saveNValidNotices(20);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        saveNValidNotices(creator, 20);
         // when
         ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
                 new ParameterizedTypeReference<>() {
@@ -774,13 +769,31 @@ public class NoticeControllerTest {
         assertThat(response.getBody().getContent().size()).isEqualTo(18);
     }
 
-    private void saveNValidNotices(int n) {
+    private PostNoticeRequest createValidPostNoticeRequest() throws IOException {
+        ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");
+        byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
+        String imageAsBase64 = Base64.getEncoder().encodeToString(imageArr);
+        String noticeDescription = "Notice description " + generateLongString(60);
+        PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
+        postNoticeRequest.setTitle("Notice title");
+        postNoticeRequest.setDescription(noticeDescription);
+        postNoticeRequest.setPrice("12.23");
+        postNoticeRequest.setLocation("Notice Location");
+        postNoticeRequest.setPrimaryImage(imageAsBase64);
+        postNoticeRequest.setSecondaryImage(imageAsBase64);
+        postNoticeRequest.setTertiaryImage(imageAsBase64);
+        postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
+        return postNoticeRequest;
+    }
+
+    private void saveNValidNotices(AppUser creator, int n) throws IOException {
         for (int i = 0; i < n; i++) {
-            noticeRepository.save(createValidNotice());
+            PostNoticeRequest validNotice = createValidPostNoticeRequest();
+            noticeService.save(validNotice, creator);
         }
     }
 
-    private Notice createValidNotice() {
+    private Notice createValidNotice() throws IOException {
         return NoticeMapper.INSTANCE.postNoticeRequestToNotice(createValidPostNoticeRequest());
     }
 

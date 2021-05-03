@@ -22,6 +22,18 @@ public class StaticFileService {
     private final Logger LOGGER = Logger.getLogger(StaticFileService.class.getName());
 
 
+    public String saveNoticeImage(String userId, String imageAsEncodedString) {
+        String noticeImageFileName = userId + "-" +
+                UUID.randomUUID().toString().replace("-", "") + ".png";
+        LOGGER.info("Saving notice image (userId: " + userId + ", imageName: " + noticeImageFileName + ")");
+
+        byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);
+        File file = new File(uploadFolderPath + "/notice-images/" + noticeImageFileName);
+        tryToCreateFile(decodedImage, file, userId);
+        LOGGER.info("Saved notice image (userId: " + userId + ", imageName: " + file.getName() + ")");
+        return noticeImageFileName;
+    }
+
     public String saveProfileImage(String userId, String username, String imageAsEncodedString) {
         String profileImageFileName = username + "-" +
                 UUID.randomUUID().toString().replace("-", "") + ".png";
