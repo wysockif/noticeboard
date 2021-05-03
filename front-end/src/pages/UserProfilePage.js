@@ -174,6 +174,7 @@ class UserProfilePage extends Component {
                             image={notice.primaryImage}
                             createdAt={notice.createdAt}
                             id={notice.id}
+                            key={notice.id}
                         />
                     )}
                 </div>

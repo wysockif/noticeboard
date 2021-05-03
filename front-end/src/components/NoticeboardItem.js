@@ -17,7 +17,8 @@ const NoticeboardItem = (props) => {
                 <div className="mx-auto">
                     <h6><FontAwesomeIcon icon="map-pin"/></h6>
                 </div>
-                <Image src={imageSource} onError={event => event.target.src = temp}/>
+                <Image src={imageSource} onError={event => event.target.src = temp}
+                       className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
                 <Card.Body>
                     <Card.Title>{props.title}</Card.Title>
                     <Card.Text as="div">

@@ -27,7 +27,11 @@ export const postNotice = notice => {
 }
 
 export const getNoticesByUsername = username => {
-    return axios.get(apiUrl + `/notices?username=${username}`);
+    return axios.get(apiUrl + `/notices?username=${username}&sort=createdAt,desc`);
+}
+
+export const getNotices = () => {
+    return axios.get(apiUrl + `/notices?sort=createdAt,desc`);
 }
 
 

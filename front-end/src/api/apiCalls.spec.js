@@ -67,7 +67,35 @@ describe('apiCalls', () => {
             apiCalls.getNoticesByUsername(username);
             // then
             const calledPath = mockGetNoticesByUsername.mock.calls[0][0];
-            expect(calledPath).toBe('/api/1.0/notices?username=username123');
+            expect(calledPath).toBe('/api/1.0/notices?username=username123&sort=createdAt,desc');
+        });
+    });
+
+    describe('getNotices', () => {
+        it('calls /api/1.0/notices?username=username123&sort=createdAt,desc when username123 is provided for the function', () => {
+            // given
+            const username = 'username123';
+            const mockGetNoticesByUsername = jest.fn();
+            axios.get = mockGetNoticesByUsername;
+            // when
+            apiCalls.getNoticesByUsername(username);
+            // then
+            const calledPath = mockGetNoticesByUsername.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices?username=username123&sort=createdAt,desc');
+        });
+    });
+
+    describe('getNotices', () => {
+        it('calls /api/1.0/notices?sort=createdAt,desc', () => {
+            // given
+            const username = 'username123';
+            const mockGetNotices = jest.fn();
+            axios.get = mockGetNotices;
+            // when
+            apiCalls.getNotices();
+            // then
+            const calledPath = mockGetNotices.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices?sort=createdAt,desc');
         });
     });
 
