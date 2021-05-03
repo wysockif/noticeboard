@@ -44,9 +44,9 @@ public class NoticeController {
     }
 
     @GetMapping("/notices")
-    public Page<NoticeSnapshot> getNotices(Pageable pageable, @RequestParam(required = false) Long userId) {
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, @RequestParam(required = false) String username) {
         LOGGER.info("Request getNotices started");
-        Page<NoticeSnapshot> page = noticeService.getNotices(pageable, userId)
+        Page<NoticeSnapshot> page = noticeService.getNotices(pageable, username)
                 .map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
         LOGGER.info("Request getNotices finished");
         return page;

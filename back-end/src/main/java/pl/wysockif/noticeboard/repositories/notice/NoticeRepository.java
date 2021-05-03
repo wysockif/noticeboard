@@ -8,5 +8,5 @@ import pl.wysockif.noticeboard.entities.notice.Notice;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
-    Page<Notice> findAllByCreatorId(Pageable pageable, Long userId);
+    Page<Notice> findAllByCreatorUsername(Pageable pageable, String username);
 }

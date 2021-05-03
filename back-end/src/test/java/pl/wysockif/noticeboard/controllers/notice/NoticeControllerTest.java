@@ -753,6 +753,24 @@ public class NoticeControllerTest {
     }
 
     @Test
+    public void getNotices_whenThereIsARequestParamUserId_receivePageWithNoticesOfThatUser() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        userService.save(validPostUserRequest);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        saveNValidNotices(creator, 15);
+        // when
+        String urlFor10Notices = NOTICES_URL + "?size=12";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(urlFor10Notices, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(12);
+    }
+
+    @Test
     public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith10Notices() throws IOException {
         // given
         String username = "test-username";
@@ -768,6 +786,54 @@ public class NoticeControllerTest {
         // then
         assertThat(response.getBody().getContent().size()).isEqualTo(18);
     }
+
+    @Test
+    @Transactional
+    public void getNotices_whenUserUsernameIsProvidedInUrl_receiveNoticesOfThatUser() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNotices(firstCreator, 5);
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        PostUserRequest secondValidPostUserRequest = createValidPostUserRequest("second-username");
+        userService.save(secondValidPostUserRequest);
+        Long secondCreatorId = userService.save(secondValidPostUserRequest);
+        AppUser secondCreator = userRepository.getOne(secondCreatorId);
+        saveNValidNotices(secondCreator, 3);
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        // when
+        String url = NOTICES_URL + "?username=" + secondCreator.getUsername();
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+    @Test
+    @Transactional
+    public void getNotices_whenUserUsernameIsProvidedInUrlButThisUserDoesNotExist_receiveZeroNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNotices(firstCreator, 5);
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        // when
+        String url = NOTICES_URL + "?username=" + firstCreator.getUsername() + "-non-existing";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
+    }
+
 
     private PostNoticeRequest createValidPostNoticeRequest() throws IOException {
         ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");

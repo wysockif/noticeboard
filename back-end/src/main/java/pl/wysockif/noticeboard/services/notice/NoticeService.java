@@ -38,11 +38,11 @@ public class NoticeService {
         return savedNoticeId;
     }
 
-    public Page<Notice> getNotices(Pageable pageable, Long userId) {
+    public Page<Notice> getNotices(Pageable pageable, String username) {
         LOGGER.info("Getting notices");
         Page<Notice> noticePage;
-        if (userId != null) {
-            noticePage = noticeRepository.findAllByCreatorId(pageable, userId);
+        if (username != null) {
+            noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);
         } else {
             noticePage = noticeRepository.findAll(pageable);
         }
