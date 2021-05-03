@@ -7,37 +7,48 @@ class KeywordsInput extends Component {
 
     state = {
         inputValue: '',
-        keywords: [],
-        errors: undefined
+        keywords: ['samochod', 'opel', 'car'],
+        errors: undefined,
+        info: undefined,
+        isMax: false
     };
 
     onChangeInputValue = event => {
         this.setState({inputValue: event.target.value, errors: undefined});
     }
 
+
     onClickAddButton = () => {
         if (this.state.inputValue.length < 3) {
             this.setState({errors: 'Słowa-klucze muszą się składać conajmniej z 3 znaków'});
             return;
+        } else if (this.state.inputValue.length > 20) {
+            this.setState({errors: 'Słowa-klucze mogą się składać z conajwyżej 20 znaków'});
+            return;
         }
+
         if (!this.state.keywords.includes(this.state.inputValue)) {
             this.setState({keywords: [...this.state.keywords, this.state.inputValue], inputValue: ''});
         } else {
             this.setState({errors: 'Słowa-klucze nie mogą się powtarzać'})
+        }
+
+        if (this.state.keywords.length >= 11) {
+            this.setState({info: 'Maksymalna liczba słów-kluczy', isMax: true});
         }
     }
 
 
     onClickDeleteButton(key) {
         let keywords = [...this.state.keywords].filter(value => value !== key)
-        this.setState({keywords});
+        this.setState({keywords, isMax: false, info: undefined});
     }
 
 
     render() {
         return (
             <Card className="my-3">
-                <div className="col-11 mx-auto">
+                <div className="col-11 mx-auto mb-3">
                     <Card.Title className="m-3 mb-1"><small>Słowa-klucze</small></Card.Title>
                     <div className="mx-3 ">
                         <small className="text-muted">
@@ -57,7 +68,8 @@ class KeywordsInput extends Component {
                                 </ListGroup.Item>
                             )}
                         </ListGroup>
-                        <div className="mx-auto col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 text-center">
+                        {!this.state.isMax &&
+                        <div className="mx-auto col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 text-center mb-1">
                             <InputWithValidation
                                 label="Słowo-klucz:"
                                 placeholder="np. rower"
@@ -65,15 +77,22 @@ class KeywordsInput extends Component {
                                 width="140px"
                                 value={this.state.inputValue}
                                 onChange={this.onChangeInputValue}
-                                hasError={this.state.errors && true}
+                                hasError={this.state.errors}
                                 error={this.state.errors}
                             />
-                            <Button variant="outline-secondary" className="mb-3" onClick={this.onClickAddButton}>
+
+                            <Button variant="outline-secondary" onClick={this.onClickAddButton}>
                                 <div className="mx-3">
                                     Dodaj<FontAwesomeIcon className="ms-1" icon="plus"/>
                                 </div>
                             </Button>
-                        </div>
+                        </div>}
+                        {this.state.isMax && <div className="text-center">
+                            <small className="text-muted">{this.state.info}</small>
+                        </div>}
+                        {this.props.errors && <div className="text-center">
+                            <small className="text-danger">{this.props.errors}</small>
+                        </div>}
                     </Card.Text>
                 </div>
             </Card>

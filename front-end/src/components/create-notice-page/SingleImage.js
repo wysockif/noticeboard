@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, FormControl, Image} from "react-bootstrap";
 import defaultNoticeImage from "../../assets/default-notice-image.jpg";
 
-const SimpleImage = ({image, onSelectImage, content}) => {
+const SimpleImage = ({image, onSelectImage, content, error}) => {
     const img = image ? image : defaultNoticeImage;
 
     return (
@@ -15,9 +15,11 @@ const SimpleImage = ({image, onSelectImage, content}) => {
                     <div className="text-center">{content}</div>
                     <div className="custom-file mb-3 mx-auto mt-2">
                         <input className="form-control" type="file" id="formFile" onChange={onSelectImage}/>
-                        <FormControl.Feedback type="invalid" className="text-center">
-                            Coś tam
-                        </FormControl.Feedback>
+                        {error && <div className="text-center">
+                            <small className="text-danger">
+                                {error}
+                            </small>
+                        </div>}
                     </div>
                 </div>
             </Card.Text>

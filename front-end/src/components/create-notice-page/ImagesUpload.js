@@ -6,7 +6,10 @@ export class ImagesUpload extends Component {
     state = {
         primaryImage: '',
         secondaryImage: '',
-        tertiaryImage: ''
+        tertiaryImage: '',
+        primaryImageError: undefined,
+        secondaryImageError: undefined,
+        tertiaryImageError: undefined
     }
 
     onSelectPrimaryImage = event => {
@@ -15,17 +18,16 @@ export class ImagesUpload extends Component {
             if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
                 let fileReader = new FileReader();
                 fileReader.onloadend = () => {
-                    this.setState({primaryImage: fileReader.result});
+                    if (this.props.errors) {
+                        delete this.props.errors.primaryImage;
+                    }
+                    this.setState({primaryImage: fileReader.result, primaryImageError: undefined});
                 }
                 fileReader.readAsDataURL(file);
             } else {
-                // let errors = {...this.state.errors};
-                // this.setState({
-                //     errors: {
-                //         ...errors,
-                //         profileImage: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
-                //     }
-                // });
+                this.setState({
+                    primaryImageError: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
+                });
             }
         }
     }
@@ -36,17 +38,16 @@ export class ImagesUpload extends Component {
             if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
                 let fileReader = new FileReader();
                 fileReader.onloadend = () => {
-                    this.setState({secondaryImage: fileReader.result});
+                    if (this.props.errors) {
+                        delete this.props.errors.secondaryImage;
+                    }
+                    this.setState({secondaryImage: fileReader.result, secondaryImageError: undefined});
                 }
                 fileReader.readAsDataURL(file);
             } else {
-                // let errors = {...this.state.errors};
-                // this.setState({
-                //     errors: {
-                //         ...errors,
-                //         profileImage: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
-                //     }
-                // });
+                this.setState({
+                    secondaryImageError: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
+                });
             }
         }
     }
@@ -57,17 +58,16 @@ export class ImagesUpload extends Component {
             if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
                 let fileReader = new FileReader();
                 fileReader.onloadend = () => {
-                    this.setState({tertiaryImage: fileReader.result});
+                    if (this.props.errors) {
+                        delete this.props.errors.tertiaryImage;
+                    }
+                    this.setState({tertiaryImage: fileReader.result, tertiaryImageError: undefined});
                 }
                 fileReader.readAsDataURL(file);
             } else {
-                // let errors = {...this.state.errors};
-                // this.setState({
-                //     errors: {
-                //         ...errors,
-                //         profileImage: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
-                //     }
-                // });
+                this.setState({
+                    tertiaryImageError: 'Wybrany plik musi posiadać format png, jpg lub jpeg'
+                });
             }
         }
     }
@@ -82,16 +82,19 @@ export class ImagesUpload extends Component {
                         content="Zdjęcie pierwszoplanowe"
                         image={this.state.primaryImage}
                         onSelectImage={this.onSelectPrimaryImage}
+                        error={this.state.primaryImageError || (this.props.errors && this.props.errors.primaryImage)}
                     />
                     <SimpleImage
                         content="Zdjęcie drugoplanowe"
                         image={this.state.secondaryImage}
                         onSelectImage={this.onSelectSecondaryImage}
+                        error={this.props.errors && this.props.errors.secondaryImage}
                     />
                     <SimpleImage
                         content="Zdjęcie trzecioplanowe"
                         image={this.state.tertiaryImage}
                         onSelectImage={this.onSelectTertiaryImage}
+                        error={this.props.errors && this.props.errors.tertiaryImage}
                     />
                 </div>
             </Card>

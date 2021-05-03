@@ -15,6 +15,8 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.title}
                         onChange={props.onChangeTitle}
+                        hasError={props.titleError && true}
+                        error={props.titleError}
                     />
                     <InputWithValidation
                         label="Lokalizacja:"
@@ -23,6 +25,8 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.location}
                         onChange={props.onChangeLocation}
+                        hasError={props.locationError && true}
+                        error={props.locationError}
                     />
                     <InputWithValidation
                         label="Cena:"
@@ -31,7 +35,17 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.price}
                         onChange={props.onChangePrice}
+                        hasError={props.priceError && true}
+                        error={props.priceError}
                     />
+                    {props.priceError &&
+                    <div className="text-muted text-center">
+                        <small>
+                            Akceptowane formaty ceny:
+                            "1000", "1000zł", "1000.00", "1000.00zł", "1000 zł", "1000.00 zł".
+                        </small>
+                    </div>
+                    }
                 </Card.Text>
             </div>
         </Card>
