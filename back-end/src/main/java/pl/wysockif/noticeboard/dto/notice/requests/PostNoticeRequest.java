@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.dto.notice.requests;
 
 import lombok.Data;
+import pl.wysockif.noticeboard.constraints.user.image.ImageWithSupportedExtension;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -25,16 +26,16 @@ public class PostNoticeRequest {
     @Size(min = 1, max = 10)
     private String price;
 
-    @NotNull
-//    @ImageWithSupportedExtension
+    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
+    @ImageWithSupportedExtension
     private String primaryImage;
 
-    @NotNull
-//    @ImageWithSupportedExtension
+    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
+    @ImageWithSupportedExtension
     private String secondaryImage;
 
-    @NotNull
-//    @ImageWithSupportedExtension
+    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
+    @ImageWithSupportedExtension
     private String tertiaryImage;
 
     @NotNull
@@ -43,6 +44,6 @@ public class PostNoticeRequest {
 
     @NotNull
     @Size(min = 3, max = 12, message = "{noticeboard.constraints.Size.KeywordsList.message}")
-    private List<@NotNull @Size(min = 3, max = 30, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
+    private List<@NotNull @Size(min = 3, max = 20, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
 
 }

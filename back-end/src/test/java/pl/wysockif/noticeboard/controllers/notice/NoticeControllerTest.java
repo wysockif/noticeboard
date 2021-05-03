@@ -471,7 +471,7 @@ public class NoticeControllerTest {
         // when
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, ApiError.class);
         // then
-        assertThat(response.getBody().getValidationErrors().get("primaryImage")).isEqualTo("To pole nie może być puste");
+        assertThat(response.getBody().getValidationErrors().get("primaryImage")).isEqualTo("Zdjęcie nie zostało wybrane");
     }
 
     @Test
@@ -501,7 +501,7 @@ public class NoticeControllerTest {
         // when
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, ApiError.class);
         // then
-        assertThat(response.getBody().getValidationErrors().get("secondaryImage")).isEqualTo("To pole nie może być puste");
+        assertThat(response.getBody().getValidationErrors().get("secondaryImage")).isEqualTo("Zdjęcie nie zostało wybrane");
     }
 
     @Test
@@ -531,7 +531,7 @@ public class NoticeControllerTest {
         // when
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, ApiError.class);
         // then
-        assertThat(response.getBody().getValidationErrors().get("tertiaryImage")).isEqualTo("To pole nie może być puste");
+        assertThat(response.getBody().getValidationErrors().get("tertiaryImage")).isEqualTo("Zdjęcie nie zostało wybrane");
     }
 
     @Test
@@ -644,7 +644,7 @@ public class NoticeControllerTest {
         System.out.println(response);
         // then
         assertThat(response.getBody().getValidationErrors().get("keywords[1]"))
-                .isEqualTo("Każde słowo-klucz musi mieć conajmniej 3 i conajwyżej 30 znaków");
+                .isEqualTo("Każde słowo-klucz musi mieć conajmniej 3 i conajwyżej 20 znaków");
     }
 
     @Test
