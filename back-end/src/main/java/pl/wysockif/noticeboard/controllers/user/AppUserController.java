@@ -48,6 +48,15 @@ public class AppUserController {
         return snapshot;
     }
 
+    @GetMapping("/users/notice/{noticeId:[0-9]+}")
+    @ResponseStatus(OK)
+    public AppUserSnapshot getUserByUsername(@PathVariable Long noticeId) {
+        LOGGER.info("Request getUserByNoticeId started (noticeId: " + noticeId + ")");
+        AppUserSnapshot snapshot = appUserService.getUserByNoticeId(noticeId);
+        LOGGER.info("Request getUserByNoticeId finished (userId: " + snapshot.getId() + ")");
+        return snapshot;
+    }
+
     @PatchMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     @ResponseStatus(OK)

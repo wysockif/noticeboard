@@ -15,12 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
+import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
+import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
+import pl.wysockif.noticeboard.services.notice.NoticeService;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import java.io.File;
@@ -57,8 +61,15 @@ public class AppUserControllerTest {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private NoticeService noticeService;
+
+    @Autowired
+    private NoticeRepository noticeRepository;
+
     @Before
     public void setUp() {
+        noticeRepository.deleteAll();
         userRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
@@ -164,6 +175,47 @@ public class AppUserControllerTest {
     private void addAuthenticationInterceptor(PostUserRequest user) {
         testRestTemplate.getRestTemplate().getInterceptors()
                 .add(new BasicAuthenticationInterceptor(user.getUsername(), user.getPassword()));
+    }
+
+    @Test
+    public void getUserByNoticeId_whenNoticeExist_receiveOkStatus() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long noticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        // when
+        String url = USERS_URL + "/notice/" + noticeId;
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void getUserByNoticeId_whenNoticeExist_receiveCreatorSnapshot() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long noticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        // when
+        String url = USERS_URL + "/notice/" + noticeId;
+        ResponseEntity<AppUserSnapshot> response = testRestTemplate.getForEntity(url, AppUserSnapshot.class);
+        // then
+        assertThat(response.getBody().getUsername()).isEqualTo(username);
+    }
+
+    @Test
+    public void getUserByNoticeId_whenNoticeDoesNotExist_receiveNotFoundStatus() throws IOException {
+        // given
+        long nonExistingNoticeId = 123L;
+        // when
+        String url = USERS_URL + "/notice/" + nonExistingNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
     }
 
     @Test
@@ -584,6 +636,23 @@ public class AppUserControllerTest {
     public void cleanUp() throws IOException {
         FileUtils.cleanDirectory(new File(uploadFolderPath + "/profile-images"));
         FileUtils.cleanDirectory(new File(uploadFolderPath + "/notice-images"));
+    }
+
+    private PostNoticeRequest createValidPostNoticeRequest() throws IOException {
+        ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");
+        byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
+        String imageAsBase64 = Base64.getEncoder().encodeToString(imageArr);
+        String noticeDescription = "Notice description " + generateLongString(60);
+        PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
+        postNoticeRequest.setTitle("Notice title");
+        postNoticeRequest.setDescription(noticeDescription);
+        postNoticeRequest.setPrice("12.23");
+        postNoticeRequest.setLocation("Notice Location");
+        postNoticeRequest.setPrimaryImage(imageAsBase64);
+        postNoticeRequest.setSecondaryImage(imageAsBase64);
+        postNoticeRequest.setTertiaryImage(imageAsBase64);
+        postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
+        return postNoticeRequest;
     }
 
     private String generateLongString(int length) {

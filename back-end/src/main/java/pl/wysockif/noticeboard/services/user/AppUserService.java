@@ -71,4 +71,15 @@ public class AppUserService {
         LOGGER.info("Updated user: " + id);
         return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
     }
+
+    public AppUserSnapshot getUserByNoticeId(Long noticeId) {
+        LOGGER.info("Getting user by noticeId: " + noticeId);
+        AppUser appUser = userRepository.findByNoticesId(noticeId);
+        if (appUser == null) {
+            LOGGER.info("Not found user by noticeId: " + noticeId);
+            throw new UserNotFoundException("Nie znalaziono użytkownika o po id ogłoszenia: " + noticeId);
+        }
+        LOGGER.info("Got user: " + appUser.getId());
+        return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
+    }
 }
