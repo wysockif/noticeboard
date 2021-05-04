@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const apiUrl = '/api/1.0';
 
+
 export const setAuthHeader = ({isLoggedIn, username, password}) => {
     if (isLoggedIn) {
         axios.defaults.headers.common['Authorization'] = `Basic ${btoa(username + ":" + password)}`;
@@ -9,6 +10,7 @@ export const setAuthHeader = ({isLoggedIn, username, password}) => {
         delete axios.defaults.headers.common['Authorization'];
     }
 }
+
 
 export const updateUser = (id, body) => {
     return axios.patch(apiUrl + `/users/${id}`, body);
@@ -24,6 +26,14 @@ export let getUser = username => {
 
 export const postNotice = notice => {
     return axios.post(apiUrl + '/notices', notice);
+}
+
+export const getNotice = id => {
+    return axios.get(apiUrl + '/notices/' + id);
+}
+
+export const getUserByNoticeId = noticeId => {
+
 }
 
 export const getNoticesByUsername = username => {

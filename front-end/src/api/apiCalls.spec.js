@@ -99,6 +99,21 @@ describe('apiCalls', () => {
         });
     });
 
+
+    describe('getNotice', () => {
+        it('calls /api/1.0/notices/1 when 1 is provided for the function', () => {
+            // given
+            const noticeId = 1;
+            const mockGetNotice = jest.fn();
+            axios.get = mockGetNotice;
+            // when
+            apiCalls.getNotice(noticeId);
+            // then
+            const calledPath = mockGetNotice.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices/1');
+        });
+    });
+
     describe('postNotice', () => {
         it('calls /api/1.0/notices', () => {
             // given
