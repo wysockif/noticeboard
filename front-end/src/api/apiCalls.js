@@ -33,7 +33,7 @@ export const getNotice = id => {
 }
 
 export const getUserByNoticeId = noticeId => {
-
+    return axios.get(apiUrl + '/users/notice/' + noticeId);
 }
 
 export const getNoticesByUsername = username => {
