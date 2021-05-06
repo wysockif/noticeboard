@@ -80,7 +80,9 @@ public class NoticeService {
             LOGGER.info("Deleting notice (not by owner) not allowed (noticeId: " + noticeId + ")");
             throw new DeletingNoticeForbiddenException("Brak uprawnień do usunięcia ogłoszenia");
         }
-
+        staticFileService.deleteNoticeImage(noticeId.toString(), noticeToDelete.getPrimaryImage());
+        staticFileService.deleteNoticeImage(noticeId.toString(), noticeToDelete.getSecondaryImage());
+        staticFileService.deleteNoticeImage(noticeId.toString(), noticeToDelete.getTertiaryImage());
         noticeRepository.deleteById(noticeId);
         LOGGER.info("Deleted notice (noticeId: " + noticeId + ")");
     }

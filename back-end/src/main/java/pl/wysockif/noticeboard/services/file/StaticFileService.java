@@ -60,7 +60,7 @@ public class StaticFileService {
             LOGGER.info("Deleting old user image (userId: " + userId + ", imageName: " + image + ")");
             try {
                 Files.deleteIfExists(Paths.get(uploadFolderPath + "/profile-images/" + image));
-                LOGGER.info("Deleting old user image (userId: " + userId + ", imageName: " + image + ")");
+                LOGGER.info("Deleted old user image (userId: " + userId + ", imageName: " + image + ")");
             } catch (IOException e) {
                 LOGGER.warning("Cannot delete old user image (userId: " + userId + ", imageName: " + image + ")");
             }
@@ -72,9 +72,9 @@ public class StaticFileService {
             LOGGER.info("Deleting notice image (noticeId: " + noticeId + ", imageName: " + image + ")");
             try {
                 Files.deleteIfExists(Paths.get(uploadFolderPath + "/notice-images/" + image));
-                LOGGER.info("Deleting old user image (noticeId: " + noticeId + ", imageName: " + image + ")");
+                LOGGER.info("Deleted notice image (noticeId: " + noticeId + ", imageName: " + image + ")");
             } catch (IOException e) {
-                LOGGER.warning("Cannot delete old user image (noticeId: " + noticeId + ", imageName: " + image + ")");
+                LOGGER.warning("Cannot delete notice image (noticeId: " + noticeId + ", imageName: " + image + ")");
             }
         }
     }
