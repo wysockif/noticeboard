@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import {Card, Carousel, Container, Image} from "react-bootstrap";
+import {Button, Card, Carousel, Container, Image} from "react-bootstrap";
 import * as apiCalls from "../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import {Link} from "react-router-dom";
+import DeleteModal from "../components/DeleteModal";
+import {connect} from "react-redux";
 
 class NoticePage extends Component {
 
@@ -24,9 +26,13 @@ class NoticePage extends Component {
             firstName: '',
             lastName: '',
             email: '',
-            image: ''
+            image: '',
+            username: ''
         },
         index: 0,
+        show: false,
+        ongoingApiCall: false,
+        errorMessageInModal: undefined
     }
 
     paragraphs = 0;
@@ -51,6 +57,28 @@ class NoticePage extends Component {
 
     handleSelect = (selectedIndex) => {
         this.setState({index: selectedIndex});
+    };
+
+    handleClose = () => {
+        this.setState({show: false});
+    };
+
+    handleShow = () => {
+        this.setState({show: true, errorMessageInModal: undefined});
+    };
+
+    onClickDelete = () => {
+        this.setState({ongoingApiCall: true, errorMessageInModal: undefined})
+        apiCalls.deleteNotice(this.state.notice.id)
+            .then(() => {
+                this.setState({show: false, ongoingApiCall: false});
+                console.log('here')
+                this.props.history.push(`/user/${this.state.user.username}`);
+            })
+            .catch(error => {
+                console.log(error)
+                this.setState({ongoingApiCall: false, errorMessageInModal: error.response.data.message});
+            });
     };
 
     render() {
@@ -138,24 +166,47 @@ class NoticePage extends Component {
                             {this.state.notice.description.split('\n').map(str => <p key={this.paragraphs++}>{str}</p>)}
                         </div>
 
-                        <div className="col-10 mx-auto mt-4 pe-2 text-end">
-                            <h5>Zapraszam do kontaktu mailowego:</h5>
-                            <h5>{this.state.user.email}</h5>
+                        <div className="row justify-content-center">
+                            <div className="col-5 mt-4 text-start pt-3">
+                                <h5><FontAwesomeIcon icon="envelope"/> Kontakt mailowy:</h5>
+                                <h5>{this.state.user.email}</h5>
+
+                            </div>
+                            <div className="col-6 mt-4 py-2 text-end">
+                                {this.state.user.image && <Link
+                                    to={`/user/${this.state.user.username}`}
+                                    className="btn btn-outline-secondary px-4 mt-3"
+                                >
+                                    <div>
+                                        {`${this.state.user.firstName} ${this.state.user.lastName}`}
+                                        <Image roundedCircle src={`/images/profile/${this.state.user.image}`} width="40"
+                                               height="40" className="ms-2"/>
+                                    </div>
+                                </Link>}
+                            </div>
                         </div>
                     </Card.Body>
-                    <Card.Footer>
-                        <div className="col-8 mx-auto text-end">
-                            {this.state.user.image && <Link
-                                to={`/user/${this.state.user.username}`}
-                                className="btn btn-outline-secondary px-4"
-                            >
-                                {`${this.state.user.firstName} ${this.state.user.lastName}`}
-                                <Image roundedCircle src={`/images/profile/${this.state.user.image}`} width="40"
-                                       height="40" className="ms-2"/>
-                            </Link>}
+                    <Card.Footer className="text-center">
+                        {this.state.user.username === this.props.loggedInUserUsername &&
+                        <div>
+                            <Button className="px-5 m-1" variant="outline-secondary">
+                                <FontAwesomeIcon icon="edit" className="me-1"/>Edytuj
+                            </Button>
+                            <Button className="px-5 m-1" variant="outline-secondary" onClick={this.handleShow}>
+                                <FontAwesomeIcon icon="trash-alt" className="me-1"/>Skasuj
+                            </Button>
+                            <DeleteModal
+                                show={this.state.show}
+                                onClickCancel={this.handleClose}
+                                onClickDelete={this.onClickDelete}
+                                ongoingApiCall={this.state.ongoingApiCall}
+                                errorMessage={this.state.errorMessageInModal}
+                            />
                         </div>
+                        }
                     </Card.Footer>
                 </Card>
+
             </Container>
         );
     }
@@ -169,4 +220,11 @@ NoticePage.defaultProps = {
     }
 }
 
-export default NoticePage;
+const mapStateToProps = state => {
+    return {
+        isLoggedIn: state.isLoggedIn,
+        loggedInUserUsername: state.username
+    }
+}
+
+export default connect(mapStateToProps)(NoticePage);

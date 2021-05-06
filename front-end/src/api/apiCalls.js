@@ -16,6 +16,7 @@ export const updateUser = (id, body) => {
     return axios.patch(apiUrl + `/users/${id}`, body);
 }
 
+
 export const register = user => {
     return axios.post(apiUrl + '/users', user);
 };
@@ -30,6 +31,10 @@ export const postNotice = notice => {
 
 export const getNotice = id => {
     return axios.get(apiUrl + '/notices/' + id);
+}
+
+export const deleteNotice = id => {
+    return axios.delete(apiUrl + '/notices/' + id);
 }
 
 export const getUserByNoticeId = noticeId => {

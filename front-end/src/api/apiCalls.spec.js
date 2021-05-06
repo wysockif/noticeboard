@@ -126,4 +126,17 @@ describe('apiCalls', () => {
             expect(calledPath).toBe('/api/1.0/notices');
         });
     });
+
+    describe('deleteNotice', () => {
+        it('calls /api/1.0/notices/1 when 1 is provided for the function', () => {
+            // given
+            const mockDeleteNotice = jest.fn();
+            axios.delete = mockDeleteNotice;
+            // when
+            apiCalls.deleteNotice(1);
+            // then
+            const calledPath = mockDeleteNotice.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices/1');
+        });
+    });
 });
