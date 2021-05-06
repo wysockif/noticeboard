@@ -66,4 +66,16 @@ public class StaticFileService {
             }
         }
     }
+
+    public void deleteNoticeImage(String noticeId, String image) {
+        if (image != null) {
+            LOGGER.info("Deleting notice image (noticeId: " + noticeId + ", imageName: " + image + ")");
+            try {
+                Files.deleteIfExists(Paths.get(uploadFolderPath + "/notice-images/" + image));
+                LOGGER.info("Deleting old user image (noticeId: " + noticeId + ", imageName: " + image + ")");
+            } catch (IOException e) {
+                LOGGER.warning("Cannot delete old user image (noticeId: " + noticeId + ", imageName: " + image + ")");
+            }
+        }
+    }
 }

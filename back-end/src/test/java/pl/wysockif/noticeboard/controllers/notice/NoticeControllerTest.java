@@ -33,9 +33,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -715,7 +717,7 @@ public class NoticeControllerTest {
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         Long creatorId = userService.save(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
-        Long savedNoticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
         // when
         String url = NOTICES_URL + '/' + savedNoticeId;
         ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
@@ -732,6 +734,102 @@ public class NoticeControllerTest {
         ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
         // then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
+    @Test
+    public void deleteNoticeById_whenUserIsAuthorizedAndThereIsNoticeWithProvidedId_receiveOkStatus() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        addAuthenticationInterceptor(validPostUserRequest);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, DELETE, null, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void deleteNoticeById_whenUserIsAuthorizedAndThereIsNoticeWithProvidedId_deletedNoticeFromDatabase() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        addAuthenticationInterceptor(validPostUserRequest);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        testRestTemplate.exchange(url, DELETE, null, Object.class);
+        // then
+        assertThat(noticeRepository.count()).isEqualTo(0);
+    }
+
+    @Test
+    public void deleteNoticeById_whenUserIsUnauthorizedAndThereIsNoticeWithProvidedId_receiveUnauthorizedStatus() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, DELETE, null, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+    }
+
+    @Test
+    public void deleteNoticeById_whenUserIsUnauthorizedAndThereIsNoticeWithProvidedId__receiveApiErrorMessage() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, DELETE, null, ApiError.class);
+        // then
+        assertThat(response.getBody().getMessage()).isEqualTo("Brak autoryzacji");
+    }
+
+    @Test
+    public void deleteNoticeById_whenUserIsAuthorizedAndNoticeWithProvidedIdDoesNotExist_receiveNotFoundStatus() throws IOException {
+        // given
+        String username = "test-username";
+        PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
+        addAuthenticationInterceptor(validPostUserRequest);
+        userService.save(validPostUserRequest);
+        long anyNonExistingNoticeId = 1234L;
+        // when
+        String url = NOTICES_URL + '/' + anyNonExistingNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, DELETE, null, ApiError.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
+    @Test
+    public void deleteNoticeById_whenAuthorizedUserDeletesAnotherUserNoticeWithProvidedId_receiveForbidden() throws IOException {
+        // given
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("test-username-1");
+        addAuthenticationInterceptor(validPostUserRequest);
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        Long savedNoticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        PostUserRequest anotherPostUserRequest = createValidPostUserRequest("test-username-2");
+        addAuthenticationInterceptor(anotherPostUserRequest);
+        userService.save(anotherPostUserRequest);
+        // when
+        String url = NOTICES_URL + '/' + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, DELETE, null, ApiError.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
     }
 
 
@@ -753,7 +851,7 @@ public class NoticeControllerTest {
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         Long creatorId = userService.save(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
-        noticeService.save(createValidPostNoticeRequest(), creator);
+        noticeService.postNotice(createValidPostNoticeRequest(), creator);
         // when
         ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(NOTICES_URL, GET, null,
                 new ParameterizedTypeReference<>() {
@@ -883,7 +981,7 @@ public class NoticeControllerTest {
     private void saveNValidNotices(AppUser creator, int n) throws IOException {
         for (int i = 0; i < n; i++) {
             PostNoticeRequest validNotice = createValidPostNoticeRequest();
-            noticeService.save(validNotice, creator);
+            noticeService.postNotice(validNotice, creator);
         }
     }
 

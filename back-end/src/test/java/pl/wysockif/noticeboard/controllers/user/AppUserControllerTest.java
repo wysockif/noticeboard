@@ -184,7 +184,7 @@ public class AppUserControllerTest {
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         Long creatorId = userService.save(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
-        Long noticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        Long noticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
         // when
         String url = USERS_URL + "/notice/" + noticeId;
         ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
@@ -199,7 +199,7 @@ public class AppUserControllerTest {
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
         Long creatorId = userService.save(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
-        Long noticeId = noticeService.save(createValidPostNoticeRequest(), creator);
+        Long noticeId = noticeService.postNotice(createValidPostNoticeRequest(), creator);
         // when
         String url = USERS_URL + "/notice/" + noticeId;
         ResponseEntity<AppUserSnapshot> response = testRestTemplate.getForEntity(url, AppUserSnapshot.class);
