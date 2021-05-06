@@ -78,7 +78,7 @@ public class NoticeService {
         Notice noticeToDelete = noticeRepository.getOne(noticeId);
         if(!noticeToDelete.getCreator().getId().equals(appUser.getId())){
             LOGGER.info("Deleting notice (not by owner) not allowed (noticeId: " + noticeId + ")");
-            throw new DeletingNoticeForbiddenException("Brak uprawnień do usunięcia ogłoszenia o id: " + noticeId);
+            throw new DeletingNoticeForbiddenException("Brak uprawnień do usunięcia ogłoszenia");
         }
 
         noticeRepository.deleteById(noticeId);
