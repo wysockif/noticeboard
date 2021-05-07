@@ -3,11 +3,11 @@ import {Card, Container} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
-import BasicInformation from '../components/create-notice-page/BasicInformation';
-import CreateNoticePageContact from '../components/create-notice-page/ContactInformation';
-import DescriptionForm from '../components/create-notice-page/DescriptionForm';
-import ImagesUpload from '../components/create-notice-page/ImagesUpload';
-import KeywordsInput from '../components/create-notice-page/KeywordsInput';
+import BasicInformation from '../components/notice-form/BasicInformation';
+import CreateNoticePageContact from '../components/notice-form/ContactInformation';
+import DescriptionForm from '../components/notice-form/DescriptionForm';
+import ImagesUpload from '../components/notice-form/ImagesUpload';
+import KeywordsInput from '../components/notice-form/KeywordsInput';
 import * as apiCalls from '../api/apiCalls';
 
 class CreateNoticePage extends Component {

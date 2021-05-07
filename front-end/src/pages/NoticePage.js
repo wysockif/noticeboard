@@ -27,7 +27,8 @@ class NoticePage extends Component {
             lastName: '',
             email: '',
             image: '',
-            username: ''
+            username: '',
+            id: ''
         },
         index: 0,
         show: false,
@@ -80,6 +81,17 @@ class NoticePage extends Component {
                 this.setState({ongoingApiCall: false, errorMessageInModal: error.response.data.message});
             });
     };
+
+    onClickEdit = () => {
+        this.props.history.push({
+            pathname: `/notice/edit/${this.state.notice.id}`,
+            state: {
+                notice: this.state.notice,
+                userEmail: this.state.user.email,
+                userId: this.state.user.id
+            }
+        });
+    }
 
     render() {
         const momentDate = moment(new Date(this.state.notice.createdAt));
@@ -189,7 +201,7 @@ class NoticePage extends Component {
                     <Card.Footer className="text-center">
                         {this.state.user.username === this.props.loggedInUserUsername &&
                         <div>
-                            <Button className="px-5 m-1" variant="outline-secondary">
+                            <Button className="px-5 m-1" variant="outline-secondary" onClick={this.onClickEdit}>
                                 <FontAwesomeIcon icon="edit" className="me-1"/>Edytuj
                             </Button>
                             <Button className="px-5 m-1" variant="outline-secondary" onClick={this.handleShow}>
@@ -206,7 +218,6 @@ class NoticePage extends Component {
                         }
                     </Card.Footer>
                 </Card>
-
             </Container>
         );
     }
