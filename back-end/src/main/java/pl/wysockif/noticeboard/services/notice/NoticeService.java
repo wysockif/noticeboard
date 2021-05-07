@@ -86,20 +86,34 @@ public class NoticeService {
     public void putNotice(Long noticeId, PutNoticeRequest putNoticeRequest, AppUser creator) {
         LOGGER.info("Updating notice (noticeId: " + noticeId + ")");
         checkIfNoticeExists(noticeId);
-        Notice noticeToUpdate = noticeRepository.getOne(noticeId);
-        if (!noticeToUpdate.getCreator().getId().equals(creator.getId())) {
+        Notice noticeBeforeUpdate = noticeRepository.getOne(noticeId);
+        if (!noticeBeforeUpdate.getCreator().getId().equals(creator.getId())) {
             LOGGER.info("Updating notice (not by owner) not allowed (noticeId: " + noticeId + ")");
             throw new NoPermissionException("Brak uprawnień do edycji ogłoszenia");
         }
-        Notice updatedNotice = NoticeMapper.INSTANCE.putNoticeRequestToNotice(putNoticeRequest);
-        updatedNotice.setId(noticeId);
-        prepareDetailsInNoticeBeforeSaving(updatedNotice, creator);
-
-        updateImages(updatedNotice, creator, putNoticeRequest.getPrimaryImage(),
-                putNoticeRequest.getSecondaryImage(), putNoticeRequest.getTertiaryImage());
-
-        noticeRepository.save(updatedNotice);
+        Notice noticeAfterUpdate = NoticeMapper.INSTANCE.putNoticeRequestToNotice(putNoticeRequest);
+        updateImages(noticeBeforeUpdate, noticeAfterUpdate, creator);
+        noticeAfterUpdate.setId(noticeId);
+        prepareDetailsInNoticeBeforeSaving(noticeAfterUpdate, creator);
+        noticeRepository.save(noticeAfterUpdate);
         LOGGER.info("Updated (noticeId: " + noticeId + ")");
+    }
+
+    private void updateImages(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {
+        updatePrimaryImage(noticeBeforeUpdate, noticeAfterUpdate, creator);
+        updateSecondaryImage(noticeBeforeUpdate, noticeAfterUpdate, creator);
+        updateTertiaryImage(noticeBeforeUpdate, noticeAfterUpdate, creator);
+    }
+
+
+    private void updatePrimaryImage(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {
+        if (noticeAfterUpdate.getPrimaryImage() != null) {
+            String oldImageName = noticeBeforeUpdate.getPrimaryImage();
+            noticeAfterUpdate.setPrimaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), noticeAfterUpdate.getPrimaryImage()));
+            staticFileService.deleteNoticeImage(noticeBeforeUpdate.getId().toString(), oldImageName);
+        } else {
+            noticeAfterUpdate.setPrimaryImage(noticeBeforeUpdate.getPrimaryImage());
+        }
     }
 
     private void checkIfNoticeExists(Long noticeId) {
@@ -109,32 +123,34 @@ public class NoticeService {
         }
     }
 
+    private void updateSecondaryImage(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {
+        if (noticeAfterUpdate.getSecondaryImage() != null) {
+            String oldImageName = noticeBeforeUpdate.getSecondaryImage();
+            noticeAfterUpdate.setSecondaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), noticeAfterUpdate.getSecondaryImage()));
+            staticFileService.deleteNoticeImage(noticeBeforeUpdate.getId().toString(), oldImageName);
+        } else {
+            noticeAfterUpdate.setSecondaryImage(noticeBeforeUpdate.getSecondaryImage());
+        }
+    }
+
     private void prepareDetailsInNoticeBeforeSaving(Notice notice, AppUser creator) {
         notice.setCreatedAt(new Date());
         notice.setCreator(creator);
+    }
+
+    private void updateTertiaryImage(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {
+        if (noticeAfterUpdate.getTertiaryImage() != null) {
+            String oldImageName = noticeBeforeUpdate.getTertiaryImage();
+            noticeAfterUpdate.setTertiaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), noticeAfterUpdate.getTertiaryImage()));
+            staticFileService.deleteNoticeImage(noticeBeforeUpdate.getId().toString(), oldImageName);
+        } else {
+            noticeAfterUpdate.setTertiaryImage(noticeBeforeUpdate.getTertiaryImage());
+        }
     }
 
     private void saveImages(Notice notice, AppUser creator, String primaryImage, String secondaryImage, String tertiaryImage) {
         notice.setPrimaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), primaryImage));
         notice.setSecondaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), secondaryImage));
         notice.setTertiaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), tertiaryImage));
-    }
-
-    private void updateImages(Notice notice, AppUser creator, String primaryImage, String secondaryImage, String tertiaryImage) {
-        if (primaryImage != null) {
-            String oldImageName = notice.getPrimaryImage();
-            notice.setPrimaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), primaryImage));
-            staticFileService.deleteNoticeImage(notice.getId().toString(), oldImageName);
-        }
-        if (primaryImage != null) {
-            String oldImageName = notice.getSecondaryImage();
-            notice.setSecondaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), secondaryImage));
-            staticFileService.deleteNoticeImage(notice.getId().toString(), oldImageName);
-        }
-        if (tertiaryImage != null) {
-            String oldImageName = notice.getTertiaryImage();
-            notice.setTertiaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), tertiaryImage));
-            staticFileService.deleteNoticeImage(notice.getId().toString(), oldImageName);
-        }
     }
 }

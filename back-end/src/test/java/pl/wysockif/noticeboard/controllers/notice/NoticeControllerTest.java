@@ -749,6 +749,20 @@ public class NoticeControllerTest {
     }
 
     @Test
+    public void putNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveApiError() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getMessage()).isEqualTo("Brak autoryzacji");
+    }
+
+    @Test
     public void putNotice_whenAuthorizedUserUpdatesAnotherUserNoticeAndNoticeIsValid_receiveForbiddenStatus() throws IOException {
         // given
         Long savedNoticeId = setupNoticeForUpdate();
@@ -780,17 +794,569 @@ public class NoticeControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
     }
 
-
-
-    //COMEBACK
-
-    private Long setupNoticeForUpdate() throws IOException {
-        PostUserRequest validPostUserRequest = createValidPostUserRequest("test-username");
-        Long creatorId = userService.save(validPostUserRequest);
-        AppUser creator = userRepository.getOne(creatorId);
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeWithProvidedIdDoesNotExist_receiveApiError() throws IOException {
+        // given
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
+        userService.save(validPostUserRequest);
         addAuthenticationInterceptor(validPostUserRequest);
-        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
-        return noticeService.postNotice(postNoticeRequest, creator);
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/123";
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getMessage()).isEqualTo("Nie znaleziono ogłoszenia");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTitle(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeTitleIsNull_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTitle(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("title")).isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeTitleIsTooShort_receiveBadRequest() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTitle("6chars");
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeTitleIsTooLong_receiveBadRequest() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTitle("more than 60 characters" + generateLongString(38));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeTitleLengthIsIncorrect_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTitle("more than 60 characters" + generateLongString(38));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("title"))
+                .isEqualTo("Musi mieć conajmniej 8 i conajwyżej 60 znaków");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionIsNull_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("description"))
+                .isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooShort_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription("less than 60 chars" + generateLongString(40));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionLengthIsIncorrect_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription("less than 60 chars" + generateLongString(40));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("description"))
+                .isEqualTo("Musi mieć conajmniej 60 i conajwyżej 2000 znaków");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionIsLongerThan255Chars_doesNotThrowJdbcSQLDataException() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription("more than 255 characters" + generateLongString(240));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isNotEqualTo(INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeDescriptionIsTooLong_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setDescription("more than 2000 characters" + generateLongString(1990));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setLocation(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeLocationIsNull_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setLocation(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("location"))
+                .isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeLocationIsToShort_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setLocation("1c");
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeLocationIsToLong_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setLocation("more than 64 characters" + generateLongString(42));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeLocationIsToLong_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setLocation("more than 64 characters" + generateLongString(42));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("location"))
+                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 60 znaków");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrice(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticePriceIsNull_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrice(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("price"))
+                .isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticePriceLengthIsTooLong_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrice("10000000.00");
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticePriceLengthIsTooLong_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrice("10000000.00");
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("price"))
+                .isEqualTo("Musi mieć conajmniej 1 i conajwyżej 10 znaków");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setKeywords(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsNull_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setKeywords(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("keywords"))
+                .isEqualTo("To pole nie może być puste");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooShort_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setKeywords(List.of("key1", "key2"));
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListIsTooLong_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        List<String> keywords = List.of("key1", "key2", "key3", "key4", "key5", "key6", "key7",
+                "key8", "key9", "key10", "key11", "key12", "key13");
+        validPutUserRequest.setKeywords(keywords);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListSizeIsIncorrect_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        List<String> keywords = List.of("key1", "key2", "key3", "key4", "key5", "key6", "key7",
+                "key8", "key9", "key10", "key11", "key12", "key13");
+        validPutUserRequest.setKeywords(keywords);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("keywords"))
+                .isEqualTo("Musi być conajmniej 3 i conajwyżej 12 słów kluczy");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        List<String> keywords = List.of("key1", "2", "key3");
+        validPutUserRequest.setKeywords(keywords);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooShort_receiveApiErrorMessage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        List<String> keywords = List.of("key1", "2", "key3");
+        validPutUserRequest.setKeywords(keywords);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
+        // then
+        assertThat(response.getBody().getValidationErrors().get("keywords[1]"))
+                .isEqualTo("Każde słowo-klucz musi mieć conajmniej 3 i conajwyżej 20 znaków");
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeKeywordsListItemIsTooLong_receiveBadRequestStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        List<String> keywords = List.of("key1", "key2", generateLongString(31));
+        validPutUserRequest.setKeywords(keywords);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndPrimaryImageIsNull_receiveOkStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrimaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndPrimaryImageIsNull_doNotChangePrimaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getPrimaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setPrimaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getPrimaryImage()).isEqualTo(oldImageName);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndPrimaryImageIsNotNull_changePrimaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getPrimaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        String imageAsBase64 = getImageAsBase64();
+        validPutUserRequest.setPrimaryImage(imageAsBase64);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getPrimaryImage()).isNotEqualTo(oldImageName);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndSecondaryImageIsNull_receiveOkStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setSecondaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndSecondaryImageIsNull_doNotChangeSecondaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getSecondaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setSecondaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getSecondaryImage()).isEqualTo(oldImageName);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndSecondaryImageIsNotNull_changeSecondaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getSecondaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        String imageAsBase64 = getImageAsBase64();
+        validPutUserRequest.setSecondaryImage(imageAsBase64);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getSecondaryImage()).isNotEqualTo(oldImageName);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndTertiaryImageIsNull_receiveOkStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTertiaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndTertiaryImageIsNull_doNotChangeTertiaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getTertiaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        validPutUserRequest.setTertiaryImage(null);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getTertiaryImage()).isEqualTo(oldImageName);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndTertiaryImageIsNotNull_changeTertiaryImage() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        String oldImageName = noticeRepository.findById(savedNoticeId).get().getTertiaryImage();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        String imageAsBase64 = getImageAsBase64();
+        validPutUserRequest.setTertiaryImage(imageAsBase64);
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getTertiaryImage()).isNotEqualTo(oldImageName);
     }
 
     @Test
@@ -1053,10 +1619,17 @@ public class NoticeControllerTest {
     }
 
 
+    private Long setupNoticeForUpdate() throws IOException {
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("test-username");
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        return noticeService.postNotice(postNoticeRequest, creator);
+    }
+
     private PostNoticeRequest createValidPostNoticeRequest() throws IOException {
-        ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");
-        byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
-        String imageAsBase64 = Base64.getEncoder().encodeToString(imageArr);
+        String imageAsBase64 = getImageAsBase64();
         String noticeDescription = "Notice description " + generateLongString(60);
         PostNoticeRequest postNoticeRequest = new PostNoticeRequest();
         postNoticeRequest.setTitle("Notice title");
@@ -1077,10 +1650,14 @@ public class NoticeControllerTest {
         }
     }
 
-    private PutNoticeRequest createValidPutUserRequest() throws IOException {
+    private String getImageAsBase64() throws IOException {
         ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");
         byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
-        String imageAsBase64 = Base64.getEncoder().encodeToString(imageArr);
+        return Base64.getEncoder().encodeToString(imageArr);
+    }
+
+    private PutNoticeRequest createValidPutUserRequest() throws IOException {
+        String imageAsBase64 = getImageAsBase64();
         String noticeDescription = "Updated notice description " + generateLongString(60);
         PutNoticeRequest putNoticeRequest = new PutNoticeRequest();
         putNoticeRequest.setTitle("Updated title");
