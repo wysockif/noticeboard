@@ -21,12 +21,17 @@ export const register = user => {
     return axios.post(apiUrl + '/users', user);
 };
 
+
 export let getUser = username => {
     return axios.get(apiUrl + `/users/${username}`);
 }
 
 export const postNotice = notice => {
     return axios.post(apiUrl + '/notices', notice);
+}
+
+export const putNotice = (noticeId, notice) => {
+    return axios.put(apiUrl + '/notices/' + noticeId, notice);
 }
 
 export const getNotice = id => {

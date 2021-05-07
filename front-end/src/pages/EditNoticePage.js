@@ -5,38 +5,102 @@ import * as apiCalls from "../api/apiCalls";
 import DescriptionForm from "../components/notice-form/DescriptionForm";
 import ContactInformation from '../components/notice-form/ContactInformation'
 import {connect} from "react-redux";
+import ImagesUpload from "../components/notice-form/ImagesUpload";
+import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
 class EditNoticePage extends Component {
 
     state = {
         isLoading: true,
+        id: '',
         title: '',
         location: '',
         price: '',
         description: '',
+        primaryImage: '',
+        secondaryImage: '',
+        tertiaryImage: '',
         ongoingApiCall: false,
         errors: undefined,
     }
 
+    imagesComponent = React.createRef();
+
     componentDidMount() {
         this.setState({isLoading: true})
         if (this.props.location && this.props.location.state && this.props.location.state.notice) {
-            const {title, location, price, description} = this.props.location.state.notice;
+            const {title, location, price, description, id} = this.props.location.state.notice;
+            const {primaryImage, secondaryImage, tertiaryImage} = this.props.location.state.notice;
             console.log(this.props.location.state.notice)
             const userId = this.props.location.state.userId;
-            this.setState({title, location, price, description, userId, isLoading: false});
+            this.setState({
+                title,
+                id,
+                location,
+                price,
+                description,
+                primaryImage,
+                secondaryImage,
+                tertiaryImage,
+                userId,
+                isLoading: false
+            });
         } else {
             const noticeId = this.props.match.params.id;
             apiCalls.getNotice(noticeId)
                 .then(response => {
-                    const {title, location, price, description} = response.data;
-                    this.setState({title, location, price, description, isLoading: false});
+                    const {
+                        id, title, location, price, description, primaryImage, secondaryImage, tertiaryImage
+                    } = response.data;
+                    this.setState({
+                        id,
+                        title,
+                        location,
+                        price,
+                        description,
+                        primaryImage,
+                        secondaryImage,
+                        tertiaryImage,
+                        isLoading: false
+                    });
                 })
                 .catch(error => {
                     this.setState({isLoading: false});
 
                 });
         }
+    }
+
+    onClickSubmit = () => {
+        const primaryImage = this.imagesComponent.current.state.primaryImage.split(',')[1];
+        const secondaryImage = this.imagesComponent.current.state.secondaryImage.split(',')[1];
+        const tertiaryImage = this.imagesComponent.current.state.tertiaryImage.split(',')[1];
+        const price = this.state.price.replace('zł', '').trim();
+        const title = this.state.title.trim();
+        const location = this.state.location.trim();
+        const description = this.state.description.trim();
+        const notice = {
+            title,
+            location,
+            price,
+            description,
+            primaryImage,
+            secondaryImage,
+            tertiaryImage
+        }
+        this.setState({ongoingApiCall: true})
+        apiCalls.putNotice(this.state.id, notice)
+            .then(response => {
+                this.props.history.push(`/notice/${response.data}`);
+            })
+            .catch(apiError => {
+                let errors = {...this.state.errors};
+                if (apiError.response.data && apiError.response.data.validationErrors) {
+                    errors = {...apiError.response.data.validationErrors}
+                }
+                this.setState({ongoingApiCall: false, errors});
+                window.scrollTo(0, 75);
+            });
     }
 
     onChangeTitle = event => {
@@ -94,21 +158,20 @@ class EditNoticePage extends Component {
                         length={this.state.description.length}
                         descriptionError={this.state.errors && this.state.errors.description}
                     />
-                    {/*<KeywordsInput*/}
-                    {/*    ref={this.keywordsComponent}*/}
-                    {/*    errors={this.state.errors && this.state.errors.keywords}*/}
-                    {/*/>*/}
-                    {/*<ImagesUpload*/}
-                    {/*    ref={this.imagesComponent}*/}
-                    {/*    errors={this.state.errors}*/}
-                    {/*/>*/}
-                    {/*<div className="text-center my-2">*/}
-                    {/*    <ButtonWithSpinner*/}
-                    {/*        content="Dodaj ogłoszenie"*/}
-                    {/*        onClick={this.onClickSubmit}*/}
-                    {/*        ongoingApiCall={this.state.ongoingApiCall}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
+                    <ImagesUpload
+                        ref={this.imagesComponent}
+                        errors={this.state.errors}
+                        primaryImage={this.state.primaryImage}
+                        secondaryImage={this.state.secondaryImage}
+                        tertiaryImage={this.state.tertiaryImage}
+                    />
+                    <div className="text-center my-2">
+                        <ButtonWithSpinner
+                            content="Zatwierdź zmiany"
+                            onClick={this.onClickSubmit}
+                            ongoingApiCall={this.state.ongoingApiCall}
+                        />
+                    </div>
                 </Card.Body>
             </Card>
         );

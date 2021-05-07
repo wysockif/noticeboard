@@ -12,6 +12,18 @@ export class ImagesUpload extends Component {
         tertiaryImageError: undefined
     }
 
+    componentDidMount() {
+        if (this.props.primaryImage) {
+            this.setState({primaryImage: '/images/notice/' + this.props.primaryImage});
+        }
+        if (this.props.secondaryImage) {
+            this.setState({secondaryImage: '/images/notice/' + this.props.secondaryImage});
+        }
+        if (this.props.tertiaryImage) {
+            this.setState({tertiaryImage: '/images/notice/' + this.props.tertiaryImage});
+        }
+    }
+
     onSelectPrimaryImage = event => {
         if (event.target.files.length > 0) {
             const file = event.target.files[0];

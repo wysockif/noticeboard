@@ -127,6 +127,19 @@ describe('apiCalls', () => {
         });
     });
 
+    describe('putNotice', () => {
+        it('calls /api/1.0/notices/1 when 1 is provided for the function', () => {
+            // given
+            const mockPutNotice = jest.fn();
+            axios.put = mockPutNotice;
+            // when
+            apiCalls.putNotice(1,{});
+            // then
+            const calledPath = mockPutNotice.mock.calls[0][0];
+            expect(calledPath).toBe('/api/1.0/notices/1');
+        });
+    });
+
     describe('deleteNotice', () => {
         it('calls /api/1.0/notices/1 when 1 is provided for the function', () => {
             // given
