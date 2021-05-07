@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,11 +18,14 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wysockif.noticeboard.controllers.TestPage;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
+import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
+import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
+import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
@@ -30,11 +34,13 @@ import pl.wysockif.noticeboard.services.user.AppUserService;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -702,6 +708,92 @@ public class NoticeControllerTest {
     }
 
     @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeIsValid_receiveOkStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeIsValid_noticeUpdatedInDatabase() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        Optional<Notice> updatedNotice = noticeRepository.findById(savedNoticeId);
+        assertThat(updatedNotice.get().getTitle()).isEqualTo(validPutUserRequest.getTitle());
+    }
+
+    @Test
+    public void putNotice_whenUserIsUnauthorizedAndNoticeIsValid_receiveUnauthorizedStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        // when
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(UNAUTHORIZED);
+    }
+
+    @Test
+    public void putNotice_whenAuthorizedUserUpdatesAnotherUserNoticeAndNoticeIsValid_receiveForbiddenStatus() throws IOException {
+        // given
+        Long savedNoticeId = setupNoticeForUpdate();
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/" + savedNoticeId;
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(FORBIDDEN);
+    }
+
+    @Test
+    public void putNotice_whenUserIsAuthorizedAndNoticeWithProvidedIdDoesNotExist_receiveNotFoundStatus() throws IOException {
+        // given
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
+        userService.save(validPostUserRequest);
+        addAuthenticationInterceptor(validPostUserRequest);
+        // when
+        PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
+        HttpEntity<PutNoticeRequest> requestHttpEntity = new HttpEntity<>(validPutUserRequest);
+        String url = NOTICES_URL + "/123";
+        ResponseEntity<Object> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, Object.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
+
+
+    //COMEBACK
+
+    private Long setupNoticeForUpdate() throws IOException {
+        PostUserRequest validPostUserRequest = createValidPostUserRequest("test-username");
+        Long creatorId = userService.save(validPostUserRequest);
+        AppUser creator = userRepository.getOne(creatorId);
+        addAuthenticationInterceptor(validPostUserRequest);
+        PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();
+        return noticeService.postNotice(postNoticeRequest, creator);
+    }
+
+    @Test
     public void getNotices_whenThereAreNoNoticesInDatabase_receiveOkStatus() {
         // given
         // when
@@ -985,8 +1077,21 @@ public class NoticeControllerTest {
         }
     }
 
-    private Notice createValidNotice() throws IOException {
-        return NoticeMapper.INSTANCE.postNoticeRequestToNotice(createValidPostNoticeRequest());
+    private PutNoticeRequest createValidPutUserRequest() throws IOException {
+        ClassPathResource imageResource = new ClassPathResource("default-notice-image.jpg");
+        byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
+        String imageAsBase64 = Base64.getEncoder().encodeToString(imageArr);
+        String noticeDescription = "Updated notice description " + generateLongString(60);
+        PutNoticeRequest putNoticeRequest = new PutNoticeRequest();
+        putNoticeRequest.setTitle("Updated title");
+        putNoticeRequest.setDescription(noticeDescription);
+        putNoticeRequest.setPrice("12.00");
+        putNoticeRequest.setLocation("Updated Location");
+        putNoticeRequest.setPrimaryImage(imageAsBase64);
+        putNoticeRequest.setSecondaryImage(imageAsBase64);
+        putNoticeRequest.setTertiaryImage(imageAsBase64);
+        putNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
+        return putNoticeRequest;
     }
 
     private PostUserRequest createValidPostUserRequest(String username) {

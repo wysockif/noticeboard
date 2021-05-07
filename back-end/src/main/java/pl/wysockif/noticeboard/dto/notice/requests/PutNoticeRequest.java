@@ -9,8 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
-public class PostNoticeRequest {
-
+public class PutNoticeRequest {
     @NotNull
     @Size(min = 8, max = 60)
     private String title;
@@ -20,28 +19,25 @@ public class PostNoticeRequest {
     private String description;
 
     @NotNull
+    @Size(min = 3, max = 60)
+    private String location;
+
+    @NotNull
     @Pattern(regexp = "^[0-9]+(\\.[0-9]{1,2})?$",
             message = "{noticeboard.constraints.Pattern.Price.message}")
     @Size(min = 1, max = 10)
     private String price;
 
-    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
-    @ImageWithSupportedExtension
-    private String primaryImage;
-
-    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
-    @ImageWithSupportedExtension
-    private String secondaryImage;
-
-    @NotNull(message = "{noticeboard.constraints.Image.NotNull.message}")
-    @ImageWithSupportedExtension
-    private String tertiaryImage;
-
-    @NotNull
-    @Size(min = 3, max = 60)
-    private String location;
-
     @NotNull
     @Size(min = 3, max = 12, message = "{noticeboard.constraints.Size.KeywordsList.message}")
     private List<@NotNull @Size(min = 3, max = 20, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
+
+    @ImageWithSupportedExtension
+    private String primaryImage;
+
+    @ImageWithSupportedExtension
+    private String secondaryImage;
+
+    @ImageWithSupportedExtension
+    private String tertiaryImage;
 }

@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
+import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeWithDetailsSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
@@ -68,5 +70,13 @@ public class NoticeController {
         AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         noticeService.deleteNotice(id, loggedInUser);
         LOGGER.info("Request deleteNotice finished");
+    }
+
+    @PutMapping("/notices/{id:[0-9]+}")
+    public void putNotice(@PathVariable Long id, @Valid @RequestBody PutNoticeRequest putNoticeRequest) {
+        LOGGER.info("Request putNotice started");
+        AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        noticeService.putNotice(id, putNoticeRequest, loggedInUser);
+        LOGGER.info("Request putNotice finished");
     }
 }

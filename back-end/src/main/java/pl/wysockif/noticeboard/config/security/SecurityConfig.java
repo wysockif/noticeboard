@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
@@ -48,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PATCH, API_URL + "/users/{id:[0-9]+}").authenticated()
                 .antMatchers(POST, API_URL + "/notices").authenticated()
                 .antMatchers(DELETE, API_URL + "/notices/{id:[0-9]+}").authenticated()
+                .antMatchers(PUT, API_URL + "/notices/{id:[0-9]+}").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().permitAll();
 

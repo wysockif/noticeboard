@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
+import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeWithDetailsSnapshot;
 import pl.wysockif.noticeboard.entities.notice.Notice;
@@ -22,6 +23,12 @@ public interface NoticeMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(source = "keywords", target = "keywords", qualifiedByName = "keywordsListToKeywordsString")
     Notice postNoticeRequestToNotice(PostNoticeRequest postNoticeRequest);
+
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(source = "keywords", target = "keywords", qualifiedByName = "keywordsListToKeywordsString")
+    Notice putNoticeRequestToNotice(PutNoticeRequest putNoticeRequest);
 
     @Named("keywordsListToKeywordsString")
     default String keywordsListToKeywordsString(List<String> keywordsList) {
