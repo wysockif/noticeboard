@@ -6,7 +6,24 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 
+import java.math.BigDecimal;
+
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
     Page<Notice> findAllByCreatorUsername(Pageable pageable, String username);
+
+    Page<Notice> findAllByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+
+    Page<Notice> findAllByLocationIgnoreCaseAndPriceBetween(String location, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+
+    Page<Notice> findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
+            String location1, BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
+            String location2, BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
+            Pageable pageable);
+
+
+    Page<Notice> findAllByPriceBetweenAndTitleContainingIgnoreCaseOrPriceBetweenAndDescriptionContainingIgnoreCase(
+            BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
+            BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
+            Pageable pageable);
 }

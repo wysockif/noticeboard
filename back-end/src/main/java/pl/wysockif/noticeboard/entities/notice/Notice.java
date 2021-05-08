@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -35,8 +36,7 @@ public class Notice implements Serializable {
     @Column(length = 60)
     private String location;
 
-    @Column(length = 12)
-    private String price;
+    private BigDecimal price;
 
     @Column(length = 360)
     private String keywords;

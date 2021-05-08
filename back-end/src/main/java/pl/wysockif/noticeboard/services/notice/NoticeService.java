@@ -3,6 +3,7 @@ package pl.wysockif.noticeboard.services.notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.wysockif.noticeboard.controllers.notice.GetNoticesRequestParams;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
@@ -15,6 +16,7 @@ import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -43,13 +45,42 @@ public class NoticeService {
         return savedNoticeId;
     }
 
-    public Page<NoticeSnapshot> getNotices(Pageable pageable, String username) {
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
         LOGGER.info("Getting notices");
         Page<Notice> noticePage;
-        if (username != null) {
-            noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);
+        if (getNoticesRequestParams.getUsername() != null) {
+            noticePage = noticeRepository.findAllByCreatorUsername(pageable, getNoticesRequestParams.getUsername());
         } else {
-            noticePage = noticeRepository.findAll(pageable);
+            BigDecimal minPrice = new BigDecimal("0");
+            BigDecimal maxPrice = new BigDecimal("100000000"); //todo: sprawdzić największą
+            if (getNoticesRequestParams.getMinPrice() != null) {
+                minPrice = new BigDecimal(getNoticesRequestParams.getMinPrice());
+            }
+            if (getNoticesRequestParams.getMaxPrice() != null) {
+                maxPrice = new BigDecimal(getNoticesRequestParams.getMaxPrice());
+            }
+            if (getNoticesRequestParams.getLocation() != null) {
+                if(getNoticesRequestParams.getSearched() != null){
+                    noticePage = noticeRepository
+                            .findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
+                                    getNoticesRequestParams.getLocation(), minPrice, maxPrice,getNoticesRequestParams.getSearched(),
+                                    getNoticesRequestParams.getLocation(), minPrice, maxPrice,getNoticesRequestParams.getSearched(),
+                                    pageable);
+                } else {
+                    noticePage = noticeRepository.findAllByLocationIgnoreCaseAndPriceBetween(getNoticesRequestParams.getLocation(), minPrice, maxPrice, pageable);
+                }
+            } else {
+                if(getNoticesRequestParams.getSearched() != null){
+                    noticePage = noticeRepository
+                            .findAllByPriceBetweenAndTitleContainingIgnoreCaseOrPriceBetweenAndDescriptionContainingIgnoreCase(
+                                    minPrice,maxPrice,getNoticesRequestParams.getSearched(),
+                                    minPrice,maxPrice,getNoticesRequestParams.getSearched(),
+                                    pageable);
+
+                } else {
+                    noticePage = noticeRepository.findAllByPriceBetween(minPrice, maxPrice, pageable);
+                }
+            }
         }
         Page<NoticeSnapshot> noticeSnapshotPage = noticePage.map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
         LOGGER.info("Got notices");
