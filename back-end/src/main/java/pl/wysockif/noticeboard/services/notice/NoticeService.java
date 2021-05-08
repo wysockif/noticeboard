@@ -34,7 +34,8 @@ public class NoticeService {
     public Long postNotice(PostNoticeRequest postNoticeRequest, AppUser creator) {
         LOGGER.info("Creating notice (userId: " + creator.getId() + ")");
         Notice createdNotice = NoticeMapper.INSTANCE.postNoticeRequestToNotice(postNoticeRequest);
-        prepareDetailsInNoticeBeforeSaving(createdNotice, creator);
+        createdNotice.setCreatedAt(new Date());
+        createdNotice.setCreator(creator);
         saveImages(createdNotice, creator, postNoticeRequest.getPrimaryImage(),
                 postNoticeRequest.getSecondaryImage(), postNoticeRequest.getTertiaryImage());
         Long savedNoticeId = noticeRepository.save(createdNotice).getId();
@@ -94,7 +95,8 @@ public class NoticeService {
         Notice noticeAfterUpdate = NoticeMapper.INSTANCE.putNoticeRequestToNotice(putNoticeRequest);
         updateImages(noticeBeforeUpdate, noticeAfterUpdate, creator);
         noticeAfterUpdate.setId(noticeId);
-        prepareDetailsInNoticeBeforeSaving(noticeAfterUpdate, creator);
+        noticeAfterUpdate.setCreator(creator);
+        noticeAfterUpdate.setCreatedAt(noticeBeforeUpdate.getCreatedAt());
         noticeRepository.save(noticeAfterUpdate);
         LOGGER.info("Updated (noticeId: " + noticeId + ")");
     }
