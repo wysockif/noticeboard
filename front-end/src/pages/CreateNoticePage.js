@@ -7,7 +7,6 @@ import BasicInformation from '../components/notice-form/BasicInformation';
 import CreateNoticePageContact from '../components/notice-form/ContactInformation';
 import DescriptionForm from '../components/notice-form/DescriptionForm';
 import ImagesUpload from '../components/notice-form/ImagesUpload';
-import KeywordsInput from '../components/notice-form/KeywordsInput';
 import * as apiCalls from '../api/apiCalls';
 
 class CreateNoticePage extends Component {
@@ -21,11 +20,9 @@ class CreateNoticePage extends Component {
         errors: undefined
     }
 
-    keywordsComponent = React.createRef();
     imagesComponent = React.createRef();
 
     onClickSubmit = () => {
-        const keywords = this.keywordsComponent.current.state.keywords;
         const primaryImage = this.imagesComponent.current.state.primaryImage.split(',')[1];
         const secondaryImage = this.imagesComponent.current.state.secondaryImage.split(',')[1];
         const tertiaryImage = this.imagesComponent.current.state.tertiaryImage.split(',')[1];
@@ -38,7 +35,6 @@ class CreateNoticePage extends Component {
             location,
             price,
             description,
-            keywords,
             primaryImage,
             secondaryImage,
             tertiaryImage
@@ -115,10 +111,6 @@ class CreateNoticePage extends Component {
                             onChangeDescription={this.onChangeDescription}
                             length={this.state.description.length}
                             descriptionError={this.state.errors && this.state.errors.description}
-                        />
-                        <KeywordsInput
-                            ref={this.keywordsComponent}
-                            errors={this.state.errors && this.state.errors.keywords}
                         />
                         <ImagesUpload
                             ref={this.imagesComponent}

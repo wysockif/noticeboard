@@ -28,10 +28,6 @@ public class PutNoticeRequest {
     @Size(min = 1, max = 10)
     private String price;
 
-    @NotNull
-    @Size(min = 3, max = 12, message = "{noticeboard.constraints.Size.KeywordsList.message}")
-    private List<@NotNull @Size(min = 3, max = 20, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
-
     @ImageWithSupportedExtension
     private String primaryImage;
 

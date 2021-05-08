@@ -651,7 +651,6 @@ public class AppUserControllerTest {
         postNoticeRequest.setPrimaryImage(imageAsBase64);
         postNoticeRequest.setSecondaryImage(imageAsBase64);
         postNoticeRequest.setTertiaryImage(imageAsBase64);
-        postNoticeRequest.setKeywords(List.of("Key1", "Key2", "Key3"));
         return postNoticeRequest;
     }
 

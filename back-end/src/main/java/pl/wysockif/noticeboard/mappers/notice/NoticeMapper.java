@@ -21,19 +21,12 @@ public interface NoticeMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(source = "keywords", target = "keywords", qualifiedByName = "keywordsListToKeywordsString")
     Notice postNoticeRequestToNotice(PostNoticeRequest postNoticeRequest);
 
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(source = "keywords", target = "keywords", qualifiedByName = "keywordsListToKeywordsString")
     Notice putNoticeRequestToNotice(PutNoticeRequest putNoticeRequest);
-
-    @Named("keywordsListToKeywordsString")
-    default String keywordsListToKeywordsString(List<String> keywordsList) {
-        return StringUtils.join(keywordsList, ' ');
-    }
 
     NoticeWithDetailsSnapshot noticeToNoticeWithDetailsSnapshot(Notice notice);
 

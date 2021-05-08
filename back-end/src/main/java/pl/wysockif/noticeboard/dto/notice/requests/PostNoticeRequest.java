@@ -40,8 +40,4 @@ public class PostNoticeRequest {
     @NotNull
     @Size(min = 3, max = 60)
     private String location;
-
-    @NotNull
-    @Size(min = 3, max = 12, message = "{noticeboard.constraints.Size.KeywordsList.message}")
-    private List<@NotNull @Size(min = 3, max = 20, message = "{noticeboard.constraints.Size.Keyword.message}") String> keywords;
 }
