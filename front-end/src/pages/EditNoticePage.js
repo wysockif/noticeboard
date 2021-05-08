@@ -31,7 +31,6 @@ class EditNoticePage extends Component {
         if (this.props.location && this.props.location.state && this.props.location.state.notice) {
             const {title, location, price, description, id} = this.props.location.state.notice;
             const {primaryImage, secondaryImage, tertiaryImage} = this.props.location.state.notice;
-            console.log(this.props.location.state.notice)
             const userId = this.props.location.state.userId;
             this.setState({
                 title,
@@ -66,7 +65,6 @@ class EditNoticePage extends Component {
                 })
                 .catch(error => {
                     this.setState({isLoading: false});
-
                 });
         }
     }
@@ -90,8 +88,8 @@ class EditNoticePage extends Component {
         }
         this.setState({ongoingApiCall: true})
         apiCalls.putNotice(this.state.id, notice)
-            .then(response => {
-                this.props.history.push(`/notice/${response.data}`);
+            .then(() => {
+                this.props.history.push(`/notice/${this.state.id}`);
             })
             .catch(apiError => {
                 let errors = {...this.state.errors};
