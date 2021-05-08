@@ -1304,7 +1304,7 @@ public class NoticeControllerTest {
     }
 
     @Test
-    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith10Notices() throws IOException {
+    public void getNotices_whenThereIs15NoticesInDatabaseAndRequestedSizeIsNotGiven_receivePageWith15Notices() throws IOException {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = createValidPostUserRequest(username);
@@ -1317,7 +1317,7 @@ public class NoticeControllerTest {
                 new ParameterizedTypeReference<>() {
                 });
         // then
-        assertThat(response.getBody().getContent().size()).isEqualTo(18);
+        assertThat(response.getBody().getContent().size()).isEqualTo(15);
     }
 
     @Test

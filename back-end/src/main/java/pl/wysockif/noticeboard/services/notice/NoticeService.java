@@ -45,48 +45,6 @@ public class NoticeService {
         return savedNoticeId;
     }
 
-    public Page<NoticeSnapshot> getNotices(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
-        LOGGER.info("Getting notices");
-        Page<Notice> noticePage;
-        if (getNoticesRequestParams.getUsername() != null) {
-            noticePage = noticeRepository.findAllByCreatorUsername(pageable, getNoticesRequestParams.getUsername());
-        } else {
-            BigDecimal minPrice = new BigDecimal("0");
-            BigDecimal maxPrice = new BigDecimal("100000000"); //todo: sprawdzić największą
-            if (getNoticesRequestParams.getMinPrice() != null) {
-                minPrice = new BigDecimal(getNoticesRequestParams.getMinPrice());
-            }
-            if (getNoticesRequestParams.getMaxPrice() != null) {
-                maxPrice = new BigDecimal(getNoticesRequestParams.getMaxPrice());
-            }
-            if (getNoticesRequestParams.getLocation() != null) {
-                if(getNoticesRequestParams.getSearched() != null){
-                    noticePage = noticeRepository
-                            .findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
-                                    getNoticesRequestParams.getLocation(), minPrice, maxPrice,getNoticesRequestParams.getSearched(),
-                                    getNoticesRequestParams.getLocation(), minPrice, maxPrice,getNoticesRequestParams.getSearched(),
-                                    pageable);
-                } else {
-                    noticePage = noticeRepository.findAllByLocationIgnoreCaseAndPriceBetween(getNoticesRequestParams.getLocation(), minPrice, maxPrice, pageable);
-                }
-            } else {
-                if(getNoticesRequestParams.getSearched() != null){
-                    noticePage = noticeRepository
-                            .findAllByPriceBetweenAndTitleContainingIgnoreCaseOrPriceBetweenAndDescriptionContainingIgnoreCase(
-                                    minPrice,maxPrice,getNoticesRequestParams.getSearched(),
-                                    minPrice,maxPrice,getNoticesRequestParams.getSearched(),
-                                    pageable);
-
-                } else {
-                    noticePage = noticeRepository.findAllByPriceBetween(minPrice, maxPrice, pageable);
-                }
-            }
-        }
-        Page<NoticeSnapshot> noticeSnapshotPage = noticePage.map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
-        LOGGER.info("Got notices");
-        return noticeSnapshotPage;
-    }
-
     public NoticeWithDetailsSnapshot getNotice(Long noticeId) {
         LOGGER.info("Getting notice (noticeId: " + noticeId + ")");
         Optional<Notice> foundNotice = noticeRepository.findById(noticeId);
@@ -132,6 +90,81 @@ public class NoticeService {
         LOGGER.info("Updated (noticeId: " + noticeId + ")");
     }
 
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
+        LOGGER.info("Getting notices");
+        Page<Notice> noticePage;
+        noticePage = getNoticePage(pageable, getNoticesRequestParams);
+        Page<NoticeSnapshot> noticeSnapshotPage = noticePage.map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
+        LOGGER.info("Got notices");
+        return noticeSnapshotPage;
+    }
+
+    private Page<Notice> getNoticePage(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
+        String username = getNoticesRequestParams.getUsername();
+        String minPriceParam = getNoticesRequestParams.getMinPrice();
+        String maxPriceParam = getNoticesRequestParams.getMaxPrice();
+        String searched = getNoticesRequestParams.getSearched();
+        String location = getNoticesRequestParams.getLocation();
+        Page<Notice> noticePage;
+        if (username != null) {
+            noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);
+        } else {
+            BigDecimal minPriceValue = minPriceParam == null ? new BigDecimal("0") : new BigDecimal(minPriceParam);
+            BigDecimal maxPriceValue = maxPriceParam == null ? new BigDecimal("100000000") : new BigDecimal(maxPriceParam); //todo: sprawdzić największą
+            noticePage = getNoticeFilteredPage(pageable, searched, location, minPriceValue, maxPriceValue);
+        }
+        return noticePage;
+    }
+
+    private Page<Notice> getNoticeFilteredPage(Pageable pageable, String searched, String location, BigDecimal minPriceValue, BigDecimal maxPriceValue) {
+        Page<Notice> noticePage;
+        if (location != null) {
+            noticePage = getNoticePageWhenLocationIsProvided(pageable, searched, location, minPriceValue, maxPriceValue);
+        } else {
+            noticePage = getNoticePageWhenLocationIsNotProvided(pageable, searched, minPriceValue, maxPriceValue);
+        }
+        return noticePage;
+    }
+
+    private Page<Notice> getNoticePageWhenLocationIsNotProvided(Pageable pageable, String searched,
+                                                                BigDecimal minPriceValue, BigDecimal maxPriceValue) {
+        Page<Notice> noticePage;
+        if (searched != null) {
+            noticePage = noticeRepository
+                    .findAllByPriceBetweenAndTitleContainingIgnoreCaseOrPriceBetweenAndDescriptionContainingIgnoreCase(
+                            minPriceValue, maxPriceValue, searched,
+                            minPriceValue, maxPriceValue, searched,
+                            pageable);
+        } else {
+            noticePage = noticeRepository.findAllByPriceBetween(minPriceValue, maxPriceValue, pageable);
+        }
+        return noticePage;
+    }
+
+    private Page<Notice> getNoticePageWhenLocationIsProvided(Pageable pageable, String searched, String location,
+                                                             BigDecimal minPriceValue, BigDecimal maxPriceValue) {
+        Page<Notice> noticePage;
+        if (searched != null) {
+            noticePage = getNoticePageWhenIsSearchedInLocation(pageable, searched, location, minPriceValue, maxPriceValue);
+        } else {
+            noticePage = noticeRepository
+                    .findAllByLocationIgnoreCaseAndPriceBetween(location, minPriceValue, maxPriceValue, pageable);
+        }
+        return noticePage;
+    }
+
+
+    private Page<Notice> getNoticePageWhenIsSearchedInLocation(
+            Pageable pageable, String searched, String location, BigDecimal minPriceValue, BigDecimal maxPriceValue) {
+        Page<Notice> noticePage;
+        noticePage = noticeRepository
+                .findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
+                        location, minPriceValue, maxPriceValue, searched,
+                        location, minPriceValue, maxPriceValue, searched,
+                        pageable);
+        return noticePage;
+    }
+
     private void updateImages(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {
         updatePrimaryImage(noticeBeforeUpdate, noticeAfterUpdate, creator);
         updateSecondaryImage(noticeBeforeUpdate, noticeAfterUpdate, creator);
@@ -164,11 +197,6 @@ public class NoticeService {
         } else {
             noticeAfterUpdate.setSecondaryImage(noticeBeforeUpdate.getSecondaryImage());
         }
-    }
-
-    private void prepareDetailsInNoticeBeforeSaving(Notice notice, AppUser creator) {
-        notice.setCreatedAt(new Date());
-        notice.setCreator(creator);
     }
 
     private void updateTertiaryImage(Notice noticeBeforeUpdate, Notice noticeAfterUpdate, AppUser creator) {

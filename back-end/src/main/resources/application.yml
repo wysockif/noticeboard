@@ -29,7 +29,7 @@ spring:
   data:
     web:
       pageable:
-        default-page-size: 18
+        default-page-size: 15
         max-page-size: 30
 upload-folder-path: static-uploads-dev
 ---
@@ -58,7 +58,7 @@ spring:
   data:
     web:
       pageable:
-        default-page-size: 18
+        default-page-size: 15
         max-page-size: 30
 upload-folder-path: static-uploads-prod
 ---
@@ -84,6 +84,6 @@ spring:
   data:
     web:
       pageable:
-        default-page-size: 18
+        default-page-size: 15
         max-page-size: 36
 upload-folder-path: static-uploads-test
