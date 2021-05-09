@@ -20,24 +20,27 @@ const NoticeboardItem = (props) => {
                 <Image src={imageSource} onError={event => event.target.src = temp}
                        className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
                 <Card.Body>
-                    <Card.Title>{props.title}</Card.Title>
-                    <Card.Text as="div">
-                        <div>
-                            <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
-                            {props.price} zł
-                        </div>
-                        <div>
-                            <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
-                            {props.location}
-                        </div>
-                    </Card.Text>
+                    <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>
+                    <div className="d-flex align-items-center">
+                        <Card.Text as="div" className="col">
+                            <div>
+                                <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
+                                {props.price} zł
+                            </div>
+                            <div>
+                                <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
+                                {props.location}
+                            </div>
+                        </Card.Text>
+                    </div>
                 </Card.Body>
                 <Card.Footer>
                     <small className="text-muted">Opublikowano: {momentDate.startOf('second').fromNow()}</small>
                 </Card.Footer>
             </Card>
         </Link>
-    );
+    )
+        ;
 }
 
 export default NoticeboardItem;

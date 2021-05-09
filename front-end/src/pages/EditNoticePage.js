@@ -7,12 +7,14 @@ import ContactInformation from '../components/notice-form/ContactInformation'
 import {connect} from "react-redux";
 import ImagesUpload from "../components/notice-form/ImagesUpload";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
+import {Redirect} from "react-router";
 
 class EditNoticePage extends Component {
 
     state = {
         isLoading: true,
-        id: '',
+        userId: undefined,
+        id: undefined,
         title: '',
         location: '',
         price: '',
@@ -65,6 +67,13 @@ class EditNoticePage extends Component {
                 })
                 .catch(error => {
                     this.setState({isLoading: false});
+                });
+            apiCalls.getUserByNoticeId(noticeId)
+                .then(response => {
+                    this.setState({userId: response.data.id, isUserDetailsLoading: false});
+                })
+                .catch(error => {
+
                 });
         }
     }
@@ -134,6 +143,7 @@ class EditNoticePage extends Component {
     returnMainContent = () => {
         return (
             <Card>
+                {this.state.userId !== this.props.userId && <Redirect to='/'/> }
                 <Card.Header className="text-center">
                     <h5 className="my-2">Edytuj ogłoszenie </h5>
                 </Card.Header>

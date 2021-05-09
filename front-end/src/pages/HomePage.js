@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Collapse, FormControl, InputGroup} from 'react-bootstrap';
+import {Button, Card, Collapse, FormControl, InputGroup, Pagination} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import NoticeboardItem from "../components/NoticeboardItem";
 import * as apiCalls from "../api/apiCalls";
@@ -11,7 +11,8 @@ class HomePage extends Component {
         page: {
             content: [],
             number: 0,
-            size: 18
+            size: 18,
+            totalPages: 1
         }
     }
 
@@ -91,7 +92,22 @@ class HomePage extends Component {
                             />
                         )}
                     </div>
-
+                    <Pagination className="mx-auto small">
+                        <Pagination.Prev/>
+                        {this.state.page.number > 2 && this.state.page.number < this.state.page.totalPages - 1 && (
+                            <span>
+                                <Pagination.Item style={{color: '#B84'}}>{1}</Pagination.Item>
+                                <Pagination.Ellipsis/>
+                                <Pagination.Item>{this.state.page.number - 1}</Pagination.Item>
+                                <Pagination.Item active>{this.state.page.number}</Pagination.Item>
+                                <Pagination.Item>{this.state.page.number + 1}</Pagination.Item>
+                                <Pagination.Ellipsis/>
+                                <Pagination.Item>{this.state.page.totalPages}</Pagination.Item>
+                            </span>
+                        )
+                        }
+                        <Pagination.Next/>
+                    </Pagination>
                 </Card>
             </div>
 

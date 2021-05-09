@@ -180,13 +180,13 @@ class NoticePage extends Component {
                     </div>
 
                     <div className="row justify-content-center">
-                        <div className="col-5 mt-4 text-start pt-3">
+                        <div className="col-sm-5 mt-4 text-center text-sm-start pt-3">
                             <h5><FontAwesomeIcon icon="envelope"/> Kontakt mailowy:</h5>
                             <h5>{this.state.user.email}</h5>
 
                         </div>
-                        <div className="col-6 mt-4 py-2 text-end">
-                            {this.state.user.image && <Link
+                        <div className="col-sm-6 mt-4 py-2 text-center text-sm-end">
+                            {this.state.user.username && <Link
                                 to={`/user/${this.state.user.username}`}
                                 className="btn btn-outline-secondary px-4 mt-3"
                             >
