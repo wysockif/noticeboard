@@ -21,18 +21,16 @@ const NoticeboardItem = (props) => {
                        className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
                 <Card.Body>
                     <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>
-                    <div className="d-flex align-items-center">
-                        <Card.Text as="div" className="col">
-                            <div>
-                                <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
-                                {props.price} zł
-                            </div>
-                            <div>
-                                <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
-                                {props.location}
-                            </div>
-                        </Card.Text>
-                    </div>
+                    <Card.Text as="div" className="col">
+                        <div>
+                            <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
+                            <span>{props.price} zł</span>
+                        </div>
+                        <div className="text-nowrap text-truncate">
+                            <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
+                            {props.location}
+                        </div>
+                    </Card.Text>
                 </Card.Body>
                 <Card.Footer>
                     <small className="text-muted">Opublikowano: {momentDate.startOf('second').fromNow()}</small>

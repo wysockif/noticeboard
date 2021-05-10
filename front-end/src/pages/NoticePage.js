@@ -114,7 +114,7 @@ class NoticePage extends Component {
                                 className="carousel-dark"
                                 interval={10000}
                             >
-                                <Carousel.Item>
+                                <Carousel.Item style={{maxHeight: "375px"}}>
                                     {this.state.notice.primaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"
@@ -122,7 +122,7 @@ class NoticePage extends Component {
                                            alt="First slide"
                                     />}
                                 </Carousel.Item>
-                                <Carousel.Item>
+                                <Carousel.Item style={{maxHeight: "375px"}}>
                                     {this.state.notice.secondaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"
@@ -130,7 +130,7 @@ class NoticePage extends Component {
                                            alt="Second slide"
                                     />}
                                 </Carousel.Item>
-                                <Carousel.Item>
+                                <Carousel.Item style={{maxHeight: "375px"}}>
                                     {this.state.notice.tertiaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"

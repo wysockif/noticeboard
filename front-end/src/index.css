@@ -5,3 +5,25 @@
     background-size: cover;
     overflow: hidden;
 }
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+.form-control:focus,
+.form-select:focus,
+select:focus,
+.gold-glow:focus,
+.uneditable-input:focus {
+    border-color: #e1cbad !important;
+    box-shadow: 0 0px 2px #e1cbad inset, 0 0 2px #e1cbad !important;
+    outline: 0 none;
+}
+
+.btn-outline-light:hover,
+.btn-outline-light:visited,
+.btn-outline-light:focus {
+    background-color: #b84 !important;
+    border-color: #b84 !important;
+    color: lightyellow !important;
+}

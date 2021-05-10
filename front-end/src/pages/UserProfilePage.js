@@ -6,6 +6,7 @@ import userNotFoundImage from '../assets/user-not-found.jpeg';
 import NoticeboardItem from "../components/NoticeboardItem";
 import UserPageHeader from "../components/profile-page/UserPageHeader";
 import {connect} from "react-redux";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 class UserProfilePage extends Component {
@@ -20,7 +21,8 @@ class UserProfilePage extends Component {
         page: {
             content: [],
             number: 0,
-            size: 18
+            size: 18,
+            totalElements: 0
         }
     }
 
@@ -166,7 +168,12 @@ class UserProfilePage extends Component {
                     onImageSelect={this.onImageSelect}
                 />
                 <div className="row m-4">
-                    {this.state.page.content.map(notice =>
+                    {!this.state.page.totalElements &&
+                    <div className="text-center text-muted">
+                        Brak ogłoszeń <FontAwesomeIcon icon={["far", "frown"]}/>
+                    </div>
+                    }
+                    {this.state.page.totalElements > 0 && this.state.page.content.map(notice =>
                         <NoticeboardItem
                             title={notice.title}
                             price={notice.price}
@@ -176,7 +183,8 @@ class UserProfilePage extends Component {
                             id={notice.id}
                             key={notice.id}
                         />
-                    )}
+                    )
+                    }
                 </div>
             </Card>
         </div>;

@@ -33,18 +33,18 @@ class HomePage extends Component {
                     <Card.Header>
                         <div className="col-10 col-sm-9 col-md-8 mx-auto">
                             <InputGroup className="my-2">
-
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>
                                         <FontAwesomeIcon icon="search" className="my-1"/>
                                     </InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <FormControl
+                                    className="gold-glow"
                                     placeholder="Czego szukasz?"
                                 />
                                 <InputGroup.Append>
                                     <Button
-                                        style={{backgroundColor: '#B84'}}
+                                        style={{backgroundColor: '#b78e56'}}
                                         variant="outline-light"
                                         className="px-4">
                                         Szukaj
@@ -55,7 +55,7 @@ class HomePage extends Component {
                                 <Button
                                     size="sm"
                                     onClick={() => this.setState({open: !this.state.open})}
-                                    aria-controls="example-collapse-text"
+                                    aria-controls="collapse-text"
                                     aria-expanded={this.state.open}
                                     variant="light"
                                 >
@@ -70,13 +70,63 @@ class HomePage extends Component {
 
                                 </Button>
                             </div>
-                            <div className="text-center">
-                                <Collapse in={this.state.open}>
-                                    <div id="example-collapse-text">
-                                        Jakieś filtry
+                            <Collapse in={this.state.open}>
+                                <div id="collapse-text">
+                                    <div className="mt-2 col-11 mx-auto">
+                                        <form className="row g-3 justify-content-center">
+                                            <div className="col-md-4">
+                                                <label htmlFor="inputMinPrice" className="form-label">Cena od:</label>
+                                                <input type="text" className="form-control" id="inputMinPrice"
+                                                       placeholder="np. 20 zł"/>
+                                            </div>
+                                            <div className="col-md-4">
+                                                <label htmlFor="inputMaxPrice" className="form-label">Cena do:</label>
+                                                <input type="text" className="form-control" id="inputMaxPrice"
+                                                       placeholder="np. 100 zł"/>
+                                            </div>
+
+                                            <div className="col-md-4">
+                                                <label htmlFor="inputPagination"
+                                                       className="form-label">Sortowanie</label>
+                                                <select id="inputPagination" className="form-select">
+                                                    <option value="0" defaultValue>Od najnowszych</option>
+                                                    <option value="1">Od najstarszych</option>
+                                                    <option value="2">Od najtańszych</option>
+                                                    <option value="3">Od najdroższych</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="col-md-8">
+                                                <label htmlFor="inputLocation"
+                                                       className="form-label">Lokalizacja:</label>
+                                                <input type="text" className="form-control" id="inputLocation"
+                                                       placeholder="np. Warszawa"/>
+                                            </div>
+
+
+                                            <div className="col-md-4">
+                                                <label htmlFor="inputPagination" className="form-label">Ilość na
+                                                    stronie</label>
+                                                <select id="inputSorting" className="form-select">
+                                                    <option value="0" defaultValue>15</option>
+                                                    <option value="1">30</option>
+                                                </select>
+                                            </div>
+                                            <div className="col-12 text-center">
+                                                <Button
+                                                    style={{backgroundColor: '#b78e56'}}
+                                                    variant="outline-light"
+                                                    className="px-4 btn-sm">
+                                                    Zastosuj
+                                                </Button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </Collapse>
-                            </div>
+
+
+                                </div>
+
+                            </Collapse>
                         </div>
                     </Card.Header>
                     <div className="row m-4">
