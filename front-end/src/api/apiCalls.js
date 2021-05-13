@@ -46,8 +46,8 @@ export const getUserByNoticeId = noticeId => {
     return axios.get(apiUrl + '/users/notice/' + noticeId);
 }
 
-export const getNoticesByUsername = username => {
-    return axios.get(apiUrl + `/notices?username=${username}&sort=createdAt,desc`);
+export const getNoticesByUsername = (username, page = 0) => {
+    return axios.get(apiUrl + `/notices?username=${username}&page=${page}&sort=createdAt,desc`);
 }
 
 export const login = user => {

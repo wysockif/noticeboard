@@ -7,6 +7,7 @@ import NoticeboardItem from "../components/NoticeboardItem";
 import UserPageHeader from "../components/profile-page/UserPageHeader";
 import {connect} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import PaginationBar from "../components/PaginationBar";
 
 
 class UserProfilePage extends Component {
@@ -23,7 +24,8 @@ class UserProfilePage extends Component {
             number: 0,
             size: 18,
             totalElements: 0
-        }
+        },
+        currentPage: 0
     }
 
     componentDidMount() {
@@ -96,14 +98,58 @@ class UserProfilePage extends Component {
             });
     }
 
-    loadUserNotices(username) {
-        apiCalls.getNoticesByUsername(username)
+    loadUserNotices(username, page = 0) {
+        apiCalls.getNoticesByUsername(username, page)
             .then(response => {
                 this.setState({page: response.data});
             })
             .catch(error => {
 
             });
+    }
+
+    onClickNext = () => {
+        if (!this.state.page.last) {
+            this.setState({currentPage: this.state.currentPage + 1}, () => {
+                const username = this.props.match.params.username;
+                if (!username) {
+                    return;
+                }
+                this.loadUserNotices(username, this.state.currentPage);
+            });
+        }
+    }
+
+    onClickPrevious = () => {
+        if (!this.state.page.first) {
+            this.setState({currentPage: this.state.currentPage - 1}, () => {
+                const username = this.props.match.params.username;
+                if (!username) {
+                    return;
+                }
+                this.loadUserNotices(username, this.state.currentPage);
+            });
+        }
+    }
+
+    onClickFirst = () => {
+        this.setState({currentPage: 0}, () => {
+            const username = this.props.match.params.username;
+            if (!username) {
+                return;
+            }
+            this.loadUserNotices(username, this.state.currentPage);
+        });
+    }
+
+    onClickLast = () => {
+        this.setState({currentPage: this.state.page.totalPages - 1}, () => {
+            const username = this.props.match.params.username;
+            if (!username) {
+                return;
+            }
+            this.loadUserNotices(username, this.state.currentPage);
+        });
     }
 
     onImageSelect = event => {
@@ -184,6 +230,15 @@ class UserProfilePage extends Component {
                             key={notice.id}
                         />
                     )
+                    }
+                    {!this.state.isLoadingContent && (this.state.page.totalPages > 1) &&
+                    <PaginationBar
+                        page={this.state.page}
+                        onClickFirst={this.onClickFirst}
+                        onClickLast={this.onClickLast}
+                        onClickPrevious={this.onClickPrevious}
+                        onClickNext={this.onClickNext}
+                    />
                     }
                 </div>
             </Card>

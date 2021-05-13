@@ -89,7 +89,7 @@ class HomePage extends Component {
             if (!this.validatePrice(newMinPriceParam)) {
                 this.setState({minPriceError: 'Niepoprawny format'});
             } else {
-                this.setState({minPriceParam: newMinPriceParam}, () => {
+                this.setState({minPriceParam: newMinPriceParam, currentPage: 0}, () => {
                     this.loadNotices();
                 });
             }
@@ -109,7 +109,7 @@ class HomePage extends Component {
             if (!this.validatePrice(newMaxPrice)) {
                 this.setState({maxPriceError: 'Niepoprawny format'});
             } else {
-                this.setState({maxPriceParam: newMaxPrice}, () => {
+                this.setState({maxPriceParam: newMaxPrice, currentPage: 0}, () => {
                     this.loadNotices();
                 });
             }
@@ -119,7 +119,7 @@ class HomePage extends Component {
     onBlurLocation = () => {
         const newLocation = this.state.locationInput.trim().replace(' ', '+');
         if (this.state.locationParam !== newLocation) {
-            this.setState({locationParam: newLocation}, () => {
+            this.setState({locationParam: newLocation, currentPage: 0}, () => {
                 this.loadNotices();
             });
         }
