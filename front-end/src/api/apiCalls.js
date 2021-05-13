@@ -64,17 +64,17 @@ export const getNotices = (page = 0, sort = 'createdAt,desc', size = 12, getting
 
 function mapToUrl(gettingNoticesParams) {
     let url = '';
-    if (gettingNoticesParams.minPrice) {
-        url += `&minPrice=${gettingNoticesParams.minPrice}`
+    if (gettingNoticesParams.minPriceParam) {
+        url += `&minPrice=${gettingNoticesParams.minPriceParam}`
     }
-    if (gettingNoticesParams.maxPrice) {
-        url += `&maxPrice=${gettingNoticesParams.maxPrice}`
+    if (gettingNoticesParams.maxPriceParam) {
+        url += `&maxPrice=${gettingNoticesParams.maxPriceParam}`
     }
-    if (gettingNoticesParams.location) {
-        url += `&location=${gettingNoticesParams.location}`
+    if (gettingNoticesParams.locationParam) {
+        url += `&location=${gettingNoticesParams.locationParam}`
     }
-    if (gettingNoticesParams.searched) {
-        url += `&searched=${gettingNoticesParams.searched}`
+    if (gettingNoticesParams.searchingParam) {
+        url += `&searched=${gettingNoticesParams.searchingParam}`
     }
     return url;
 }

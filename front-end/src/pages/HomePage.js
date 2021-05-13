@@ -5,7 +5,8 @@ import NoticeboardItem from "../components/NoticeboardItem";
 import * as apiCalls from "../api/apiCalls";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 import PaginationBar from "../components/PaginationBar";
-
+import InputFilters from "../components/InputFilters";
+import PageOptionsSelection from "../components/PageOptionsSelection";
 
 class HomePage extends Component {
     state = {
@@ -16,29 +17,46 @@ class HomePage extends Component {
             size: 12,
             totalPages: 1
         },
-        requestParams: {
-            minPrice: undefined,
-            maxPrice: undefined,
-            location: undefined,
-            searched: undefined,
-        },
+        minPriceInput: '',
+        minPriceParam: '',
+        minPriceError: '',
+        maxPriceInput: '',
+        maxPriceParam: '',
+        maxPriceError: '',
+        locationInput: '',
+        locationParam: '',
+        searchingInput: '',
+        searchingParam: '',
         currentPage: 0,
         currentSize: 12,
         currentSort: 'createdAt,desc',
-        searchingField: '',
         isSearching: false,
-        isLoadingContent: true
+        isLoadingContent: true,
+        validationErrors: []
     }
 
     componentDidMount() {
         this.loadNotices();
     }
 
+    loadNotices = () => {
+        this.setState({isLoadingContent: true})
+        const {currentPage, currentSort, currentSize} = this.state;
+        const {searchingParam, locationParam, minPriceParam, maxPriceParam} = this.state;
+        const requestParams = {searchingParam, locationParam, minPriceParam, maxPriceParam};
+        apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
+            .then(response => {
+                this.setState({page: response.data, isSearching: false, isLoadingContent: false});
+            })
+            .catch(error => {
+
+            });
+    }
+
     onSelectSorting = event => {
         this.setState({currentPage: 0, currentSort: event.target.value}, () => {
             this.loadNotices();
         });
-
     }
 
     onSelectPageSize = event => {
@@ -48,13 +66,79 @@ class HomePage extends Component {
     }
 
     onClickSearch = () => {
-        this.setState({isSearching: true})
-        let requestParams = {...this.state.requestParams};
-        requestParams.searched = this.state.searchingField;
-        this.setState({requestParams}, () => {
+        const searchingInput = this.state.searchingInput.trim().replaceAll(' ', '+');
+        this.setState({searchingParam: searchingInput, isSearching: true}, () => {
             this.loadNotices();
         });
     }
+
+    validatePrice(input) {
+        return /^[0-9]+(\.[0-9]{1,2})?$/.test(input) || input === '';
+    }
+
+    onChangeMinPrice = event => {
+        const newMinPriceInputValue = event.target.value;
+        if (newMinPriceInputValue.length < 15) {
+            this.setState({minPriceInput: newMinPriceInputValue, minPriceError: ''});
+        }
+    }
+
+    onBlurMinPrice = () => {
+        const newMinPriceParam = this.state.minPriceInput.replace('zł', '').trim();
+        if (this.state.minPriceParam !== newMinPriceParam) {
+            if (!this.validatePrice(newMinPriceParam)) {
+                this.setState({minPriceError: 'Niepoprawny format'});
+            } else {
+                this.setState({minPriceParam: newMinPriceParam}, () => {
+                    this.loadNotices();
+                });
+            }
+        }
+    }
+
+    onChangeMaxPrice = event => {
+        const newMaxPriceInputValue = event.target.value;
+        if (newMaxPriceInputValue.length < 15) {
+            this.setState({maxPriceInput: newMaxPriceInputValue, maxPriceError: ''});
+        }
+    }
+
+    onBlurMaxPrice = () => {
+        const newMaxPrice = this.state.maxPriceInput.replace('zł', '').trim();
+        if (this.state.maxPriceParam !== newMaxPrice) {
+            if (!this.validatePrice(newMaxPrice)) {
+                this.setState({maxPriceError: 'Niepoprawny format'});
+            } else {
+                this.setState({maxPriceParam: newMaxPrice}, () => {
+                    this.loadNotices();
+                });
+            }
+        }
+    }
+
+    onBlurLocation = () => {
+        const newLocation = this.state.locationInput.trim().replace(' ', '+');
+        if (this.state.locationParam !== newLocation) {
+            this.setState({locationParam: newLocation}, () => {
+                this.loadNotices();
+            });
+        }
+    }
+
+    onChangeLocation = event => {
+        const location = event.target.value;
+        if (location.length < 50) {
+            this.setState({locationInput: location});
+        }
+    }
+
+    onChangeSearchingInput = event => {
+        const searched = event.target.value;
+        if (searched.length < 60) {
+            this.setState({searchingInput: searched});
+        }
+    }
+
 
     onClickNext = () => {
         if (!this.state.page.last) {
@@ -63,6 +147,7 @@ class HomePage extends Component {
             });
         }
     }
+
     onClickPrevious = () => {
         if (!this.state.page.first) {
             this.setState({currentPage: this.state.currentPage - 1}, () => {
@@ -82,47 +167,7 @@ class HomePage extends Component {
             this.loadNotices();
         });
     }
-    loadNotices = () => {
-        const {currentPage, currentSort, currentSize, requestParams} = this.state;
-        this.setState({isLoadingContent: true})
-        apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
-            .then(response => {
-                this.setState({page: response.data, isSearching: false, isLoadingContent: false});
-            })
-            .catch(error => {
 
-            });
-    }
-    onChangeMaxPrice = event => {
-        let requestParams = {...this.state.requestParams};
-        requestParams.maxPrice = event.target.value;
-        this.setState({requestParams}, () => {
-            this.loadNotices();
-        });
-
-    }
-    onChangeMinPrice = event => {
-        let requestParams = {...this.state.requestParams};
-        requestParams.minPrice = event.target.value;
-        this.setState({requestParams}, () => {
-            this.loadNotices();
-        });
-
-    }
-
-
-    onChangeLocation = event => {
-        let requestParams = {...this.state.requestParams};
-        requestParams.location = event.target.value.replace(' ', '+');
-        this.setState({requestParams}, () => {
-            this.loadNotices();
-        });
-
-    }
-
-    onChangeSearched = event => {
-        this.setState({searchingField: event.target.value});
-    }
 
     render() {
         return (
@@ -139,7 +184,8 @@ class HomePage extends Component {
                                 <FormControl
                                     className="gold-glow"
                                     placeholder="Czego szukasz?"
-                                    onChange={this.onChangeSearched}
+                                    onChange={this.onChangeSearchingInput}
+                                    value={this.state.searchingInput}
                                 />
                                 <InputGroup.Append>
                                     <ButtonWithSpinner
@@ -169,76 +215,47 @@ class HomePage extends Component {
 
                                 </Button>
                             </div>
+                            {/*<Collapse in={true}>*/}
                             <Collapse in={this.state.open}>
                                 <div id="collapse-text">
                                     <div className="mt-2 col-11 mx-auto">
                                         <form className="row g-3 justify-content-center">
-                                            <div className="col-lg-8 row mt-3">
-                                                <div className="col-sm-6 mt-2">
-                                                    <label htmlFor="inputMinPrice" className="form-label">Cena
-                                                        od:</label>
-                                                    <input type="text" className="form-control" id="inputMinPrice"
-                                                           placeholder="np. 20 zł" onBlur={this.onChangeMinPrice}/>
-                                                </div>
-                                                <div className="col-sm-6  mt-2">
-                                                    <label htmlFor="inputMaxPrice" className="form-label">Cena
-                                                        do:</label>
-                                                    <input type="text" className="form-control" id="inputMaxPrice"
-                                                           placeholder="np. 100 zł" onBlur={this.onChangeMaxPrice}/>
-                                                </div>
-                                                <div className="col-12  mt-2">
-                                                    <label htmlFor="inputLocation"
-                                                           className="form-label">Lokalizacja:</label>
-                                                    <input type="text" className="form-control" id="inputLocation"
-                                                           placeholder="np. Warszawa"
-                                                           onBlur={this.onChangeLocation}/>
-                                                </div>
-                                            </div>
-
-                                            <div className="col-lg-4 row mt-md-3">
-
-                                                <div className="col-12  mt-2">
-                                                    <label htmlFor="inputPagination" className="form-label">Ilość na
-                                                        stronie</label>
-                                                    <select id="inputSorting" className="form-select"
-                                                            onChange={this.onSelectPageSize}>
-                                                        <option value="12" defaultValue>12</option>
-                                                        <option value="24">24</option>
-                                                        <option value="36">36</option>
-                                                    </select>
-                                                </div>
-                                                <div className="col-12  mt-2">
-                                                    <label htmlFor="inputPagination"
-                                                           className="form-label">Sortowanie</label>
-                                                    <select id="inputPagination" className="form-select"
-                                                            onChange={this.onSelectSorting}>
-                                                        <option value="createdAt,desc" defaultValue>Od najnowszych
-                                                        </option>
-                                                        <option value="createdAt">Od najstarszych</option>
-                                                        <option value="price">Od najtańszych</option>
-                                                        <option value="price,desc">Od najdroższych</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <InputFilters
+                                                onChangeLocation={this.onChangeLocation}
+                                                onBlurLocation={this.onBlurLocation}
+                                                location={this.state.locationInput}
+                                                onChangeMaxPrice={this.onChangeMaxPrice}
+                                                onBlurMaxPrice={this.onBlurMaxPrice}
+                                                maxPrice={this.state.maxPriceInput}
+                                                maxPriceError={this.state.maxPriceError}
+                                                onChangeMinPrice={this.onChangeMinPrice}
+                                                onBlurMinPrice={this.onBlurMinPrice}
+                                                minPrice={this.state.minPriceInput}
+                                                minPriceError={this.state.minPriceError}
+                                            />
+                                            <PageOptionsSelection
+                                                onSelectPageSize={this.onSelectPageSize}
+                                                onSelectSorting={this.onSelectSorting}
+                                            />
                                         </form>
                                     </div>
-
                                 </div>
                             </Collapse>
                         </div>
                         <div className="text-muted text-center mt-1">
-                            {this.state.requestParams.searched &&
+                            {this.state.searchingParam &&
                             <span
-                                className="badge bg-secondary  mx-1">Wyszukiwanie: {this.state.requestParams.searched}</span>}
-                            {this.state.requestParams.minPrice &&
+                                className="badge bg-secondary  mx-1">Wyszukiwanie: {this.state.searchingParam}</span>}
+                            {this.state.minPriceParam &&
                             <span
-                                className="badge bg-secondary mx-1">Cena od: {this.state.requestParams.minPrice} zł </span>}
-                            {this.state.requestParams.maxPrice &&
+                                className="badge bg-secondary mx-1">Cena od: {this.state.minPriceParam} zł </span>}
+                            {this.state.maxPriceParam &&
                             <span
-                                className="badge bg-secondary  mx-1">Cena do: {this.state.requestParams.maxPrice} zł </span>}
-                            {this.state.requestParams.location &&
-                            <span
-                                className="badge bg-secondary  mx-1">Lokalizacja: {this.state.requestParams.location}</span>}
+                                className="badge bg-secondary  mx-1">Cena do: {this.state.maxPriceParam} zł </span>}
+                            {this.state.locationParam &&
+                            <span className="badge bg-secondary  mx-1">
+                                Lokalizacja: {this.state.locationParam.replaceAll('+', '')}
+                            </span>}
                         </div>
                     </Card.Header>
                     <div className="row m-4">
