@@ -12,10 +12,10 @@ import * as apiCalls from '../api/apiCalls';
 class CreateNoticePage extends Component {
 
     state = {
-        title: 'Sprzedam Opla',
-        location: 'Warszawa',
-        price: '2000',
-        description: 'Suspendisse laoreet felis et leo ullamcorper tincidunt. Sed sapien risus, pulvinar vitae ligula eget, finibus aliquam mi. Pellentesque metus mauris, feugiat vitae sapien vel, efficitur pretium ante. Sed id lacinia est. Nam in quam dapibus, egestas tellus id, ultrices tortor. Integer molestie in dui eget ornare. Nam et nunc id odio ullamcorper cursus in quis lectus. Mauris convallis lacinia lorem, sit amet rutrum nisl bibendum vitae. Vestibulum ullamcorper elementum lectus, vel pulvinar ante viverra id. ',
+        title: '',
+        location: '',
+        price: '',
+        description: '',
         ongoingApiCall: false,
         errors: undefined
     }

@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import InputWithValidation from '../components/InputWithValidation';
 import {Redirect} from 'react-router';
 import {Alert, Container} from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ButtonWithSpinner from '../components/ButtonWithSpinner';
 
 export class LoginPage extends Component {
@@ -65,9 +64,8 @@ export class LoginPage extends Component {
                     onChange={this.onChangePassword}
                 />
 
-                {this.state.alertMessage && <Alert variant="danger" className="text-center">
+                {this.state.alertMessage && <Alert variant="danger" className="text-center col-sm-10 col-md-7 mx-auto">
                     {this.state.alertMessage}
-                    <FontAwesomeIcon icon={["far", "frown-open"]} className="ms-1"/>
                 </Alert>}
 
                 <div className="mb-3 mt-4 text-center">

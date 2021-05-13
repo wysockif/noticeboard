@@ -50,11 +50,31 @@ export const getNoticesByUsername = username => {
     return axios.get(apiUrl + `/notices?username=${username}&sort=createdAt,desc`);
 }
 
-export const getNotices = () => {
-    return axios.get(apiUrl + `/notices?sort=createdAt,desc`);
-}
-
-
 export const login = user => {
     return axios.post(apiUrl + '/login', {}, {auth: user});
+}
+
+export const getNotices = (page = 0, sort = 'createdAt,desc', size = 12, gettingNoticesParams) => {
+    let url = apiUrl + `/notices?page=${page}&sort=${sort}&size=${size}`;
+    if (gettingNoticesParams) {
+        url += mapToUrl(gettingNoticesParams);
+    }
+    return axios.get(url);
+}
+
+function mapToUrl(gettingNoticesParams) {
+    let url = '';
+    if (gettingNoticesParams.minPrice) {
+        url += `&minPrice=${gettingNoticesParams.minPrice}`
+    }
+    if (gettingNoticesParams.maxPrice) {
+        url += `&maxPrice=${gettingNoticesParams.maxPrice}`
+    }
+    if (gettingNoticesParams.location) {
+        url += `&location=${gettingNoticesParams.location}`
+    }
+    if (gettingNoticesParams.searched) {
+        url += `&searched=${gettingNoticesParams.searched}`
+    }
+    return url;
 }

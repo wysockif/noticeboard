@@ -27,3 +27,18 @@ select:focus,
     border-color: #b84 !important;
     color: lightyellow !important;
 }
+
+
+.pagination .active span {
+    background-color: #b84  !important;
+    border-color: #b84 !important;
+    color: #ffffff !important;
+}
+
+.pagination span:hover {
+    background-color: #B82  !important;
+    border-color: #b82  !important;
+    color: #ffffff !important;
+    cursor: pointer;
+}
+

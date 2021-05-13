@@ -6,6 +6,8 @@ import moment from "moment";
 import {Link} from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
 import {connect} from "react-redux";
+import defaultProfilePicture from "../assets/default-profile-image.jpeg";
+
 
 class NoticePage extends Component {
 
@@ -99,6 +101,12 @@ class NoticePage extends Component {
     getMainContent = () => {
         const momentDate = moment(new Date(this.state.notice.createdAt));
         momentDate.locale('pl');
+        let profileImage;
+        if (this.state.user && this.state.user.image) {
+            profileImage = "/images/profile/" + this.state.user.image;
+        } else {
+            profileImage = defaultProfilePicture;
+        }
         return (
             <Card>
                 <Card.Header className="text-center">
@@ -192,8 +200,8 @@ class NoticePage extends Component {
                             >
                                 <div>
                                     {`${this.state.user.firstName} ${this.state.user.lastName}`}
-                                    <Image roundedCircle src={`/images/profile/${this.state.user.image}`} width="40"
-                                           height="40" className="ms-2"/>
+                                    <Image roundedCircle src={profileImage} width="40"
+                                           height="40" className="ms-2 border border-secondary"/>
                                 </div>
                             </Link>}
                         </div>

@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import {Button, Card, Collapse, FormControl, InputGroup, Pagination} from 'react-bootstrap';
+import {Button, Card, Collapse, FormControl, InputGroup, Spinner} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import NoticeboardItem from "../components/NoticeboardItem";
 import * as apiCalls from "../api/apiCalls";
+import ButtonWithSpinner from "../components/ButtonWithSpinner";
+import PaginationBar from "../components/PaginationBar";
 
 
 class HomePage extends Component {
@@ -11,19 +13,115 @@ class HomePage extends Component {
         page: {
             content: [],
             number: 0,
-            size: 18,
+            size: 12,
             totalPages: 1
-        }
+        },
+        requestParams: {
+            minPrice: undefined,
+            maxPrice: undefined,
+            location: undefined,
+            searched: undefined,
+        },
+        currentPage: 0,
+        currentSize: 12,
+        currentSort: 'createdAt,desc',
+        searchingField: '',
+        isSearching: false,
+        isLoadingContent: true
     }
 
     componentDidMount() {
-        apiCalls.getNotices()
+        this.loadNotices();
+    }
+
+    onSelectSorting = event => {
+        this.setState({currentPage: 0, currentSort: event.target.value}, () => {
+            this.loadNotices();
+        });
+
+    }
+
+    onSelectPageSize = event => {
+        this.setState({currentPage: 0, currentSize: event.target.value}, () => {
+            this.loadNotices();
+        });
+    }
+
+    onClickSearch = () => {
+        this.setState({isSearching: true})
+        let requestParams = {...this.state.requestParams};
+        requestParams.searched = this.state.searchingField;
+        this.setState({requestParams}, () => {
+            this.loadNotices();
+        });
+    }
+
+    onClickNext = () => {
+        if (!this.state.page.last) {
+            this.setState({currentPage: this.state.currentPage + 1}, () => {
+                this.loadNotices();
+            });
+        }
+    }
+    onClickPrevious = () => {
+        if (!this.state.page.first) {
+            this.setState({currentPage: this.state.currentPage - 1}, () => {
+                this.loadNotices();
+            });
+        }
+    }
+
+    onClickFirst = () => {
+        this.setState({currentPage: 0}, () => {
+            this.loadNotices();
+        });
+    }
+
+    onClickLast = () => {
+        this.setState({currentPage: this.state.page.totalPages - 1}, () => {
+            this.loadNotices();
+        });
+    }
+    loadNotices = () => {
+        const {currentPage, currentSort, currentSize, requestParams} = this.state;
+        this.setState({isLoadingContent: true})
+        apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
             .then(response => {
-                this.setState({page: response.data});
+                this.setState({page: response.data, isSearching: false, isLoadingContent: false});
             })
             .catch(error => {
 
             });
+    }
+    onChangeMaxPrice = event => {
+        let requestParams = {...this.state.requestParams};
+        requestParams.maxPrice = event.target.value;
+        this.setState({requestParams}, () => {
+            this.loadNotices();
+        });
+
+    }
+    onChangeMinPrice = event => {
+        let requestParams = {...this.state.requestParams};
+        requestParams.minPrice = event.target.value;
+        this.setState({requestParams}, () => {
+            this.loadNotices();
+        });
+
+    }
+
+
+    onChangeLocation = event => {
+        let requestParams = {...this.state.requestParams};
+        requestParams.location = event.target.value.replace(' ', '+');
+        this.setState({requestParams}, () => {
+            this.loadNotices();
+        });
+
+    }
+
+    onChangeSearched = event => {
+        this.setState({searchingField: event.target.value});
     }
 
     render() {
@@ -41,14 +139,15 @@ class HomePage extends Component {
                                 <FormControl
                                     className="gold-glow"
                                     placeholder="Czego szukasz?"
+                                    onChange={this.onChangeSearched}
                                 />
                                 <InputGroup.Append>
-                                    <Button
-                                        style={{backgroundColor: '#b78e56'}}
+                                    <ButtonWithSpinner
                                         variant="outline-light"
-                                        className="px-4">
-                                        Szukaj
-                                    </Button>
+                                        onClick={this.onClickSearch}
+                                        ongoingApiCall={this.state.isSearching}
+                                        content="Szukaj"
+                                    />
                                 </InputGroup.Append>
                             </InputGroup>
                             <div className="text-center">
@@ -74,63 +173,81 @@ class HomePage extends Component {
                                 <div id="collapse-text">
                                     <div className="mt-2 col-11 mx-auto">
                                         <form className="row g-3 justify-content-center">
-                                            <div className="col-md-4">
-                                                <label htmlFor="inputMinPrice" className="form-label">Cena od:</label>
-                                                <input type="text" className="form-control" id="inputMinPrice"
-                                                       placeholder="np. 20 zł"/>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <label htmlFor="inputMaxPrice" className="form-label">Cena do:</label>
-                                                <input type="text" className="form-control" id="inputMaxPrice"
-                                                       placeholder="np. 100 zł"/>
-                                            </div>
-
-                                            <div className="col-md-4">
-                                                <label htmlFor="inputPagination"
-                                                       className="form-label">Sortowanie</label>
-                                                <select id="inputPagination" className="form-select">
-                                                    <option value="0" defaultValue>Od najnowszych</option>
-                                                    <option value="1">Od najstarszych</option>
-                                                    <option value="2">Od najtańszych</option>
-                                                    <option value="3">Od najdroższych</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-8">
-                                                <label htmlFor="inputLocation"
-                                                       className="form-label">Lokalizacja:</label>
-                                                <input type="text" className="form-control" id="inputLocation"
-                                                       placeholder="np. Warszawa"/>
+                                            <div className="col-lg-8 row mt-3">
+                                                <div className="col-sm-6 mt-2">
+                                                    <label htmlFor="inputMinPrice" className="form-label">Cena
+                                                        od:</label>
+                                                    <input type="text" className="form-control" id="inputMinPrice"
+                                                           placeholder="np. 20 zł" onBlur={this.onChangeMinPrice}/>
+                                                </div>
+                                                <div className="col-sm-6  mt-2">
+                                                    <label htmlFor="inputMaxPrice" className="form-label">Cena
+                                                        do:</label>
+                                                    <input type="text" className="form-control" id="inputMaxPrice"
+                                                           placeholder="np. 100 zł" onBlur={this.onChangeMaxPrice}/>
+                                                </div>
+                                                <div className="col-12  mt-2">
+                                                    <label htmlFor="inputLocation"
+                                                           className="form-label">Lokalizacja:</label>
+                                                    <input type="text" className="form-control" id="inputLocation"
+                                                           placeholder="np. Warszawa"
+                                                           onBlur={this.onChangeLocation}/>
+                                                </div>
                                             </div>
 
+                                            <div className="col-lg-4 row mt-md-3">
 
-                                            <div className="col-md-4">
-                                                <label htmlFor="inputPagination" className="form-label">Ilość na
-                                                    stronie</label>
-                                                <select id="inputSorting" className="form-select">
-                                                    <option value="0" defaultValue>15</option>
-                                                    <option value="1">30</option>
-                                                </select>
-                                            </div>
-                                            <div className="col-12 text-center">
-                                                <Button
-                                                    style={{backgroundColor: '#b78e56'}}
-                                                    variant="outline-light"
-                                                    className="px-4 btn-sm">
-                                                    Zastosuj
-                                                </Button>
+                                                <div className="col-12  mt-2">
+                                                    <label htmlFor="inputPagination" className="form-label">Ilość na
+                                                        stronie</label>
+                                                    <select id="inputSorting" className="form-select"
+                                                            onChange={this.onSelectPageSize}>
+                                                        <option value="12" defaultValue>12</option>
+                                                        <option value="24">24</option>
+                                                        <option value="36">36</option>
+                                                    </select>
+                                                </div>
+                                                <div className="col-12  mt-2">
+                                                    <label htmlFor="inputPagination"
+                                                           className="form-label">Sortowanie</label>
+                                                    <select id="inputPagination" className="form-select"
+                                                            onChange={this.onSelectSorting}>
+                                                        <option value="createdAt,desc" defaultValue>Od najnowszych
+                                                        </option>
+                                                        <option value="createdAt">Od najstarszych</option>
+                                                        <option value="price">Od najtańszych</option>
+                                                        <option value="price,desc">Od najdroższych</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
 
-
                                 </div>
-
                             </Collapse>
+                        </div>
+                        <div className="text-muted text-center mt-1">
+                            {this.state.requestParams.searched &&
+                            <span
+                                className="badge bg-secondary  mx-1">Wyszukiwanie: {this.state.requestParams.searched}</span>}
+                            {this.state.requestParams.minPrice &&
+                            <span
+                                className="badge bg-secondary mx-1">Cena od: {this.state.requestParams.minPrice} zł </span>}
+                            {this.state.requestParams.maxPrice &&
+                            <span
+                                className="badge bg-secondary  mx-1">Cena do: {this.state.requestParams.maxPrice} zł </span>}
+                            {this.state.requestParams.location &&
+                            <span
+                                className="badge bg-secondary  mx-1">Lokalizacja: {this.state.requestParams.location}</span>}
                         </div>
                     </Card.Header>
                     <div className="row m-4">
-                        {this.state.page.content.map(notice =>
+                        {this.state.isLoadingContent && <div className="text-center">
+                            <Spinner animation="border" size="sm" role="status" className="ms-1">
+                                <span className="sr-only">Loading...</span>
+                            </Spinner>
+                        </div>}
+                        {!this.state.isLoadingContent && this.state.page.content.map(notice =>
                             <NoticeboardItem
                                 title={notice.title}
                                 price={notice.price}
@@ -141,29 +258,27 @@ class HomePage extends Component {
                                 key={notice.id}
                             />
                         )}
+
+                        {!this.state.isLoadingContent && (this.state.page.content.length < 1) &&
+                        <div className="text-center">
+                            Nie znaleziono ogłoszeń
+                        </div>}
                     </div>
-                    <Pagination className="mx-auto small">
-                        <Pagination.Prev/>
-                        {this.state.page.number > 2 && this.state.page.number < this.state.page.totalPages - 1 && (
-                            <span>
-                                <Pagination.Item style={{color: '#B84'}}>{1}</Pagination.Item>
-                                <Pagination.Ellipsis/>
-                                <Pagination.Item>{this.state.page.number - 1}</Pagination.Item>
-                                <Pagination.Item active>{this.state.page.number}</Pagination.Item>
-                                <Pagination.Item>{this.state.page.number + 1}</Pagination.Item>
-                                <Pagination.Ellipsis/>
-                                <Pagination.Item>{this.state.page.totalPages}</Pagination.Item>
-                            </span>
-                        )
-                        }
-                        <Pagination.Next/>
-                    </Pagination>
+                    {!this.state.isLoadingContent && (this.state.page.totalPages > 1) &&
+                    <PaginationBar
+                        page={this.state.page}
+                        onClickFirst={this.onClickFirst}
+                        onClickLast={this.onClickLast}
+                        onClickPrevious={this.onClickPrevious}
+                        onClickNext={this.onClickNext}
+                    />
+                    }
                 </Card>
             </div>
 
 
         )
-    };
+    }
 }
 
 export default HomePage;
