@@ -1,9 +1,10 @@
 package pl.wysockif.noticeboard.services.notice;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import pl.wysockif.noticeboard.controllers.notice.GetNoticesRequestParams;
+import pl.wysockif.noticeboard.params.GettingNoticesParams;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
@@ -90,21 +91,22 @@ public class NoticeService {
         LOGGER.info("Updated (noticeId: " + noticeId + ")");
     }
 
-    public Page<NoticeSnapshot> getNotices(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, GettingNoticesParams gettingNoticesParams) {
         LOGGER.info("Getting notices");
         Page<Notice> noticePage;
-        noticePage = getNoticePage(pageable, getNoticesRequestParams);
+        noticePage = getNoticePage(pageable, gettingNoticesParams);
         Page<NoticeSnapshot> noticeSnapshotPage = noticePage.map(NoticeMapper.INSTANCE::noticeToNoticeSnapshot);
         LOGGER.info("Got notices");
         return noticeSnapshotPage;
     }
 
-    private Page<Notice> getNoticePage(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
-        String username = getNoticesRequestParams.getUsername();
-        String minPriceParam = getNoticesRequestParams.getMinPrice();
-        String maxPriceParam = getNoticesRequestParams.getMaxPrice();
-        String searched = getNoticesRequestParams.getSearched();
-        String location = getNoticesRequestParams.getLocation();
+
+    private Page<Notice> getNoticePage(Pageable pageable, GettingNoticesParams gettingNoticesParams) {
+        String username = gettingNoticesParams.getUsername();
+        String minPriceParam = gettingNoticesParams.getMinPrice();
+        String maxPriceParam = gettingNoticesParams.getMaxPrice();
+        String searched = gettingNoticesParams.getSearched();
+        String location = gettingNoticesParams.getLocation();
         Page<Notice> noticePage;
         if (username != null) {
             noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);

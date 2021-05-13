@@ -17,6 +17,7 @@ import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeWithDetailsSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
+import pl.wysockif.noticeboard.params.GettingNoticesParams;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
 
 import javax.validation.Valid;
@@ -47,9 +48,9 @@ public class NoticeController {
     }
 
     @GetMapping("/notices")
-    public Page<NoticeSnapshot> getNotices(Pageable pageable, GetNoticesRequestParams getNoticesRequestParams) {
+    public Page<NoticeSnapshot> getNotices(Pageable pageable, GettingNoticesParams gettingNoticesParams) {
         LOGGER.info("Request getNotices started");
-        Page<NoticeSnapshot> page = noticeService.getNotices(pageable, getNoticesRequestParams);
+        Page<NoticeSnapshot> page = noticeService.getNotices(pageable, gettingNoticesParams);
         LOGGER.info("Request getNotices finished");
         return page;
     }

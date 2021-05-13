@@ -24,7 +24,7 @@ public class StaticFileService {
 
     public String saveNoticeImage(String userId, String imageAsEncodedString) {
         String noticeImageFileName = userId + "-" +
-                UUID.randomUUID().toString().replace("-", "") + ".png";
+                UUID.randomUUID().toString().replace("-", "");
         LOGGER.info("Saving notice image (userId: " + userId + ", imageName: " + noticeImageFileName + ")");
 
         byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);
@@ -36,7 +36,7 @@ public class StaticFileService {
 
     public String saveProfileImage(String userId, String username, String imageAsEncodedString) {
         String profileImageFileName = username + "-" +
-                UUID.randomUUID().toString().replace("-", "") + ".png";
+                UUID.randomUUID().toString().replace("-", "");
         LOGGER.info("Saving profile image (userId: " + userId + ", imageName: " + profileImageFileName + ")");
 
         byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);

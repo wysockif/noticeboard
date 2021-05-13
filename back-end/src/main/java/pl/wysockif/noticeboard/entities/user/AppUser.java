@@ -64,7 +64,7 @@ public class AppUser implements Serializable, UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         return true;
-    }
+    }  //false
 
     @Transient
     @Override
