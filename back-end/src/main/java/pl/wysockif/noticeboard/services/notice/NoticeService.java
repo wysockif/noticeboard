@@ -1,7 +1,6 @@
 package pl.wysockif.noticeboard.services.notice;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.params.GettingNoticesParams;
@@ -150,7 +149,7 @@ public class NoticeService {
             noticePage = getNoticePageWhenIsSearchedInLocation(pageable, searched, location, minPriceValue, maxPriceValue);
         } else {
             noticePage = noticeRepository
-                    .findAllByLocationIgnoreCaseAndPriceBetween(location, minPriceValue, maxPriceValue, pageable);
+                    .findAllByLocationContainingIgnoreCaseAndPriceBetween(location, minPriceValue, maxPriceValue, pageable);
         }
         return noticePage;
     }
@@ -160,7 +159,7 @@ public class NoticeService {
             Pageable pageable, String searched, String location, BigDecimal minPriceValue, BigDecimal maxPriceValue) {
         Page<Notice> noticePage;
         noticePage = noticeRepository
-                .findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
+                .findAllByLocationContainingIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationContainingIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
                         location, minPriceValue, maxPriceValue, searched,
                         location, minPriceValue, maxPriceValue, searched,
                         pageable);

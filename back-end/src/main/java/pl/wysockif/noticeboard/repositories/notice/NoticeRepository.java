@@ -14,14 +14,14 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Page<Notice> findAllByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    Page<Notice> findAllByLocationIgnoreCaseAndPriceBetween(String location, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Page<Notice> findAllByLocationContainingIgnoreCaseAndPriceBetween(String location, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
     Page<Notice> findAllByPriceBetweenAndTitleContainingIgnoreCaseOrPriceBetweenAndDescriptionContainingIgnoreCase(
             BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
             BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
             Pageable pageable);
 
-    Page<Notice> findAllByLocationIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
+    Page<Notice> findAllByLocationContainingIgnoreCaseAndPriceBetweenAndTitleContainingIgnoreCaseOrLocationContainingIgnoreCaseAndPriceBetweenAndDescriptionContainingIgnoreCase(
             String location1, BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
             String location2, BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
             Pageable pageable);
