@@ -219,7 +219,7 @@ class HomePage extends Component {
                             <Collapse in={this.state.open}>
                                 <div id="collapse-text">
                                     <div className="mt-2 col-11 mx-auto">
-                                        <form className="row g-3 justify-content-center">
+                                        <form className="row g-3 justify-content-center align-items-start">
                                             <InputFilters
                                                 onChangeLocation={this.onChangeLocation}
                                                 onBlurLocation={this.onBlurLocation}

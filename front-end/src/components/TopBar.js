@@ -22,7 +22,7 @@ class TopBar extends Component {
             >
                 <Container className="col-sm-11 col-md-9">
                     <Navbar.Brand>
-                        <Link to="/" replace>
+                        <Link to="/">
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140"/>
                         </Link>
                     </Navbar.Brand>
