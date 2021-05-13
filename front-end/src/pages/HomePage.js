@@ -39,6 +39,7 @@ class HomePage extends Component {
         this.loadNotices();
     }
 
+
     loadNotices = () => {
         this.setState({isLoadingContent: true})
         const {currentPage, currentSort, currentSize} = this.state;
@@ -96,6 +97,12 @@ class HomePage extends Component {
         }
     }
 
+    onClickDeleteMinPrice = () => {
+        this.setState({minPriceParam: '', minPriceInput: '', minPriceError: '', currentPage: 0}, () => {
+            this.loadNotices();
+        });
+    }
+
     onChangeMaxPrice = event => {
         const newMaxPriceInputValue = event.target.value;
         if (newMaxPriceInputValue.length < 15) {
@@ -116,6 +123,12 @@ class HomePage extends Component {
         }
     }
 
+    onClickDeleteMaxPrice = () => {
+        this.setState({maxPriceParam: '', maxPriceInput: '', maxPriceError: '', currentPage: 0}, () => {
+            this.loadNotices();
+        });
+    }
+
     onBlurLocation = () => {
         const newLocation = this.state.locationInput.trim().replace(' ', '+');
         if (this.state.locationParam !== newLocation) {
@@ -125,6 +138,12 @@ class HomePage extends Component {
         }
     }
 
+    onClickDeleteLocation = () => {
+        this.setState({locationParam: '', locationInput: '', currentPage: 0}, () => {
+            this.loadNotices();
+        });
+    }
+
     onChangeLocation = event => {
         const location = event.target.value;
         if (location.length < 50) {
@@ -132,11 +151,18 @@ class HomePage extends Component {
         }
     }
 
+
     onChangeSearchingInput = event => {
         const searched = event.target.value;
         if (searched.length < 60) {
             this.setState({searchingInput: searched});
         }
+    }
+
+    onClickDeleteSearching = () => {
+        this.setState({searchingInput: '', searchingParam: '', currentPage: 0}, () => {
+            this.loadNotices();
+        });
     }
 
 
@@ -162,12 +188,12 @@ class HomePage extends Component {
         });
     }
 
+
     onClickLast = () => {
         this.setState({currentPage: this.state.page.totalPages - 1}, () => {
             this.loadNotices();
         });
     }
-
 
     render() {
         return (
@@ -242,44 +268,72 @@ class HomePage extends Component {
                                 </div>
                             </Collapse>
                         </div>
-                        <div className="text-muted text-center mt-1">
+                        <div className="text-muted text-center mt-1 col-11 mx-auto">
                             {this.state.searchingParam &&
-                            <span
-                                className="badge bg-secondary  mx-1">Wyszukiwanie: {this.state.searchingParam}</span>}
+                            <span className="badge bg-secondary mx-1">
+                                <span className="d-inline-block text-truncate text-nowrap" style={{maxWidth: '210px'}}>
+                                    Wyszukiwanie: {this.state.searchingParam}
+                                </span>
+                                <span className="ms-2" style={{cursor: 'pointer'}}
+                                      onClick={this.onClickDeleteSearching}>X</span>
+                            </span>}
                             {this.state.minPriceParam &&
                             <span
-                                className="badge bg-secondary mx-1">Cena od: {this.state.minPriceParam} zł </span>}
+                                className="badge bg-secondary mx-1 align-content-center">
+                                      <span className="d-inline-block text-truncate text-nowrap"
+                                            style={{maxWidth: '210px'}}>
+                                Cena od: {this.state.minPriceParam} zł
+                                      </span>
+                                <span className="ms-2" style={{cursor: 'pointer'}}
+                                      onClick={this.onClickDeleteMinPrice}>X</span>
+                            </span>}
                             {this.state.maxPriceParam &&
                             <span
-                                className="badge bg-secondary  mx-1">Cena do: {this.state.maxPriceParam} zł </span>}
+                                className="badge bg-secondary mx-1">
+                                <span
+                                    className="d-inline-block text-truncate text-nowrap"
+                                    style={{maxWidth: '210px'}}>
+                                Cena do: {this.state.maxPriceParam} zł
+                                   </span>
+                                <span className="ms-2" style={{cursor: 'pointer'}}
+                                      onClick={this.onClickDeleteMaxPrice}>X</span>
+                            </span>}
                             {this.state.locationParam &&
                             <span className="badge bg-secondary  mx-1">
+                                <span
+                                    className="d-inline-block text-truncate text-nowrap"
+                                    style={{maxWidth: '210px'}}>
                                 Lokalizacja: {this.state.locationParam.replaceAll('+', '')}
+                                </span>
+                                <span className="ms-2" style={{cursor: 'pointer'}}
+                                      onClick={this.onClickDeleteLocation}>X</span>
                             </span>}
                         </div>
                     </Card.Header>
-                    <div className="row m-4">
-                        {this.state.isLoadingContent && <div className="text-center">
-                            <Spinner animation="border" size="sm" role="status" className="ms-1">
-                                <span className="sr-only">Loading...</span>
-                            </Spinner>
-                        </div>}
-                        {!this.state.isLoadingContent && this.state.page.content.map(notice =>
-                            <NoticeboardItem
-                                title={notice.title}
-                                price={notice.price}
-                                location={notice.location}
-                                image={notice.primaryImage}
-                                createdAt={notice.createdAt}
-                                id={notice.id}
-                                key={notice.id}
-                            />
-                        )}
+                    <div>
+                        <div className="row m-4">
+                            {this.state.isLoadingContent && <div className="text-center">
+                                <Spinner animation="border" size="sm" role="status" className="ms-1">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </div>}
+                            {!this.state.isLoadingContent && this.state.page.content.map(notice =>
+                                <NoticeboardItem
+                                    title={notice.title}
+                                    price={notice.price}
+                                    location={notice.location}
+                                    image={notice.primaryImage}
+                                    createdAt={notice.createdAt}
+                                    id={notice.id}
+                                    key={notice.id}
+                                />
+                            )}
 
-                        {!this.state.isLoadingContent && (this.state.page.content.length < 1) &&
-                        <div className="text-center">
-                            Nie znaleziono ogłoszeń
-                        </div>}
+                            {!this.state.isLoadingContent && (this.state.page.content.length < 1) &&
+                            <div className="text-center">
+                                Nie znaleziono ogłoszeń
+                            </div>}
+                        </div>
                     </div>
                     {!this.state.isLoadingContent && (this.state.page.totalPages > 1) &&
                     <PaginationBar
@@ -295,6 +349,13 @@ class HomePage extends Component {
 
 
         )
+    }
+}
+
+HomePage.defaultProps = {
+    location: {
+        state: {
+        }
     }
 }
 

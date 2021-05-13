@@ -5,8 +5,8 @@ const InputFilters = props => {
 
 
     return (
-        <div className="col-lg-8 row mt-3">
-            <div className="col-12  mt-2">
+        <div className="col-lg-8 row">
+            <div className="col-12 mt-2">
                 <label htmlFor="inputLocation" className="form-label">
                     Lokalizacja:
                 </label>
@@ -36,7 +36,7 @@ const InputFilters = props => {
                     {props.minPriceError}
                 </FormControl.Feedback>
             </div>
-            <div className="col-sm-6  mt-2">
+            <div className="col-sm-6 mt-2 mb-md-2">
                 <label htmlFor="inputMaxPrice" className="form-label">
                     Cena do:
                 </label>

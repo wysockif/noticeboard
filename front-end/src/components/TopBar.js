@@ -14,6 +14,18 @@ class TopBar extends Component {
         this.props.history.replace('/');
     };
 
+    onClickLogo = () => {
+        const current = this.props.location.pathname;
+        if (current === '/') {
+            this.props.history.replace(`//`);
+            setTimeout(() => {
+                this.props.history.replace(current);
+            });
+        } else {
+            this.props.history.push('/');
+        }
+    }
+
     render() {
         return (
             <Navbar variant="light" expand="lg"
@@ -21,20 +33,23 @@ class TopBar extends Component {
                     bg="light"
             >
                 <Container className="col-sm-11 col-md-9">
-                    <Navbar.Brand>
-                        <Link to="/">
+                    <Navbar.Brand style={{cursor: 'pointer'}}>
+                        <div className="" onClick={this.onClickLogo}>
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140"/>
-                        </Link>
+                        </div>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" className="my-1 mx-3 p-1"/>
                     <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                         {!this.props.user.isLoggedIn && <Nav className="ms-auto">
-                            <Link to="/register" replace className="nav-link ms-3">Rejestracja</Link>
-                            <Link to="/login" replace className="nav-link ms-3 me-3">Logowanie</Link>
+                            <Link to="/register" replace={'/register' === this.props.location.pathname} className="nav-link ms-3">Rejestracja</Link>
+                            <Link to="/login" replace={'/login' === this.props.location.pathname}  className="nav-link ms-3 me-3">Logowanie</Link>
                         </Nav>}
                         {this.props.user.isLoggedIn && <Nav className="ms-auto">
-                            <Link to={"/notice/new"} replace className="nav-link ms-3">Dodaj ogłoszenie</Link>
-                            <Link to={"/user/" + this.props.user.username} replace className="nav-link ms-3">Moja
+                            <Link to={"/notice/new"} replace={'/notice/new' === this.props.location.pathname}
+                                  className="nav-link ms-3">Dodaj ogłoszenie</Link>
+                            <Link to={"/user/" + this.props.user.username}
+                                  replace={'/notice/user/' + this.props.user.username === this.props.location.pathname}
+                                  className="nav-link ms-3">Moja
                                 tablica</Link>
                             <div className="nav-link ms-3 me-3" style={{cursor: 'pointer'}}
                                  onClick={this.onClickLogout}>

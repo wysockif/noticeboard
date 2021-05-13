@@ -2,7 +2,7 @@ import React from 'react';
 
 const PageOptionsSelection = ({onSelectPageSize, onSelectSorting}) => {
     return (
-        <div className="col-lg-4 row mt-md-3">
+        <div className="col-lg-4 row mb-md-2">
             <div className="col-12  mt-2">
                 <label htmlFor="inputPagination" className="form-label">
                     Ilość na stronie
