@@ -11,6 +11,8 @@ import PaginationBar from "../components/PaginationBar";
 
 
 class UserProfilePage extends Component {
+    _isMounted = false;
+
     state = {
         errorMessage: false,
         isLoading: false,
@@ -28,7 +30,12 @@ class UserProfilePage extends Component {
         currentPage: 0
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     componentDidMount() {
+        this._isMounted = true;
         const username = this.props.match.params.username;
         if (!username) {
             return;
@@ -38,6 +45,7 @@ class UserProfilePage extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        this._isMounted = true;
         if (this.props.match.params.username !== prevProps.match.params.username) {
             const username = this.props.match.params.username;
             if (!username) {
@@ -84,16 +92,22 @@ class UserProfilePage extends Component {
     }
 
     loadUserToState(username) {
-        this.setState({errorMessage: false, isLoading: true});
+        if (this._isMounted){
+            this.setState({errorMessage: false, isLoading: true});
+        }
         apiCalls.getUser(username)
             .then(response => {
-                this.setState({user: response.data, isLoading: false});
+                if (this._isMounted) {
+                    this.setState({user: response.data, isLoading: false});
+                }
             })
             .catch(error => {
-                if (error.response.status === 404) {
-                    this.setState({errorMessage: true, isLoading: false})
-                } else {
-                    this.setState({connectionError: true, isLoading: false})
+                if (this._isMounted) {
+                    if (error.response.status === 404) {
+                        this.setState({errorMessage: true, isLoading: false})
+                    } else {
+                        this.setState({connectionError: true, isLoading: false})
+                    }
                 }
             });
     }
@@ -101,7 +115,9 @@ class UserProfilePage extends Component {
     loadUserNotices(username, page = 0) {
         apiCalls.getNoticesByUsername(username, page)
             .then(response => {
-                this.setState({page: response.data});
+                if (this._isMounted) {
+                    this.setState({page: response.data});
+                }
             })
             .catch(error => {
 
@@ -176,8 +192,8 @@ class UserProfilePage extends Component {
     }
 
     displaySpinner() {
-        return <div className="text-center">
-            <Spinner animation="border" size="sm" role="status" className="ms-1">
+        return <div className="text-center mt-5">
+            <Spinner animation="border" size="sm" role="status" className="ms-1 mt-5">
                 <span className="sr-only">Loading...</span>
             </Spinner>
         </div>;

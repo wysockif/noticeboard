@@ -42,3 +42,8 @@ select:focus,
     cursor: pointer;
 }
 
+html {
+    overflow-y: scroll;
+}
+
+

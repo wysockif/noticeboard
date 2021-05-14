@@ -23,10 +23,10 @@ function App() {
             <TopBar/>
             <Container>
                 <Switch>
-                    <Route exact path="/" component={HomePage}/>
+                    <Route exact path="/" render={(props) => <HomePage {...props} key={Date.now()}/>}/>
                     <Route path="/login" component={props => <LoginPage {...props} actions={actions}/>}/>
                     <Route path="/register" component={props => < RegistrationPage  {...props} actions={actions}/>}/>
-                    <Route path="/user/:username" component={UserProfilePage}/>
+                    <Route path="/user/:username" render={(props) => <UserProfilePage {...props} key={Date.now()}/>}/>
                     <Route path="/notice/new" component={CreateNoticePage}/>
                     <Route path="/notice/edit/:id" component={EditNoticePage}/>
                     <Route path="/notice/:id" component={NoticePage}/>

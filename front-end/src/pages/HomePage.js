@@ -9,6 +9,8 @@ import InputFilters from "../components/InputFilters";
 import PageOptionsSelection from "../components/PageOptionsSelection";
 
 class HomePage extends Component {
+    _isMounted = false;
+
     state = {
         open: false,
         page: {
@@ -32,26 +34,43 @@ class HomePage extends Component {
         currentSort: 'createdAt,desc',
         isSearching: false,
         isLoadingContent: true,
-        validationErrors: []
+        validationErrors: [],
+        loadingError: false
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidMount() {
+        this._isMounted = true;
         this.loadNotices();
     }
 
 
-    loadNotices = () => {
-        this.setState({isLoadingContent: true})
-        const {currentPage, currentSort, currentSize} = this.state;
-        const {searchingParam, locationParam, minPriceParam, maxPriceParam} = this.state;
-        const requestParams = {searchingParam, locationParam, minPriceParam, maxPriceParam};
-        apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
-            .then(response => {
-                this.setState({page: response.data, isSearching: false, isLoadingContent: false});
-            })
-            .catch(error => {
 
-            });
+    loadNotices = () => {
+        if (this._isMounted) {
+            this.setState({isLoadingContent: true, loadingError: false})
+            const {currentPage, currentSort, currentSize} = this.state;
+            const {searchingParam, locationParam, minPriceParam, maxPriceParam} = this.state;
+            const requestParams = {searchingParam, locationParam, minPriceParam, maxPriceParam};
+            apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
+                .then(response => {
+                    if (this._isMounted) {
+                        this.setState({page: response.data, isSearching: false, isLoadingContent: false});
+                    }
+                })
+                .catch(error => {
+                    if (this._isMounted) {
+                        this.setState({
+                            loadingError: true, isSearching: false, isLoadingContent: false, page: {
+                                content: [],
+                            },
+                        });
+                    }
+                });
+        }
     }
 
     onSelectSorting = event => {
@@ -71,6 +90,12 @@ class HomePage extends Component {
         this.setState({searchingParam: searchingInput, isSearching: true}, () => {
             this.loadNotices();
         });
+    }
+
+    handleKey = (e) => {
+        if (e.key === 'Enter') {
+            this.onClickSearch();
+        }
     }
 
     validatePrice(input) {
@@ -212,6 +237,7 @@ class HomePage extends Component {
                                     placeholder="Czego szukasz?"
                                     onChange={this.onChangeSearchingInput}
                                     value={this.state.searchingInput}
+                                    onKeyPress={this.handleKey}
                                 />
                                 <InputGroup.Append>
                                     <ButtonWithSpinner
@@ -328,11 +354,15 @@ class HomePage extends Component {
                                     key={notice.id}
                                 />
                             )}
-
-                            {!this.state.isLoadingContent && (this.state.page.content.length < 1) &&
+                            {this.state.loadingError &&
+                            <div className="text-center">
+                                Wystąpił błąd podczas ładowania ogłoszeń. Spróbuj ponownie później.
+                            </div>}
+                            {!this.state.loadingError && !this.state.isLoadingContent && (this.state.page.content.length < 1) &&
                             <div className="text-center">
                                 Nie znaleziono ogłoszeń
                             </div>}
+
                         </div>
                     </div>
                     {!this.state.isLoadingContent && (this.state.page.totalPages > 1) &&
@@ -354,8 +384,8 @@ class HomePage extends Component {
 
 HomePage.defaultProps = {
     location: {
-        state: {
-        }
+        state: {},
+        key: 0
     }
 }
 
