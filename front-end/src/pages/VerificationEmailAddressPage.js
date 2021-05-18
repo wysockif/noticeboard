@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import * as apiCalls from '../api/apiCalls';
 import {Spinner} from "react-bootstrap";
+import {Redirect} from "react-router";
+import {Link} from "react-router-dom";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 
 class VerificationEmailAddressPage extends Component {
@@ -10,7 +13,6 @@ class VerificationEmailAddressPage extends Component {
         errorMessage: '',
         verified: undefined
     }
-
 
     componentDidMount() {
         const token = this.props.match.params.token;
@@ -29,14 +31,19 @@ class VerificationEmailAddressPage extends Component {
     displayInfoAboutSentEmail = () => {
         return (
             <div className="text-center mt-5">
-                {this.props.location.state && this.props.location.state.user &&
                 <div>
-                    <h1>{`Cześć ${this.props.location.state.user.firstName},`}</h1>
-                    <div>na Twój adres email ({this.props.location.state.user.email}) został wysłany mail z linkiem
-                        aktywacyjnym.
+                    <h1>{`Witaj ${this.props.location.state.user.firstName},`}</h1>
+                    <div>na Twój adres email ({this.props.location.state.user.email}) został wysłany link
+                        aktywacyjny do Twojego konta.
                     </div>
+                    <Link to="/login"
+                          className="btn btn-outline-light my-4 px-4"
+                          style={{backgroundColor: '#b78e56'}}
+                          variant="outline-light"
+                    >
+                        Przejdź do strony logowania
+                    </Link>
                 </div>
-                }
             </div>
         );
     }
@@ -52,16 +59,29 @@ class VerificationEmailAddressPage extends Component {
 
     displayErrorMessage() {
         return <div className="text-center mt-5">
-            <h5>Wystąpił błąd:</h5>
-            <div>{this.state.errorMessage}</div>
+            <h5>{this.state.errorMessage}</h5>
         </div>;
     }
 
     displaySuccessMessage() {
         return <div className="text-center mt-5">
-            <h6>Weryfikacja przebiegła pomyślnie. Możesz się zalogować.</h6>
+            <h1><FontAwesomeIcon icon={["far", "check-circle"]}/></h1>
+            <h5>Weryfikacja przebiegła pomyślnie.</h5>
+            <Link to="/login"
+                  className="btn btn-outline-light my-3 px-4"
+                  style={{backgroundColor: '#b78e56'}}
+                  variant="outline-light"
+            >
+                Przejdź do strony logowania
+            </Link>
         </div>;
     }
+
+    redirectToLogin() {
+        return <div className="text-center mt-5">
+            <Redirect to="/login"/>
+        </div>
+    };
 
     render() {
         let content;
@@ -71,10 +91,10 @@ class VerificationEmailAddressPage extends Component {
             content = this.displaySuccessMessage();
         } else if (this.state.isLoading) {
             content = this.displayLoadingInfo();
-        } else if (this.state.verified) {
-            content = this.displaySuccessMessage();
-        } else {
+        } else if (this.props.location.state && this.props.location.state.user) {
             content = this.displayInfoAboutSentEmail();
+        } else if (!this.props.match.params.token) {
+            content = this.redirectToLogin();
         }
         return (
             <div>

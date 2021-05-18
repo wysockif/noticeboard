@@ -266,7 +266,6 @@ class HomePage extends Component {
 
                                 </Button>
                             </div>
-                            {/*<Collapse in={true}>*/}
                             <Collapse in={this.state.open}>
                                 <div id="collapse-text">
                                     <div className="mt-2 col-11 mx-auto">
@@ -354,11 +353,11 @@ class HomePage extends Component {
                                 />
                             )}
                             {this.state.loadingError &&
-                            <div className="text-center">
+                            <div className="text-center text-muted">
                                 Wystąpił błąd podczas ładowania ogłoszeń. Spróbuj ponownie później.
                             </div>}
                             {!this.state.loadingError && !this.state.isLoadingContent && (this.state.page.content.length < 1) &&
-                            <div className="text-center">
+                            <div className="text-center text-muted">
                                 Nie znaleziono ogłoszeń
                             </div>}
 

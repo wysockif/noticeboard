@@ -41,9 +41,9 @@ class TopBar extends Component {
             >
                 <Container className="col-sm-11 col-md-9">
                     <Navbar.Brand style={{cursor: 'pointer'}} onClick={this.onClickLogo}>
-                        <div>
+                        <Link to={'/'} replace>
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140"/>
-                        </div>
+                        </Link>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" className="my-1 mx-3 p-1"/>
                     <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">

@@ -11,7 +11,7 @@ const ErrorAlert = props => {
             <div>
                 <Link to="/"
                       className="btn btn-outline-light my-2 px-4"
-                      style={{backgroundColor: '#B84'}}
+                      style={{backgroundColor: '#b78e56'}}
                       variant="outline-light">Powrót</Link>
             </div>
         </div>
