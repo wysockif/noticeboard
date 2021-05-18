@@ -28,7 +28,6 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 @ActiveProfiles("test")
@@ -176,7 +175,7 @@ public class GetNoticesTest {
 
     @Test
     @Transactional
-    public void getNotices_whenUserUsernameIsProvidedInUrlButThisUserDoesNotExist_receiveZeroNotices() throws IOException {
+    public void getNotices_whenUserUsernameIsProvidedInUrlButThisUserDoesNotExist_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
         userService.save(firstValidPostUserRequest);
@@ -196,29 +195,183 @@ public class GetNoticesTest {
     }
 
     @Test
-    public void getNoticeById_whenThereIsNoticeWithProvidedId_receiveOkStatus() throws IOException {
+    public void getNotices_whenLocationIsProvidedInUrlAndThereAreThreeNoticesInThisLocationAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
-        String username = "test-username";
-        PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
-        AppUser creator = userRepository.getOne(creatorId);
-        Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location1", 5);
+        saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location2", 3);
         // when
-        String url = NOTICES_URL + '/' + savedNoticeId;
-        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        String url = NOTICES_URL + "?location=Location2";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
         // then
-        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
     }
 
     @Test
-    public void getNoticeById_whenThereIsNotNoticeWithProvidedId_receiveNotFoundStatus() {
+    public void getNotices_whenLocationIsProvidedInUrlButThereIsNotAnyNoticeWithThisLocation_receivePageWithZeroNotices() throws IOException {
         // given
-        String nonExistingNoticeId = "123";
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location1", 5);
         // when
-        String url = NOTICES_URL + '/' + nonExistingNoticeId;
-        ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
+        String url = NOTICES_URL + "?location=Location2";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
         // then
-        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getNotices_whenMinPriceIsProvidedInUrlAndThereAreThreeNoticesWithMinimallyThisPriceAndEightInTotal_receivePageWithThreeNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 5);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 3);
+        // when
+        String url = NOTICES_URL + "?minPrice=150";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void getNotices_whenMinPriceIsProvidedInUrlButThereIsNotAnyNoticeWithMinimallyThisPrice_receivePageWithZeroNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 5);
+        // when
+        String url = NOTICES_URL + "?minPrice=150";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getNotices_whenMaxPriceIsProvidedInUrlAndThereAreThreeNoticesWithMaximallyThisPriceAndEightInTotal_receivePageWithThreeNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 5);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 3);
+        // when
+        String url = NOTICES_URL + "?maxPrice=150";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void getNotices_whenMaxPriceIsProvidedInUrlButThereIsNotAnyNoticeWithMaximallyThisPrice_receivePageWithZeroNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 5);
+        // when
+        String url = NOTICES_URL + "?maxPrice=150";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void getNotices_whenSearchQueryIsProvidedInUrlAndThereAreThreeNoticesWithTitleContainingThisQueryAndEightInTotal_receivePageWithThreeNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedTitle(firstCreator, "Lorem ipsum", 5);
+        saveNValidNoticesWithSpecifiedTitle(firstCreator, "dolor sit amet", 3);
+        // when
+        String url = NOTICES_URL + "?searched=sit+amet";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+
+    @Test
+    public void getNotices_whenSearchQueryIsProvidedInUrlButThereIsNotAnyNoticeWithTitleContainingThisQuery_receivePageWithZeroNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedTitle(firstCreator, "Lorem ipsum", 5);
+        saveNValidNoticesWithSpecifiedTitle(firstCreator, "dolor sit amet", 3);
+        // when
+        String url = NOTICES_URL + "?searched=consectetur+adipiscing+elit";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
+    }
+
+
+    @Test
+    public void getNotices_whenSearchQueryIsProvidedInUrlAndThereAreThreeNoticesWithDescriptionContainingThisQueryAndEightInTotal_receivePageWithThreeNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedDescription(firstCreator, "Lorem ipsum", 5);
+        saveNValidNoticesWithSpecifiedDescription(firstCreator, "dolor sit amet", 3);
+        // when
+        String url = NOTICES_URL + "?searched=sit+amet";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+
+    @Test
+    public void agetNotices_whenSearchQueryIsProvidedInUrlButThereIsNotAnyNoticeWithDescriptionContainingThisQuery_receivePageWithZeroNotices() throws IOException {
+        // given
+        PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
+        userService.save(firstValidPostUserRequest);
+        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        AppUser firstCreator = userRepository.getOne(firstCreatorId);
+        saveNValidNoticesWithSpecifiedDescription(firstCreator, "Lorem ipsum", 5);
+        saveNValidNoticesWithSpecifiedDescription(firstCreator, "dolor sit amet", 3);
+        // when
+        String url = NOTICES_URL + "?searched=consectetur+adipiscing+elit";
+        ResponseEntity<TestPage<Notice>> response = testRestTemplate.exchange(url, GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        // then
+        assertThat(response.getBody().getContent().size()).isEqualTo(0);
     }
 
     private void saveNValidNotices(AppUser creator, int n) throws IOException {
@@ -228,4 +381,35 @@ public class GetNoticesTest {
         }
     }
 
+    private void saveNValidNoticesWithSpecifiedLocation(AppUser creator, String location, int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            PostNoticeRequest validNotice = TestUtils.createValidPostNoticeRequest();
+            validNotice.setLocation(location);
+            noticeService.postNotice(validNotice, creator);
+        }
+    }
+
+    private void saveNValidNoticesWithSpecifiedPrice(AppUser creator, String price, int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            PostNoticeRequest validNotice = TestUtils.createValidPostNoticeRequest();
+            validNotice.setPrice(price);
+            noticeService.postNotice(validNotice, creator);
+        }
+    }
+
+    private void saveNValidNoticesWithSpecifiedTitle(AppUser creator, String title, int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            PostNoticeRequest validNotice = TestUtils.createValidPostNoticeRequest();
+            validNotice.setTitle(title);
+            noticeService.postNotice(validNotice, creator);
+        }
+    }
+
+    private void saveNValidNoticesWithSpecifiedDescription(AppUser creator, String description, int n) throws IOException {
+        for (int i = 0; i < n; i++) {
+            PostNoticeRequest validNotice = TestUtils.createValidPostNoticeRequest();
+            validNotice.setDescription(description);
+            noticeService.postNotice(validNotice, creator);
+        }
+    }
 }
