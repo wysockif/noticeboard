@@ -46,4 +46,9 @@ html {
     overflow-y: scroll;
 }
 
+.dropdown .dropdown-menu .dropdown-item:hover {
+    color: #fff;
+    background-color: #b84;
+    border-color: #fff;
+}
 

@@ -92,7 +92,7 @@ class UserProfilePage extends Component {
     }
 
     loadUserToState(username) {
-        if (this._isMounted){
+        if (this._isMounted) {
             this.setState({errorMessage: false, isLoading: true});
         }
         apiCalls.getUser(username)

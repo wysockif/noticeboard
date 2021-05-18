@@ -48,7 +48,6 @@ class HomePage extends Component {
     }
 
 
-
     loadNotices = () => {
         if (this._isMounted) {
             this.setState({isLoadingContent: true, loadingError: false})
@@ -58,7 +57,7 @@ class HomePage extends Component {
             apiCalls.getNotices(currentPage, currentSort, currentSize, requestParams)
                 .then(response => {
                     if (this._isMounted) {
-                        this.setState({page: response.data, isSearching: false, isLoadingContent: false});
+                        this.setState({page: response.data, isSearching: false, isLoadingContent: false, title: true});
                     }
                 })
                 .catch(error => {
@@ -87,7 +86,7 @@ class HomePage extends Component {
 
     onClickSearch = () => {
         const searchingInput = this.state.searchingInput.trim().replaceAll(' ', '+');
-        this.setState({searchingParam: searchingInput, isSearching: true}, () => {
+        this.setState({searchingParam: searchingInput, isSearching: true, currentPage: 0}, () => {
             this.loadNotices();
         });
     }
@@ -213,7 +212,6 @@ class HomePage extends Component {
         });
     }
 
-
     onClickLast = () => {
         this.setState({currentPage: this.state.page.totalPages - 1}, () => {
             this.loadNotices();
@@ -223,6 +221,7 @@ class HomePage extends Component {
     render() {
         return (
             <div data-testid="homepage">
+
                 <Card>
                     <Card.Header>
                         <div className="col-10 col-sm-9 col-md-8 mx-auto">
@@ -338,7 +337,7 @@ class HomePage extends Component {
                     </Card.Header>
                     <div>
                         <div className="row m-4">
-                            {this.state.isLoadingContent && <div className="text-center">
+                            {this.state.isLoadingContent && <div className="text-center mt-3">
                                 <Spinner animation="border" size="sm" role="status" className="ms-1">
                                     <span className="sr-only">Loading...</span>
                                 </Spinner>
@@ -376,8 +375,6 @@ class HomePage extends Component {
                     }
                 </Card>
             </div>
-
-
         )
     }
 }

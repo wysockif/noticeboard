@@ -78,11 +78,9 @@ class NoticePage extends Component {
         apiCalls.deleteNotice(this.state.notice.id)
             .then(() => {
                 this.setState({show: false, ongoingApiCall: false});
-                console.log('here')
                 this.props.history.push(`/user/${this.state.user.username}`);
             })
             .catch(error => {
-                console.log(error)
                 this.setState({ongoingApiCall: false, errorMessageInModal: error.response.data.message});
             });
     };

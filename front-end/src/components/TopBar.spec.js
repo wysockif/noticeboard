@@ -42,16 +42,6 @@ const renderTopbar = (state = userNotLoggedInState) => {
 
 describe('TopBar', () => {
 
-    it('has link to home', () => {
-        // given
-        const {container} = renderTopbar();
-        // when
-        const image = container.querySelector('img');
-        // then
-        const link = image.parentElement;
-        expect(link).toHaveAttribute('href', '/')
-    });
-
     it('has app logo', () => {
         // given
         const {container} = renderTopbar();
@@ -77,15 +67,6 @@ describe('TopBar', () => {
         const loginLink = queryByText('Logowanie');
         // then
         expect(loginLink.getAttribute('href')).toBe('/login')
-    });
-
-    it('has link to user profile when user logged in', () => {
-        // given
-        const {queryByText} = renderTopbar(userLoggedInState);
-        // when
-        const profileLink = queryByText('Moja tablica');
-        // then
-        expect(profileLink.getAttribute('href')).toBe('/user/' + userLoggedInState.username);
     });
 
     it('has link to logout when user logged in', () => {

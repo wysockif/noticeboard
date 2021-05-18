@@ -40,7 +40,7 @@ class TopBar extends Component {
                     bg="light"
             >
                 <Container className="col-sm-11 col-md-9">
-                    <Navbar.Brand style={{cursor: 'pointer'}} onClick={this.onClickLogo} >
+                    <Navbar.Brand style={{cursor: 'pointer'}} onClick={this.onClickLogo}>
                         <div>
                             <Image src={noticeboardLogo} alt="noticeboard" className="ms-3 my-1" fluid width="140"/>
                         </div>
@@ -58,15 +58,10 @@ class TopBar extends Component {
                                   className="nav-link ms-3">Dodaj ogłoszenie</Link>
 
                             <div style={{cursor: 'pointer'}} onClick={this.onClickMyProfile}
-                                  className="nav-link ms-3">
+                                 className="nav-link ms-3">
                                 Moja tablica
                             </div>
 
-                            {/*<Link to={"/user/" + this.props.user.username}*/}
-                            {/*      replace={'/notice/user/' + this.props.user.username === this.props.location.pathname}*/}
-                            {/*      className="nav-link ms-3">*/}
-                            {/*    Moja tablica*/}
-                            {/*</Link>*/}
                             <div className="nav-link ms-3 me-3" style={{cursor: 'pointer'}}
                                  onClick={this.onClickLogout}>
                                 Wyloguj się
