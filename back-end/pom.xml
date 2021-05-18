@@ -26,6 +26,7 @@
         <org.apache.httpcomponents.version>4.5.13</org.apache.httpcomponents.version>
         <org.apache.tika.version>1.26</org.apache.tika.version>
         <common-io.version>2.8.0</common-io.version>
+        <com.icegreen.version>1.6.4</com.icegreen.version>
     </properties>
 
     <build>
@@ -104,6 +105,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+            <version>${com.icegreen.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

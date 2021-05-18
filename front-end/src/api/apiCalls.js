@@ -54,6 +54,10 @@ export const login = user => {
     return axios.post(apiUrl + '/login', {}, {auth: user});
 }
 
+export const verifyToken = (token) => {
+    return axios.post(apiUrl + `/tokens/${token}`);
+}
+
 export const getNotices = (page = 0, sort = 'createdAt,desc', size = 12, gettingNoticesParams) => {
     let url = apiUrl + `/notices?page=${page}&sort=${sort}&size=${size}`;
     if (gettingNoticesParams) {

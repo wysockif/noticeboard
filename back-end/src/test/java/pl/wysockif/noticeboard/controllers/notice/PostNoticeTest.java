@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
+import pl.wysockif.noticeboard.SmtpServerRule;
 import pl.wysockif.noticeboard.TestUtils;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
@@ -18,6 +20,7 @@ import pl.wysockif.noticeboard.entities.notice.Notice;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.ApiError;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
+import pl.wysockif.noticeboard.repositories.token.VerificationTokenRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
@@ -49,9 +52,16 @@ public class PostNoticeTest {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    @Autowired
+    private VerificationTokenRepository tokenRepository;
+
+    @Rule
+    public SmtpServerRule smtpServerRule = new SmtpServerRule(2525);
+
     @Before
     public void setUp() {
         testRestTemplate.getRestTemplate().getInterceptors().clear();
+        tokenRepository.deleteAll();
         noticeRepository.deleteAll();
         userRepository.deleteAll();
     }

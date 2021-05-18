@@ -68,7 +68,12 @@ export class RegistrationPage extends Component {
         this.props.actions.postRegister(user)
             .then(response => {
                 this.setState({ongoingApiCall: false}, () => {
-                    this.props.history.push('/login');
+                    this.props.history.push({
+                        pathname: '/verify',
+                        state: {
+                            user
+                        }
+                    });
                 });
 
             })

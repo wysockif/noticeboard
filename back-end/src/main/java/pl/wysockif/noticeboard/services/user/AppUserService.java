@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.services.user;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
@@ -21,6 +22,11 @@ import static java.lang.String.valueOf;
 @Service
 public class AppUserService {
 
+    @Value("${lock-user-account-on-start}")
+    private Boolean activeProfile;
+
+    private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
+
     private final AppUserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -29,7 +35,6 @@ public class AppUserService {
 
     private final VerificationTokenService tokenService;
 
-    private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
 
     public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder,
                           StaticFileService staticFileService, VerificationTokenService tokenService) {
@@ -43,10 +48,10 @@ public class AppUserService {
         LOGGER.info("Saving user: " + postUserRequest);
         AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(postUserRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setLockedAccount(true);
+        user.setLockedAccount(activeProfile);
         AppUser savedUser = userRepository.save(user);
         Long savedUserId = savedUser.getId();
-        tokenService.generateToken(savedUser);
+        tokenService.sendNewToken(savedUser);
         LOGGER.info("Saved user (userId: " + savedUserId + ")");
         return savedUser.getId();
     }
@@ -91,13 +96,16 @@ public class AppUserService {
         return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
     }
 
-    public void verifyUser(Long id) {
-        Optional<AppUser> userOptional = userRepository.findById(id);
-        if(userOptional.isEmpty()){
+    public void unlockUserAccount(Long userId) {
+        LOGGER.info("Unlocking user (userId: " + userId + ")");
+        Optional<AppUser> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            LOGGER.info("Cannot unlock non-existing user (userId: " + userId + ")");
             throw new UserNotFoundException("Nie znaleziono użytkownika");
         }
         AppUser appUser = userOptional.get();
         appUser.setLockedAccount(false);
         userRepository.save(appUser);
+        LOGGER.info("Unlocked user (userId: " + userId + ")");
     }
 }

@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.controllers.user;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.wysockif.noticeboard.SmtpServerRule;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
+import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
+import pl.wysockif.noticeboard.repositories.token.VerificationTokenRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
@@ -39,10 +43,21 @@ public class LoginUserTest {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private VerificationTokenRepository tokenRepository;
+
+    @Autowired
+    private NoticeRepository noticeRepository;
+
+    @Rule
+    public SmtpServerRule smtpServerRule = new SmtpServerRule(2525);
+
     @Before
     public void setUp() {
-        userRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
+        tokenRepository.deleteAll();
+        noticeRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test

@@ -2,11 +2,11 @@ package pl.wysockif.noticeboard.entities.user;
 
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.wysockif.noticeboard.entities.notice.Notice;
-import pl.wysockif.noticeboard.entities.token.VerificationToken;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,9 +51,6 @@ public class AppUser implements Serializable, UserDetails {
     @OneToMany(mappedBy = "creator")
     private List<Notice> notices;
 
-//    @OneToMany(mappedBy = "appUser")
-//    private List<VerificationToken> verificationTokens;
-
     @Transient
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -66,8 +63,10 @@ public class AppUser implements Serializable, UserDetails {
         return true;
     }
 
+
     @Transient
     @Override
+    @Profile("test")
     public boolean isAccountNonLocked() {
         return !lockedAccount;
     }

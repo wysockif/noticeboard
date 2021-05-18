@@ -2,6 +2,7 @@ package pl.wysockif.noticeboard.controllers.user;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.wysockif.noticeboard.SmtpServerRule;
 import pl.wysockif.noticeboard.TestUtils;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
+import pl.wysockif.noticeboard.repositories.token.VerificationTokenRepository;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.user.AppUserService;
 
@@ -50,11 +53,18 @@ public class PatchUserTest {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    @Autowired
+    private VerificationTokenRepository tokenRepository;
+
+    @Rule
+    public SmtpServerRule smtpServerRule = new SmtpServerRule(2525);
+
     @Before
     public void setUp() {
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+        tokenRepository.deleteAll();
         noticeRepository.deleteAll();
         userRepository.deleteAll();
-        testRestTemplate.getRestTemplate().getInterceptors().clear();
     }
 
     @Test

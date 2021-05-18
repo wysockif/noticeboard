@@ -20,7 +20,7 @@ public class VerificationTokenController {
     }
 
     @PostMapping("/tokens/{token}")
-    public AppUserSnapshot verifyToken(@PathVariable String token) {
-        return tokenService.verifyToken(token);
+    public void verifyToken(@PathVariable String token) {
+        tokenService.verifyToken(token);
     }
 }
