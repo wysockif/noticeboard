@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers.user;
+package pl.wysockif.noticeboard.user;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-public class LoginControllerTest {
+public class LoginUserTest {
 
     public static final String LOGIN_PATH = "/api/1.0/login";
 

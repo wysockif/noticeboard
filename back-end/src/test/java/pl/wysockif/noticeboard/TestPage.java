@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers;
+package pl.wysockif.noticeboard;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;
