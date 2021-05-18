@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class DeleteNoticeTest {
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -78,7 +78,7 @@ public class DeleteNoticeTest {
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -93,7 +93,7 @@ public class DeleteNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -108,7 +108,7 @@ public class DeleteNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -124,7 +124,7 @@ public class DeleteNoticeTest {
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         long anyNonExistingNoticeId = 1234L;
         // when
         String url = NOTICES_URL + '/' + anyNonExistingNoticeId;
@@ -138,13 +138,13 @@ public class DeleteNoticeTest {
         // given
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest("test-username-1");
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         testRestTemplate.getRestTemplate().getInterceptors().clear();
         PostUserRequest anotherPostUserRequest = TestUtils.createValidPostUserRequest("test-username-2");
         TestUtils.addAuthenticationInterceptor(testRestTemplate, anotherPostUserRequest);
-        userService.save(anotherPostUserRequest);
+        userService.saveUser(anotherPostUserRequest);
         // when
         String url = NOTICES_URL + '/' + savedNoticeId;
         ResponseEntity<ApiError> response = testRestTemplate.exchange(url, DELETE, null, ApiError.class);

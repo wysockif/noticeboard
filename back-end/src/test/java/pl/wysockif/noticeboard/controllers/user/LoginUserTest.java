@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.user;
+package pl.wysockif.noticeboard.controllers.user;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +79,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveOk() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Object> response = testRestTemplate.postForEntity(LOGIN_PATH, null, Object.class);
@@ -91,7 +91,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_doNotReceiveLoggedInUserPassword() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -106,7 +106,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserId() {
         // given
         PostUserRequest user = createValidAppUser();
-        Long userInDbId = userService.save(user);
+        Long userInDbId = userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -121,7 +121,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserUsername() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -136,7 +136,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserEmail() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -151,7 +151,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserFirstName() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -166,7 +166,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserLastName() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =
@@ -181,7 +181,7 @@ public class LoginUserTest {
     public void login_withValidUsernameAndPassword_receiveLoggedInUserImage() {
         // given
         PostUserRequest user = createValidAppUser();
-        userService.save(user);
+        userService.saveUser(user);
         authenticateUser(user.getUsername(), user.getPassword());
         // when
         ResponseEntity<Map<String, Object>> response =

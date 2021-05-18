@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class GetNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long savedNoticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when

@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.user;
+package pl.wysockif.noticeboard.controllers.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,7 @@ public class AppUserController {
     @ResponseStatus(CREATED)
     public Long addUser(@Valid @RequestBody PostUserRequest postUserRequest) {
         LOGGER.info("Request postAppUser started (user: " + postUserRequest + ")");
-        Long savedUserId = appUserService.save(postUserRequest);
+        Long savedUserId = appUserService.saveUser(postUserRequest);
         LOGGER.info("Request postAppUser finished (userId: " + savedUserId + ")");
         return savedUserId;
     }

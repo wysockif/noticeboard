@@ -11,7 +11,9 @@ import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
+import pl.wysockif.noticeboard.services.token.VerificationTokenService;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static java.lang.String.valueOf;
@@ -25,20 +27,26 @@ public class AppUserService {
 
     private final StaticFileService staticFileService;
 
+    private final VerificationTokenService tokenService;
+
     private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
 
-    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder, StaticFileService staticFileService) {
+    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder,
+                          StaticFileService staticFileService, VerificationTokenService tokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.staticFileService = staticFileService;
+        this.tokenService = tokenService;
     }
 
-    public Long save(PostUserRequest postUserRequest) {
+    public Long saveUser(PostUserRequest postUserRequest) {
         LOGGER.info("Saving user: " + postUserRequest);
         AppUser user = AppUserMapper.INSTANCE.postUserRequestToAppUser(postUserRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setLockedAccount(true);
         AppUser savedUser = userRepository.save(user);
         Long savedUserId = savedUser.getId();
+        tokenService.generateToken(savedUser);
         LOGGER.info("Saved user (userId: " + savedUserId + ")");
         return savedUser.getId();
     }
@@ -81,5 +89,15 @@ public class AppUserService {
         }
         LOGGER.info("Got user: " + appUser.getId());
         return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
+    }
+
+    public void verifyUser(Long id) {
+        Optional<AppUser> userOptional = userRepository.findById(id);
+        if(userOptional.isEmpty()){
+            throw new UserNotFoundException("Nie znaleziono użytkownika");
+        }
+        AppUser appUser = userOptional.get();
+        appUser.setLockedAccount(false);
+        userRepository.save(appUser);
     }
 }

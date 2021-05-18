@@ -12,6 +12,7 @@ public interface AppUserMapper {
     AppUserMapper INSTANCE = Mappers.getMapper(AppUserMapper.class);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "lockedAccount", ignore = true)
     AppUser postUserRequestToAppUser(PostUserRequest postUserRequest);
 
     AppUserSnapshot appUserToSnapshot(AppUser appUser);

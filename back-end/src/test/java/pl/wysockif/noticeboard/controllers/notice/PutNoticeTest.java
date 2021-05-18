@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -131,7 +131,7 @@ public class PutNoticeTest {
         Long savedNoticeId = setupNoticeForUpdate();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
         PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         // when
         PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
@@ -146,7 +146,7 @@ public class PutNoticeTest {
     public void putNotice_whenUserIsAuthorizedAndNoticeWithProvidedIdDoesNotExist_receiveNotFoundStatus() throws IOException {
         // given
         PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         // when
         PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
@@ -161,7 +161,7 @@ public class PutNoticeTest {
     public void putNotice_whenUserIsAuthorizedAndNoticeWithProvidedIdDoesNotExist_receiveApiError() throws IOException {
         // given
         PostUserRequest validPostUserRequest = createValidPostUserRequest("another-username");
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         // when
         PutNoticeRequest validPutUserRequest = createValidPutUserRequest();
@@ -602,7 +602,7 @@ public class PutNoticeTest {
 
     private Long setupNoticeForUpdate() throws IOException {
         PostUserRequest validPostUserRequest = createValidPostUserRequest("test-username");
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = createValidPostNoticeRequest();

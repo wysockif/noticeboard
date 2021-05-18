@@ -12,4 +12,5 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     AppUser findByEmail(String email);
 
     AppUser findByNoticesId(Long id);
+
 }

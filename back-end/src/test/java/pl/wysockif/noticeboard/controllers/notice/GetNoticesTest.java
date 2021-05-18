@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class GetNoticesTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -99,8 +99,8 @@ public class GetNoticesTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         saveNValidNotices(creator, 15);
         // when
@@ -117,8 +117,8 @@ public class GetNoticesTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         saveNValidNotices(creator, 15);
         // when
@@ -135,8 +135,8 @@ public class GetNoticesTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
-        Long creatorId = userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         saveNValidNotices(creator, 20);
         // when
@@ -152,14 +152,14 @@ public class GetNoticesTest {
     public void getNotices_whenUserUsernameIsProvidedInRequestBody_receiveNoticesOfThatUser() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNotices(firstCreator, 5);
         testRestTemplate.getRestTemplate().getInterceptors().clear();
         PostUserRequest secondValidPostUserRequest = TestUtils.createValidPostUserRequest("second-username");
-        userService.save(secondValidPostUserRequest);
-        Long secondCreatorId = userService.save(secondValidPostUserRequest);
+        userService.saveUser(secondValidPostUserRequest);
+        Long secondCreatorId = userService.saveUser(secondValidPostUserRequest);
         AppUser secondCreator = userRepository.getOne(secondCreatorId);
         saveNValidNotices(secondCreator, 3);
         TestTransaction.flagForCommit();
@@ -178,8 +178,8 @@ public class GetNoticesTest {
     public void getNotices_whenUserUsernameIsProvidedInUrlButThisUserDoesNotExist_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNotices(firstCreator, 5);
         testRestTemplate.getRestTemplate().getInterceptors().clear();
@@ -198,8 +198,8 @@ public class GetNoticesTest {
     public void getNotices_whenLocationIsProvidedInUrlAndThereAreThreeNoticesInThisLocationAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location1", 5);
         saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location2", 3);
@@ -216,8 +216,8 @@ public class GetNoticesTest {
     public void getNotices_whenLocationIsProvidedInUrlButThereIsNotAnyNoticeWithThisLocation_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedLocation(firstCreator, "Location1", 5);
         // when
@@ -233,8 +233,8 @@ public class GetNoticesTest {
     public void getNotices_whenMinPriceIsProvidedInUrlAndThereAreThreeNoticesWithMinimallyThisPriceAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 5);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 3);
@@ -251,8 +251,8 @@ public class GetNoticesTest {
     public void getNotices_whenMinPriceIsProvidedInUrlButThereIsNotAnyNoticeWithMinimallyThisPrice_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 5);
         // when
@@ -268,8 +268,8 @@ public class GetNoticesTest {
     public void getNotices_whenMaxPriceIsProvidedInUrlAndThereAreThreeNoticesWithMaximallyThisPriceAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 5);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "100", 3);
@@ -286,8 +286,8 @@ public class GetNoticesTest {
     public void getNotices_whenMaxPriceIsProvidedInUrlButThereIsNotAnyNoticeWithMaximallyThisPrice_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedPrice(firstCreator, "200", 5);
         // when
@@ -303,8 +303,8 @@ public class GetNoticesTest {
     public void getNotices_whenSearchQueryIsProvidedInUrlAndThereAreThreeNoticesWithTitleContainingThisQueryAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedTitle(firstCreator, "Lorem ipsum", 5);
         saveNValidNoticesWithSpecifiedTitle(firstCreator, "dolor sit amet", 3);
@@ -322,8 +322,8 @@ public class GetNoticesTest {
     public void getNotices_whenSearchQueryIsProvidedInUrlButThereIsNotAnyNoticeWithTitleContainingThisQuery_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedTitle(firstCreator, "Lorem ipsum", 5);
         saveNValidNoticesWithSpecifiedTitle(firstCreator, "dolor sit amet", 3);
@@ -341,8 +341,8 @@ public class GetNoticesTest {
     public void getNotices_whenSearchQueryIsProvidedInUrlAndThereAreThreeNoticesWithDescriptionContainingThisQueryAndEightInTotal_receivePageWithThreeNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedDescription(firstCreator, "Lorem ipsum", 5);
         saveNValidNoticesWithSpecifiedDescription(firstCreator, "dolor sit amet", 3);
@@ -357,11 +357,11 @@ public class GetNoticesTest {
 
 
     @Test
-    public void agetNotices_whenSearchQueryIsProvidedInUrlButThereIsNotAnyNoticeWithDescriptionContainingThisQuery_receivePageWithZeroNotices() throws IOException {
+    public void getNotices_whenSearchQueryIsProvidedInUrlButThereIsNotAnyNoticeWithDescriptionContainingThisQuery_receivePageWithZeroNotices() throws IOException {
         // given
         PostUserRequest firstValidPostUserRequest = TestUtils.createValidPostUserRequest("first-username");
-        userService.save(firstValidPostUserRequest);
-        Long firstCreatorId = userService.save(firstValidPostUserRequest);
+        userService.saveUser(firstValidPostUserRequest);
+        Long firstCreatorId = userService.saveUser(firstValidPostUserRequest);
         AppUser firstCreator = userRepository.getOne(firstCreatorId);
         saveNValidNoticesWithSpecifiedDescription(firstCreator, "Lorem ipsum", 5);
         saveNValidNoticesWithSpecifiedDescription(firstCreator, "dolor sit amet", 3);

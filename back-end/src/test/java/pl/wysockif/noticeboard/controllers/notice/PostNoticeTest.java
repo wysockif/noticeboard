@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         // when
@@ -76,7 +76,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         // when
@@ -90,7 +90,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         // when
         ResponseEntity<Object> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, Object.class);
@@ -103,7 +103,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         // when
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(NOTICES_URL, postNoticeRequest, ApiError.class);
@@ -116,7 +116,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTitle(null);
@@ -131,7 +131,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTitle(null);
@@ -146,7 +146,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTitle("6chars");
@@ -161,7 +161,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTitle("more than 60 characters" + TestUtils.generateLongString(38));
@@ -176,7 +176,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTitle("more than 60 characters" + TestUtils.generateLongString(38));
@@ -192,7 +192,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription(null);
@@ -207,7 +207,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription(null);
@@ -223,7 +223,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription("less than 60 chars" + TestUtils.generateLongString(40));
@@ -238,7 +238,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription("less than 60 chars" + TestUtils.generateLongString(40));
@@ -254,7 +254,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription("more than 255 characters" + TestUtils.generateLongString(240));
@@ -269,7 +269,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription("2000 characters" + TestUtils.generateLongString(1985));
@@ -284,7 +284,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setDescription("more than 2000 characters" + TestUtils.generateLongString(1990));
@@ -299,7 +299,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setLocation(null);
@@ -314,7 +314,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setLocation(null);
@@ -329,7 +329,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setLocation("2c");
@@ -344,7 +344,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setLocation("more than 64 characters" + TestUtils.generateLongString(42));
@@ -359,7 +359,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setLocation("2c");
@@ -375,7 +375,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrice(null);
@@ -390,7 +390,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrice(null);
@@ -405,7 +405,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrice("10000000.00");
@@ -420,7 +420,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrice("10000000.00");
@@ -436,7 +436,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrimaryImage(null);
@@ -451,7 +451,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setPrimaryImage(null);
@@ -466,7 +466,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setSecondaryImage(null);
@@ -481,7 +481,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setSecondaryImage(null);
@@ -496,7 +496,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTertiaryImage(null);
@@ -511,7 +511,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         postNoticeRequest.setTertiaryImage(null);
@@ -527,7 +527,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestTransaction.flagForCommit();
         TestTransaction.end();
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
@@ -546,7 +546,7 @@ public class PostNoticeTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(validPostUserRequest);
+        userService.saveUser(validPostUserRequest);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, validPostUserRequest);
         PostNoticeRequest postNoticeRequest = TestUtils.createValidPostNoticeRequest();
         // when

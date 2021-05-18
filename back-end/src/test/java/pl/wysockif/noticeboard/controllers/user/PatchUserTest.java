@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.user;
+package pl.wysockif.noticeboard.controllers.user;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -72,7 +72,7 @@ public class PatchUserTest {
     public void patchUser_whenAuthorizedUserChangesFirstNameAndLastName_receiveOkStatus() {
         // given
         PostUserRequest user = TestUtils.createValidPostUserRequest("username1");
-        Long currentUserId = userService.save(user);
+        Long currentUserId = userService.saveUser(user);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, user);
         String id = String.valueOf(currentUserId);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
@@ -88,7 +88,7 @@ public class PatchUserTest {
     public void patchUser_whenAuthorizedUserChangesFirstNameAndLastName_fieldsUpdated() {
         // given
         PostUserRequest user = TestUtils.createValidPostUserRequest("username1");
-        Long currentUserId = userService.save(user);
+        Long currentUserId = userService.saveUser(user);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, user);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
@@ -106,7 +106,7 @@ public class PatchUserTest {
     public void patchUser_whenUserIsUpdatingAnotherUser_receiveForbiddenStatus() {
         // given
         PostUserRequest user = TestUtils.createValidPostUserRequest("username1");
-        Long currentUserId = userService.save(user);
+        Long currentUserId = userService.saveUser(user);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, user);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         HttpEntity<PatchUserRequest> requestHttpEntity = new HttpEntity<>(patchUserRequest);
@@ -122,7 +122,7 @@ public class PatchUserTest {
     public void patchUser_whenAuthorizedUserChangesImage_fieldUpdated() throws IOException {
         // given
         PostUserRequest user = TestUtils.createValidPostUserRequest("username1");
-        Long currentUserId = userService.save(user);
+        Long currentUserId = userService.saveUser(user);
         TestUtils.addAuthenticationInterceptor(testRestTemplate, user);
         PatchUserRequest patchUserRequest = new PatchUserRequest("UpdatedFirstName", "UpdatedLastName");
         ClassPathResource profileImage = new ClassPathResource("default-profile-image.jpeg");

@@ -31,7 +31,21 @@ spring:
       pageable:
         default-page-size: 12
         max-page-size: 36
+  mail:
+    host: smtp.gmail.com
+    password: Lbep$gYDLR3*#o
+    properties:
+      mail:
+        smtp:
+          auth: true
+          port: 587
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
+    username: noticeboard.pl
 upload-folder-path: static-uploads-dev
+verify-address-email-url: http://localhost:3000/verify
 ---
 spring:
   config:
@@ -60,7 +74,21 @@ spring:
       pageable:
         default-page-size: 12
         max-page-size: 36
+  mail:
+    host: smtp.gmail.com
+    password: Lbep$gYDLR3*#o
+    properties:
+      mail:
+        smtp:
+          auth: true
+          port: 587
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
+    username: noticeboard.pl
 upload-folder-path: static-uploads-prod
+verify-address-email-url: http://localhost:3000/verify
 ---
 spring:
   config:
@@ -87,3 +115,4 @@ spring:
         default-page-size: 12
         max-page-size: 36
 upload-folder-path: static-uploads-test
+verify-address-email-url: http://localhost:3000/verify

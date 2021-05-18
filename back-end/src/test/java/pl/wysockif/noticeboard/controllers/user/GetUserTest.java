@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.user;
+package pl.wysockif.noticeboard.controllers.user;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class GetUserTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long noticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -73,7 +73,7 @@ public class GetUserTest {
         // given
         String username = "test-username";
         PostUserRequest validPostUserRequest = TestUtils.createValidPostUserRequest(username);
-        Long creatorId = userService.save(validPostUserRequest);
+        Long creatorId = userService.saveUser(validPostUserRequest);
         AppUser creator = userRepository.getOne(creatorId);
         Long noticeId = noticeService.postNotice(TestUtils.createValidPostNoticeRequest(), creator);
         // when
@@ -99,7 +99,7 @@ public class GetUserTest {
         // given
         String username = "username1";
         PostUserRequest postUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(postUserRequest);
+        userService.saveUser(postUserRequest);
         // when
         String url = USERS_URL + "/" + username;
         ResponseEntity<Object> response = testRestTemplate.getForEntity(url, Object.class);
@@ -112,7 +112,7 @@ public class GetUserTest {
         // given
         String username = "username1";
         PostUserRequest postUserRequest = TestUtils.createValidPostUserRequest(username);
-        userService.save(postUserRequest);
+        userService.saveUser(postUserRequest);
         // when
         String url = USERS_URL + "/" + username;
         ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);

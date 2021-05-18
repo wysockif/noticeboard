@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.notice;
+package pl.wysockif.noticeboard.controllers.notice;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

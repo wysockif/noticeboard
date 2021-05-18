@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.wysockif.noticeboard.entities.notice.Notice;
+import pl.wysockif.noticeboard.entities.token.VerificationToken;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,8 +46,13 @@ public class AppUser implements Serializable, UserDetails {
 
     private String image;
 
+    private boolean lockedAccount;
+
     @OneToMany(mappedBy = "creator")
     private List<Notice> notices;
+
+//    @OneToMany(mappedBy = "appUser")
+//    private List<VerificationToken> verificationTokens;
 
     @Transient
     @Override
@@ -63,8 +69,8 @@ public class AppUser implements Serializable, UserDetails {
     @Transient
     @Override
     public boolean isAccountNonLocked() {
-        return true;
-    }  //false
+        return !lockedAccount;
+    }
 
     @Transient
     @Override
