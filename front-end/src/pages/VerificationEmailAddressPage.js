@@ -23,7 +23,7 @@ class VerificationEmailAddressPage extends Component {
                     this.setState({isLoading: false, verified: true});
                 })
                 .catch(apiError => {
-                    this.setState({isLoading: false, errorMessage: apiError.response.data.message})
+                    this.setState({isLoading: true, errorMessage: apiError.response.data.message})
                 })
         }
     }
@@ -33,8 +33,12 @@ class VerificationEmailAddressPage extends Component {
             <div className="text-center mt-5">
                 <div>
                     <h1>{`Witaj ${this.props.location.state.user.firstName},`}</h1>
-                    <div>na Twój adres email ({this.props.location.state.user.email}) został wysłany link
-                        aktywacyjny do Twojego konta.
+                    <div className="col-7 mx-auto">
+                        na Twój adres e-mail ({this.props.location.state.user.email})
+                        została wysłana wiadomość z przyciskiem umożliwiającym aktywację konta.
+                    </div>
+                    <div className="col-7 mx-auto mt-4 text-muted">
+                        <small>Jeżeli nie widzisz tej wiadomości sprawdź folder ze spamem.</small>
                     </div>
                     <Link to="/login"
                           className="btn btn-outline-light my-4 px-4"
@@ -49,9 +53,9 @@ class VerificationEmailAddressPage extends Component {
     }
 
     displayLoadingInfo() {
-        return <div className="text-center mt-5">
-            <div><h3>Trwa weryfikacja</h3></div>
-            <Spinner animation="border" size="sm" role="status" className="mt-2">
+        return <div className="text-center mt-5 text-muted">
+            Trwa weryfikacja
+            <Spinner animation="border" size="sm" role="status" className="mt-1 ms-1">
                 <span className="sr-only">Loading...</span>
             </Spinner>
         </div>;
@@ -59,7 +63,16 @@ class VerificationEmailAddressPage extends Component {
 
     displayErrorMessage() {
         return <div className="text-center mt-5">
-            <h5>{this.state.errorMessage}</h5>
+            <div className="col-7 mx-auto">
+                {this.state.errorMessage}
+            </div>
+            <Link to="/login"
+                  className="btn btn-outline-light my-4 px-4"
+                  style={{backgroundColor: '#b78e56'}}
+                  variant="outline-light"
+            >
+                Przejdź do strony logowania
+            </Link>
         </div>;
     }
 
@@ -89,7 +102,8 @@ class VerificationEmailAddressPage extends Component {
             content = this.displayErrorMessage();
         } else if (this.state.verified) {
             content = this.displaySuccessMessage();
-        } else if (this.state.isLoading) {
+        } else
+            if (this.state.isLoading) {
             content = this.displayLoadingInfo();
         } else if (this.props.location.state && this.props.location.state.user) {
             content = this.displayInfoAboutSentEmail();
