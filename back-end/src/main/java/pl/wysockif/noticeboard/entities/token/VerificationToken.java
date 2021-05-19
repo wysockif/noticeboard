@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-
 import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;

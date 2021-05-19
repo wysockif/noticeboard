@@ -40,7 +40,7 @@ public class VerificationTokenService {
         Optional<VerificationToken> token = tokenRepository.findByValue(tokenValue);
         if (token.isEmpty()) {
             LOGGER.info("Not valid token: " + tokenValue);
-            throw new IncorrectTokenException("Użytkownik został już zweryfikowany albo token znajdujący się w linku jest nieprawidłowy.");
+            throw new IncorrectTokenException("Użytkownik został już zweryfikowany albo link jest nieprawidłowy.");
         }
         Long userId = token.get().getAppUser().getId();
         userService.unlockUserAccount(userId);
@@ -53,7 +53,7 @@ public class VerificationTokenService {
         String tokenValue = saveNewTokenInDatabase(appUser);
         String url = linkToClick + "/" + tokenValue;
         try {
-            mailService.sendMail(appUser.getEmail(), "Zweryfikuj swój adres email", url, false);
+            mailService.sendMail(appUser.getEmail(), appUser.getFirstName(), url);
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }

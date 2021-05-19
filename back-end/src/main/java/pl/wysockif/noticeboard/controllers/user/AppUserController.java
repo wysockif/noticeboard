@@ -60,7 +60,7 @@ public class AppUserController {
     @PatchMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     @ResponseStatus(OK)
-    public AppUserSnapshot updateUser(@PathVariable Long id, @Valid @RequestBody PatchUserRequest patchUserRequest){
+    public AppUserSnapshot updateUser(@PathVariable Long id, @Valid @RequestBody PatchUserRequest patchUserRequest) {
         LOGGER.info("Request updateUser started (userId: " + id + ")");
         AppUserSnapshot snapshot = appUserService.update(id, patchUserRequest);
         LOGGER.info("Request updateUser finished (userId: " + id + ")");

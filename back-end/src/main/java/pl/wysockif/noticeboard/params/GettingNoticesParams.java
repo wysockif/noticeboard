@@ -9,7 +9,4 @@ public class GettingNoticesParams {
     private String maxPrice;
     private String location;
     private String searched;
-    private String sort;
-    private String page;
-    private String size;
 }

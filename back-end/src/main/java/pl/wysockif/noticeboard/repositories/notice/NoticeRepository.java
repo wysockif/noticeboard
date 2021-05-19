@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
+
     Page<Notice> findAllByCreatorUsername(Pageable pageable, String username);
 
     Page<Notice> findAllByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
