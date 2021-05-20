@@ -3,6 +3,7 @@ package pl.wysockif.noticeboard.services.notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.wysockif.noticeboard.params.GettingNoticesParams;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
@@ -33,14 +34,21 @@ public class NoticeService {
         this.staticFileService = staticFileService;
     }
 
+    @Transactional
     public Long postNotice(PostNoticeRequest postNoticeRequest, AppUser creator) {
         LOGGER.info("Creating notice (userId: " + creator.getId() + ")");
         Notice createdNotice = NoticeMapper.INSTANCE.postNoticeRequestToNotice(postNoticeRequest);
         createdNotice.setCreatedAt(new Date());
         createdNotice.setCreator(creator);
-        saveImages(createdNotice, creator, postNoticeRequest.getPrimaryImage(),
-                postNoticeRequest.getSecondaryImage(), postNoticeRequest.getTertiaryImage());
-        Long savedNoticeId = noticeRepository.save(createdNotice).getId();
+        String primaryImage = createdNotice.getPrimaryImage();
+        createdNotice.setPrimaryImage(null);
+        String secondaryImage = createdNotice.getSecondaryImage();
+        createdNotice.setSecondaryImage(null);
+        String tertiaryImage = createdNotice.getTertiaryImage();
+        createdNotice.setTertiaryImage(null);
+        Notice noticeToSave = noticeRepository.save(createdNotice);
+        saveImages(noticeToSave, noticeToSave.getId().toString(), primaryImage, secondaryImage, tertiaryImage);
+        Long savedNoticeId = noticeRepository.save(noticeToSave).getId();
         LOGGER.info("Created notice (noticeId: (" + savedNoticeId + ")");
         return savedNoticeId;
     }
@@ -210,9 +218,9 @@ public class NoticeService {
         }
     }
 
-    private void saveImages(Notice notice, AppUser creator, String primaryImage, String secondaryImage, String tertiaryImage) {
-        notice.setPrimaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), primaryImage));
-        notice.setSecondaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), secondaryImage));
-        notice.setTertiaryImage(staticFileService.saveNoticeImage(creator.getId().toString(), tertiaryImage));
+    private void saveImages(Notice notice, String noticeId, String primaryImage, String secondaryImage, String tertiaryImage) {
+        notice.setPrimaryImage(staticFileService.saveNoticeImage(noticeId, primaryImage));
+        notice.setSecondaryImage(staticFileService.saveNoticeImage(noticeId, secondaryImage));
+        notice.setTertiaryImage(staticFileService.saveNoticeImage(noticeId, tertiaryImage));
     }
 }
