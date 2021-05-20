@@ -194,12 +194,12 @@ class NoticePage extends Component {
                         <div className="col-sm-6 mt-4 py-2 text-center text-sm-end">
                             {this.state.user.username && <Link
                                 to={`/user/${this.state.user.username}`}
-                                className="btn btn-outline-secondary px-4 mt-3"
+                                className="btn btn-outline-secondary profile-btn px-4 mt-3"
                             >
                                 <div>
                                     {`${this.state.user.firstName} ${this.state.user.lastName}`}
                                     <Image roundedCircle src={profileImage} width="40"
-                                           height="40" className="ms-2 border border-secondary"/>
+                                           height="40" className="ms-2 border border-secondary profile-btn"/>
                                 </div>
                             </Link>}
                         </div>
