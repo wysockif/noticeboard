@@ -31,38 +31,46 @@ export class RegistrationPage extends Component {
     }
 
     onChangeUsername = event => {
-        const errors = {...this.state.errors};
-        delete errors.username;
-        this.setState({username: event.target.value, errors});
+        if (this.state.username !== event.target.value.trim()) {
+            const errors = {...this.state.errors};
+            delete errors.username;
+            this.setState({username: event.target.value.trim(), errors});
+        }
     }
 
     onChangeEmail = event => {
-        const errors = {...this.state.errors};
-        delete errors.email;
-        this.setState({email: event.target.value, errors});
+        if (this.state.email !== event.target.value.trim()) {
+            const errors = {...this.state.errors};
+            delete errors.email;
+            this.setState({email: event.target.value.trim(), errors});
+        }
     }
 
     onChangePassword = event => {
-        const errors = {...this.state.errors};
-        delete errors.password;
-        const isPasswordRepeatCorrect = this.state.passwordRepeat === event.target.value ? true : false;
-        this.setState({password: event.target.value, isPasswordRepeatCorrect, errors});
+        if (this.state.password !== event.target.value.trim()) {
+            const errors = {...this.state.errors};
+            delete errors.password;
+            const isPasswordRepeatCorrect = this.state.passwordRepeat === event.target.value ? true : false;
+            this.setState({password: event.target.value, isPasswordRepeatCorrect, errors});
+        }
     }
 
     onChangePasswordRepeat = event => {
-        const errors = {...this.state.errors};
-        delete errors.passwordRepeat;
-        const isPasswordRepeatCorrect = this.state.password === event.target.value;
-        this.setState({passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors});
+        if (this.state.passwordRepeat !== event.target.value.trim()) {
+            const errors = {...this.state.errors};
+            delete errors.passwordRepeat;
+            const isPasswordRepeatCorrect = this.state.password === event.target.value;
+            this.setState({passwordRepeat: event.target.value, isPasswordRepeatCorrect, errors});
+        }
     }
 
     onClickRegister = () => {
         const user = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password
+            firstName: this.state.firstName.trim(),
+            lastName: this.state.lastName.trim(),
+            username: this.state.username.trim(),
+            email: this.state.email.trim(),
+            password: this.state.password.trim()
         }
         this.setState({ongoingApiCall: true});
         this.props.actions.postRegister(user)

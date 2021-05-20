@@ -54,6 +54,11 @@ export const login = user => {
     return axios.post(apiUrl + '/login', {}, {auth: user});
 }
 
+export const activateAccount = (email) => {
+    return axios.patch(apiUrl + `/users/${email}/activation`);
+}
+
+
 export const verifyToken = (token) => {
     return axios.post(apiUrl + `/tokens/${token}`);
 }

@@ -12,6 +12,7 @@ import {Container} from 'react-bootstrap';
 import CreateNoticePage from '../pages/CreateNoticePage';
 import EditNoticePage from '../pages/EditNoticePage';
 import VerificationEmailAddressPage from "../pages/VerificationEmailAddressPage";
+import ActivateAccountPage from "../pages/ActivateAccountPage";
 
 const actions = {
     postLogin: apiCalls.login,
@@ -31,6 +32,7 @@ function App() {
                     <Route path="/notice/new" component={CreateNoticePage}/>
                     <Route path="/notice/edit/:id" component={EditNoticePage}/>
                     <Route path="/notice/:id" component={NoticePage}/>
+                    <Route path="/activate" component={ActivateAccountPage}/>
                     <Route path="/verify/:token" component={VerificationEmailAddressPage}/>
                     <Route path="/verify" component={VerificationEmailAddressPage}/>
                     <Route path="*" component={ErrorPage}/>

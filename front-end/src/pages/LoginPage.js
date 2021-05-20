@@ -9,7 +9,7 @@ export class LoginPage extends Component {
     state = {
         username: '',
         password: '',
-        alertMessage: undefined,
+        alertMessage: '',
         ongoingApiCall: false
     }
 
@@ -45,6 +45,15 @@ export class LoginPage extends Component {
         this.setState({password: event.target.value, alertMessage: ''});
     }
 
+    onClickActivateAccount = () => {
+        this.props.history.push({
+            pathname: '/activate',
+            state: {
+                username: this.state.username
+            }
+        });
+    }
+
     render() {
         const disableSubmit = !(this.state.username && this.state.password);
 
@@ -64,23 +73,34 @@ export class LoginPage extends Component {
                     onChange={this.onChangePassword}
                 />
 
-                {this.state.alertMessage && <Alert variant="danger" className="text-center col-sm-10 col-md-7 mx-auto">
-                    {this.state.alertMessage}
-                </Alert>}
+                {this.state.alertMessage && <div>
+                    <Alert variant="danger" className="text-center col-sm-10 col-md-8 mx-auto">
+                        {this.state.alertMessage}
+                    </Alert>
+                    {this.state.alertMessage === 'To konto nie zostało aktywowane' &&
+                    <div className="text-center col-sm-10 col-md-9 mx-auto">
+                        <div className="btn btn-outline-light my-2 px-4 outline-light"
+                             onClick={this.onClickActivateAccount}
+                             style={{backgroundColor: '#b78e56'}}>
+                            Aktywuj konto
+                        </div>
+                    </div>}
+                </div>}
 
                 <div className="mb-3 mt-4 text-center">
+                    {this.state.alertMessage !== 'To konto nie zostało aktywowane' &&
                     <ButtonWithSpinner
                         onClick={this.onClickLoginButton}
                         disabled={disableSubmit || this.state.ongoingApiCall}
                         content="Zaloguj się"
                         ongoingApiCall={this.state.ongoingApiCall}
                     />
+                    }
                 </div>
-
-
             </Container>
         )
     }
+
 }
 
 LoginPage.defaultProps = {
