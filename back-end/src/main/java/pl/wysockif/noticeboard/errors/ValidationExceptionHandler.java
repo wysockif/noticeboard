@@ -15,7 +15,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RestControllerAdvice
 public class ValidationExceptionHandler {
 
-    // https://stackoverflow.com/questions/9245487/how-to-handle-validation-errors-and-exceptions-in-a-restful-spring-mvc-controlle
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(BAD_REQUEST)
     public ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {

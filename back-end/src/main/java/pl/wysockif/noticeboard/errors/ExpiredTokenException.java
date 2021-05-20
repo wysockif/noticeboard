@@ -1,6 +1,12 @@
 package pl.wysockif.noticeboard.errors;
 
-public class ExpiredTokenException extends Throwable {
-    public ExpiredTokenException(String ten_link_wygasł) {
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+@ResponseStatus(UNAUTHORIZED)
+public class ExpiredTokenException extends RuntimeException {
+    public ExpiredTokenException(String message) {
+        super(message);
     }
 }

@@ -1,11 +1,13 @@
 package pl.wysockif.noticeboard.services.token;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wysockif.noticeboard.entities.token.VerificationToken;
 import pl.wysockif.noticeboard.entities.user.AppUser;
+import pl.wysockif.noticeboard.errors.ExpiredTokenException;
 import pl.wysockif.noticeboard.errors.token.IncorrectTokenException;
 import pl.wysockif.noticeboard.repositories.token.VerificationTokenRepository;
 import pl.wysockif.noticeboard.services.mail.MailService;
@@ -13,9 +15,15 @@ import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.time.Period;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 public class VerificationTokenService {
@@ -40,12 +48,22 @@ public class VerificationTokenService {
         Optional<VerificationToken> token = tokenRepository.findByValue(tokenValue);
         if (token.isEmpty()) {
             LOGGER.info("Not valid token: " + tokenValue);
-            throw new IncorrectTokenException("Użytkownik został już zweryfikowany albo link jest nieprawidłowy.");
+            throw new IncorrectTokenException("Konto jest już aktywowane albo link jest nieprawidłowy.");
         }
+        checkIfTokenHasExpired(token.get().getGeneratedAt(), tokenValue);
         Long userId = token.get().getAppUser().getId();
         userService.unlockUserAccount(userId);
         tokenRepository.deleteAllByAppUserId(userId);
         LOGGER.info("Verified token: " + tokenValue);
+    }
+
+    @SneakyThrows
+    private void checkIfTokenHasExpired(Date generatedAt, String tokenValue) {
+        long diff = new Date().getTime() - generatedAt.getTime();
+        if(MILLISECONDS.toSeconds(diff) > 15 * 60){
+            LOGGER.info("Token has expired: " + tokenValue);
+            throw new ExpiredTokenException("Ten link aktywujący konto wygasł");
+        }
     }
 
     public void sendNewToken(AppUser appUser) {
@@ -63,6 +81,7 @@ public class VerificationTokenService {
     private String saveNewTokenInDatabase(AppUser appUser) {
         VerificationToken token = new VerificationToken();
         String tokenValue = appUser.getId() + "-" + UUID.randomUUID();
+        token.setGeneratedAt(new Date());
         token.setValue(tokenValue);
         token.setAppUser(appUser);
         tokenRepository.save(token);

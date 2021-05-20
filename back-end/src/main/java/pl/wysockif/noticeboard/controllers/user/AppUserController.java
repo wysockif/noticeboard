@@ -66,4 +66,12 @@ public class AppUserController {
         LOGGER.info("Request updateUser finished (userId: " + id + ")");
         return snapshot;
     }
+
+    @PatchMapping("/users/{email}/activation")
+    public AppUserSnapshot activateAccount(@PathVariable String email) {
+        LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
+        AppUserSnapshot snapshot = appUserService.activateAccount(email);
+        LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
+        return snapshot;
+    }
 }

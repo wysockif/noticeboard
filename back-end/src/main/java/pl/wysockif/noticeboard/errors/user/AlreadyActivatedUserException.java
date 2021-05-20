@@ -1,6 +1,12 @@
-package pl.wysockif.noticeboard.errors;
+package pl.wysockif.noticeboard.errors.user;
 
-public class AlreadyActivatedUserException extends Throwable {
-    public AlreadyActivatedUserException(String s) {
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+@ResponseStatus(BAD_REQUEST)
+public class AlreadyActivatedUserException extends RuntimeException {
+    public AlreadyActivatedUserException(String message) {
+        super(message);
     }
 }

@@ -8,6 +8,7 @@ import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
+import pl.wysockif.noticeboard.errors.user.AlreadyActivatedUserException;
 import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
@@ -107,5 +108,20 @@ public class AppUserService {
         appUser.setLockedAccount(false);
         userRepository.save(appUser);
         LOGGER.info("Unlocked user (userId: " + userId + ")");
+    }
+
+    public AppUserSnapshot activateAccount(String email) {
+        LOGGER.info("Activating user account (userEmail: " + email + ")");
+        Optional<AppUser> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            LOGGER.info("Cannot activate non-existing user account (userEmail: " + email + ")");
+            throw new UserNotFoundException("Nie znaleziono użytkownika o podanym adresie e-mail");
+        } else if(!userOptional.get().isLockedAccount()){
+            LOGGER.info("Cannot activate activated user account (userEmail: " + email + ")");
+            throw new AlreadyActivatedUserException("Użytkownik o podanym adresie e-mail został aktywowany już wcześniej");
+        }
+        tokenService.sendNewToken(userOptional.get());
+        LOGGER.info("Activated user account (userEmail: " + email + ")");
+        return AppUserMapper.INSTANCE.appUserToSnapshot(userOptional.get());
     }
 }

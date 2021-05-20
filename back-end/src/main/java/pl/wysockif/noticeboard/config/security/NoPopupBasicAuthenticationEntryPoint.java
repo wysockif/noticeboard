@@ -10,12 +10,11 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-// https://stackoverflow.com/questions/31424196/disable-browser-authentication-dialog-in-spring-security/50023070
 public class NoPopupBasicAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         if (authException.getMessage().equals("User account is locked")) {
-            String message = "Adres email nie został potwierdzony";
+            String message = "To konto nie zostało aktywowane";
             response.sendError(FORBIDDEN.value(), message);
         } else if( request.getServletPath().equals("/api/1.0/login")){
             String message = "Niepoprawne dane logowania";

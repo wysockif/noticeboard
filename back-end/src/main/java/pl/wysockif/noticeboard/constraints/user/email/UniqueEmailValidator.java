@@ -6,6 +6,7 @@ import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Optional;
 
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
@@ -14,7 +15,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        AppUser existingUser = userRepository.findByEmail(email);
-        return existingUser == null;
+        Optional<AppUser> existingUser = userRepository.findByEmail(email);
+        return existingUser.isEmpty();
     }
 }
