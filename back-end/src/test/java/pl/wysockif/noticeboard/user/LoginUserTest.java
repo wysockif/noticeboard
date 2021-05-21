@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers.user;
+package pl.wysockif.noticeboard.user;
 
 import org.junit.Before;
 import org.junit.Rule;

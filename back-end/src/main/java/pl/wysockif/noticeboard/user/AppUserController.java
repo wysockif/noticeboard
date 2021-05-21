@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers.user;
+package pl.wysockif.noticeboard.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

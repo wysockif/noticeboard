@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers.user;
+package pl.wysockif.noticeboard.user;
 
 
 import org.apache.commons.io.FileUtils;
