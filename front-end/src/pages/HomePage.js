@@ -220,9 +220,8 @@ class HomePage extends Component {
 
     render() {
         return (
-            <div data-testid="homepage">
-
-                <Card>
+            <div data-testid="homepage" className="mb-5 mt-4">
+                <Card style={{marginBottom: "110px"}}>
                     <Card.Header>
                         <div className="col-10 col-sm-9 col-md-8 mx-auto">
                             <InputGroup className="my-2">
@@ -357,10 +356,9 @@ class HomePage extends Component {
                                 Wystąpił błąd podczas ładowania ogłoszeń. Spróbuj ponownie później.
                             </div>}
                             {!this.state.loadingError && !this.state.isLoadingContent && (this.state.page.content.length < 1) &&
-                            <div className="text-center text-muted">
-                                Nie znaleziono ogłoszeń
+                            <div className="text-center text-muted mt-2 row align-items-center mh-home-card">
+                                <div className="col">Nie znaleziono ogłoszeń</div>
                             </div>}
-
                         </div>
                     </div>
                     {!this.state.isLoadingContent && (this.state.page.totalPages > 1) &&

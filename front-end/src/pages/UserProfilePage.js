@@ -167,6 +167,48 @@ class UserProfilePage extends Component {
         });
     }
 
+    blobToFile(theBlob, fileName) {
+        theBlob.lastModifiedDate = new Date();
+        theBlob.name = fileName;
+        return theBlob;
+    }
+
+    crop(url, aspectRatio) {
+        return new Promise((resolve) => {
+            const inputImage = new Image();
+
+            inputImage.onload = () => {
+                const inputWidth = inputImage.naturalWidth;
+                const inputHeight = inputImage.naturalHeight;
+
+                const inputImageAspectRatio = inputWidth / inputHeight;
+
+                let outputWidth = inputWidth;
+                let outputHeight = inputHeight;
+                if (inputImageAspectRatio > aspectRatio) {
+                    outputWidth = inputHeight * aspectRatio;
+                } else if (inputImageAspectRatio < aspectRatio) {
+                    outputHeight = inputWidth / aspectRatio;
+                }
+
+                const outputX = (outputWidth - inputWidth) * 0.5;
+                const outputY = (outputHeight - inputHeight) * 0.5;
+
+                const outputImage = document.createElement("canvas");
+
+                outputImage.width = outputWidth;
+                outputImage.height = outputHeight;
+
+                const ctx = outputImage.getContext("2d");
+                ctx.drawImage(inputImage, outputX, outputY);
+                resolve(this.blobToFile(outputImage, 'test'));
+            };
+
+            inputImage.src = url;
+        });
+    }
+
+
     onImageSelect = event => {
         delete this.state.errors.profileImage;
         if (event.target.files.length > 0) {
@@ -174,7 +216,13 @@ class UserProfilePage extends Component {
             if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
                 let fileReader = new FileReader();
                 fileReader.onloadend = () => {
-                    this.setState({selectedImage: fileReader.result});
+                    // if (this.props.errors) {
+                    //     delete this.props.errors.primaryImage;
+                    // }
+                    this.crop(fileReader.result, 1).then(croppedImage => {
+                        // this.setState({primaryImage: croppedImage.toDataURL(), primaryImageError: undefined});
+                        this.setState({selectedImage: croppedImage.toDataURL()});
+                    });
                 }
                 fileReader.readAsDataURL(file);
             } else {
@@ -216,7 +264,7 @@ class UserProfilePage extends Component {
     displayMainContent() {
         const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
         return <div data-testid="homepage">
-            <Card>
+            <Card style={{marginBottom: "110px"}}>
                 <UserPageHeader
                     open={this.state.open}
                     user={this.state.user}
@@ -230,8 +278,8 @@ class UserProfilePage extends Component {
                 />
                 <div className="row m-4">
                     {!this.state.page.totalElements &&
-                    <div className="text-center text-muted">
-                        Ta tablica jest jeszcze pusta
+                    <div className="text-center text-muted mt-2 row align-items-center mh-profile-card">
+                        <div className="col">Ta tablica jest jeszcze pusta</div>
                     </div>
                     }
                     {this.state.page.totalElements > 0 && this.state.page.content.map(notice =>

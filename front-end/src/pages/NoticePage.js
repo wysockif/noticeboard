@@ -106,7 +106,7 @@ class NoticePage extends Component {
             profileImage = defaultProfilePicture;
         }
         return (
-            <Card>
+            <Card style={{marginBottom: "110px"}}>
                 <Card.Header className="text-center">
                     <h4 className="my-2">{this.state.notice.title}</h4>
                 </Card.Header>
@@ -186,32 +186,21 @@ class NoticePage extends Component {
                     </div>
 
                     <div className="row justify-content-center">
-                        <div className="col-sm-5 mt-4 text-center text-sm-start pt-3">
+                        <div className="col-sm-5 mt-4 text-center pt-3">
                             <h5><FontAwesomeIcon icon="envelope"/> Kontakt mailowy:</h5>
                             <h5>{this.state.user.email}</h5>
 
                         </div>
-                        <div className="col-sm-6 mt-4 py-2 text-center text-sm-end">
-                            {this.state.user.username && <Link
-                                to={`/user/${this.state.user.username}`}
-                                className="btn btn-outline-secondary profile-btn px-4 mt-3"
-                            >
-                                <div>
-                                    {`${this.state.user.firstName} ${this.state.user.lastName}`}
-                                    <Image roundedCircle src={profileImage} width="40"
-                                           height="40" className="ms-2 border border-secondary profile-btn"/>
-                                </div>
-                            </Link>}
-                        </div>
                     </div>
                 </Card.Body>
+                {this.state.user.username === this.props.loggedInUserUsername &&
+
                 <Card.Footer className="text-center">
-                    {this.state.user.username === this.props.loggedInUserUsername &&
                     <div>
-                        <Button className="px-5 m-1" variant="outline-secondary" onClick={this.onClickEdit}>
+                        <Button className="px-5 m-1 option-btn" variant="outline-secondary" onClick={this.onClickEdit}>
                             <FontAwesomeIcon icon="edit" className="me-1"/>Edytuj
                         </Button>
-                        <Button className="px-5 m-1" variant="outline-secondary" onClick={this.handleShow}>
+                        <Button className="px-5 m-1 option-btn" variant="outline-secondary" onClick={this.handleShow}>
                             <FontAwesomeIcon icon="trash-alt" className="me-1"/>Skasuj
                         </Button>
                         <DeleteModal
@@ -222,8 +211,25 @@ class NoticePage extends Component {
                             errorMessage={this.state.errorMessageInModal}
                         />
                     </div>
-                    }
-                </Card.Footer>
+                </Card.Footer>}
+
+                {this.state.user.username !== this.props.loggedInUserUsername &&
+                <Card.Footer className="text-center">
+                    <div>
+                        <div className="col-sm-6 text-center mx-auto">
+                            {this.state.user.username && <Link
+                                to={`/user/${this.state.user.username}`}
+                                className="btn btn-outline-secondary profile-btn px-4 py-2 shadow-sm"
+                            >
+                                <div>
+                                    <span>{`${this.state.user.firstName} ${this.state.user.lastName}`}</span>
+                                    <Image roundedCircle src={profileImage} width="40"
+                                           height="40" className="ms-2 shadow-sm"/>
+                                </div>
+                            </Link>}
+                        </div>
+                    </div>
+                </Card.Footer>}
             </Card>
         );
     }

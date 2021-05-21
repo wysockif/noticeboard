@@ -15,15 +15,19 @@ class VerificationEmailAddressPage extends Component {
         verified: undefined,
         isLinkDisabled: true
     }
-    interval;
+    interval = undefined;
+    _isMounted = false;
 
     componentDidMount() {
         if (this.props.isLoggedIn) {
             this.props.history.replace('/');
         }
+        this._isMounted = true;
         this.interval = setInterval(() => {
             if (this.state.timeInSeconds) {
-                this.setState({timeInSeconds: this.state.timeInSeconds - 1});
+                if(this._isMounted){
+                    this.setState({timeInSeconds: this.state.timeInSeconds - 1});
+                }
             }
         }, 1000);
 
@@ -41,6 +45,11 @@ class VerificationEmailAddressPage extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+
     displayInfoAboutSentEmail = () => {
         const email = this.props.location.state.user ? this.props.location.state.user.email : this.props.location.state.email;
         const name = this.props.location.state.user ? ` ${this.props.location.state.user.firstName.trim()}` : '';
@@ -48,7 +57,7 @@ class VerificationEmailAddressPage extends Component {
             <div className="text-center mt-5">
                 <div>
                     {this.props.location.state.user.firstName && <h2>{`Dziękujemy za rejestrację${name},`}</h2>}
-                    <div className="col-6 mx-auto">
+                    <div className="col-11 col-sm-10 mx-auto">
                         na Twój adres e-mail ({email})
                         została wysłana wiadomość z linkiem umożliwiającym aktywację konta.
                     </div>

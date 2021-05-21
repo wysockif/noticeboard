@@ -36,7 +36,7 @@ class TopBar extends Component {
     render() {
         return (
             <Navbar variant="light" expand="lg"
-                    className="shadow-sm border border-2 rounded mb-3 mt-1 "
+                    className="shadow-sm border border-2 rounded mb-3 mt-1"
                     bg="light"
             >
                 <Container className="col-sm-11 col-md-9">

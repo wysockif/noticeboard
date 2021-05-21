@@ -44,6 +44,8 @@ select:focus,
 
 html {
     overflow-y: scroll;
+    position: relative;
+    min-height: 100%;
 }
 
 .dropdown .dropdown-menu .dropdown-item:hover {
@@ -52,8 +54,39 @@ html {
     border-color: #fff;
 }
 
+.btn.profile-btn{
+    background-color: #f4f4f4;
+    color: black;
+    border-color: #dfdfdf;
+}
+
 .btn.profile-btn:hover {
+    background-color: #f7f7f7;
+    color: black;
+    border-color: #cecece;
+}
+
+.btn.option-btn{
+    background-color: white;
+    color: black;
+}
+
+.btn.option-btn:hover {
     background-color: #efefef;
     color: black;
 }
 
+.footerWrap {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
+
+.mh-profile-card{
+    min-height: calc(100vh - 460px);
+}
+
+.mh-home-card{
+    min-height: calc(100vh - 380px);
+}

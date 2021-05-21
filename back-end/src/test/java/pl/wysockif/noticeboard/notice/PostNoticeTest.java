@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.controllers.notice;
+package pl.wysockif.noticeboard.notice;
 
 import org.junit.Before;
 import org.junit.Rule;

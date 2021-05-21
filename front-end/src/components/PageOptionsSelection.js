@@ -5,7 +5,7 @@ const PageOptionsSelection = ({onSelectPageSize, onSelectSorting}) => {
         <div className="col-lg-4 row mb-md-2">
             <div className="col-12  mt-2">
                 <label htmlFor="inputPagination" className="form-label">
-                    Ilość na stronie
+                    Ilość na stronie:
                 </label>
                 <select id="inputSorting" className="form-select"
                         onChange={onSelectPageSize}>
@@ -16,7 +16,7 @@ const PageOptionsSelection = ({onSelectPageSize, onSelectSorting}) => {
             </div>
             <div className="col-12  mt-2">
                 <label htmlFor="inputPagination"
-                       className="form-label">Sortowanie</label>
+                       className="form-label">Sortowanie:</label>
                 <select id="inputPagination" className="form-select"
                         onChange={onSelectSorting}>
                     <option value="createdAt,desc" defaultValue>Od najnowszych
