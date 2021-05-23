@@ -55,14 +55,14 @@ public class StaticFileService {
         }
     }
 
-    public void deleteOldProfileImage(String userId, String image) {
+    public void deleteProfileImage(String userId, String image) {
         if (image != null) {
-            LOGGER.info("Deleting old user image (userId: " + userId + ", imageName: " + image + ")");
+            LOGGER.info("Deleting user image (userId: " + userId + ", imageName: " + image + ")");
             try {
                 Files.deleteIfExists(Paths.get(uploadFolderPath + "/profile-images/" + image));
-                LOGGER.info("Deleted old user image (userId: " + userId + ", imageName: " + image + ")");
+                LOGGER.info("Deleted user image (userId: " + userId + ", imageName: " + image + ")");
             } catch (IOException e) {
-                LOGGER.warning("Cannot delete old user image (userId: " + userId + ", imageName: " + image + ")");
+                LOGGER.warning("Cannot delete user image (userId: " + userId + ", imageName: " + image + ")");
             }
         }
     }

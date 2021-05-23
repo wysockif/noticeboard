@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.controllers.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import pl.wysockif.noticeboard.dto.user.requests.ChangePasswordRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
@@ -50,7 +52,7 @@ public class AppUserController {
 
     @GetMapping("/users/notice/{noticeId:[0-9]+}")
     @ResponseStatus(OK)
-    public AppUserSnapshot getUserByUsername(@PathVariable Long noticeId) {
+    public AppUserSnapshot getUserByNoticeId(@PathVariable Long noticeId) {
         LOGGER.info("Request getUserByNoticeId started (noticeId: " + noticeId + ")");
         AppUserSnapshot snapshot = appUserService.getUserByNoticeId(noticeId);
         LOGGER.info("Request getUserByNoticeId finished (userId: " + snapshot.getId() + ")");
@@ -67,11 +69,30 @@ public class AppUserController {
         return snapshot;
     }
 
+    @PatchMapping("/users/{id:[0-9]+}/password")
+    @PreAuthorize("#id == principal.id")
+    @ResponseStatus(OK)
+    public AppUserSnapshot changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+        LOGGER.info("Request changePassword started (userId: " + id + ")");
+        AppUserSnapshot snapshot = appUserService.changePassword(id, changePasswordRequest);
+        LOGGER.info("Request changePassword finished (userId: " + id + ")");
+        return snapshot;
+    }
+
     @PatchMapping("/users/{email}/activation")
     public AppUserSnapshot activateAccount(@PathVariable String email) {
         LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
         AppUserSnapshot snapshot = appUserService.activateAccount(email);
         LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
         return snapshot;
+    }
+
+    @DeleteMapping("users/{id:[0-9]+}")
+    @PreAuthorize("#id == principal.id")
+    @ResponseStatus(OK)
+    public void deleteUser(@PathVariable Long id) {
+        LOGGER.info("Request deleteUser started (userId: " + id + ")");
+        appUserService.deleteUser(id);
+        LOGGER.info("Request deleteUser finished (userId: " + id + ")");
     }
 }

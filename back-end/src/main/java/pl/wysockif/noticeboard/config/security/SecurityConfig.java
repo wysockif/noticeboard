@@ -47,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(POST, API_URL + "/login").authenticated()
                 .antMatchers(PATCH, API_URL + "/users/{id:[0-9]+}").authenticated()
+                .antMatchers(DELETE, API_URL + "/users/{id:[0-9]+}").authenticated()
                 .antMatchers(POST, API_URL + "/notices").authenticated()
                 .antMatchers(DELETE, API_URL + "/notices/{id:[0-9]+}").authenticated()
                 .antMatchers(PUT, API_URL + "/notices/{id:[0-9]+}").authenticated()

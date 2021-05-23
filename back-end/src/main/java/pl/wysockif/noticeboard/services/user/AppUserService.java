@@ -4,15 +4,18 @@ package pl.wysockif.noticeboard.services.user;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.wysockif.noticeboard.dto.user.requests.ChangePasswordRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.user.AlreadyActivatedUserException;
+import pl.wysockif.noticeboard.errors.user.IncorrectPasswordException;
 import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
+import pl.wysockif.noticeboard.services.notice.NoticeService;
 import pl.wysockif.noticeboard.services.token.VerificationTokenService;
 
 import java.util.Optional;
@@ -36,13 +39,16 @@ public class AppUserService {
 
     private final VerificationTokenService tokenService;
 
+    private final NoticeService noticeService;
+
 
     public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          StaticFileService staticFileService, VerificationTokenService tokenService) {
+                          StaticFileService staticFileService, VerificationTokenService tokenService, NoticeService noticeService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.staticFileService = staticFileService;
         this.tokenService = tokenService;
+        this.noticeService = noticeService;
     }
 
     public Long saveUser(PostUserRequest postUserRequest) {
@@ -69,21 +75,54 @@ public class AppUserService {
         return snapshot;
     }
 
+    public void deleteUser(Long userId) {
+        LOGGER.info("Deleting user: " + userId);
+        Optional<AppUser> userFromDb = userRepository.findById(userId);
+        if (userFromDb.isEmpty()) {
+            LOGGER.info("Cannot unlock non-existing user (userId: " + userId + ")");
+            throw new UserNotFoundException("Nie znaleziono użytkownika");
+        }
+        tokenService.deleteAllByUserId(userId);
+        noticeService.deleteAllByUserId(userId);
+        String imageToDelete = userFromDb.get().getImage();
+        userRepository.deleteById(userId);
+        if (imageToDelete != null && !imageToDelete.isEmpty()) {
+            staticFileService.deleteProfileImage(userId.toString(), imageToDelete);
+        }
+        LOGGER.info("Deleted user: " + userId);
+    }
+
     public AppUserSnapshot update(Long id, PatchUserRequest patchUserRequest) {
         LOGGER.info("Updating user: " + id);
         AppUser appUser = userRepository.getOne(id);
         appUser.setFirstName(patchUserRequest.getFirstName());
         appUser.setLastName(patchUserRequest.getLastName());
-
         if (patchUserRequest.getProfileImage() != null) {
             String profileImageName = staticFileService
                     .saveProfileImage(valueOf(appUser.getId()), appUser.getUsername(), patchUserRequest.getProfileImage());
-            staticFileService.deleteOldProfileImage(valueOf(appUser.getId()), appUser.getImage());
+            staticFileService.deleteProfileImage(valueOf(appUser.getId()), appUser.getImage());
             appUser.setImage(profileImageName);
         }
         userRepository.save(appUser);
         LOGGER.info("Updated user: " + id);
         return AppUserMapper.INSTANCE.appUserToSnapshot(appUser);
+    }
+
+    public AppUserSnapshot changePassword(Long id, ChangePasswordRequest changePasswordRequest) {
+        LOGGER.info("Changing password (userId: " + id + ")");
+        AppUser user = userRepository.getOne(id);
+        if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            LOGGER.info("Incorrect old password");
+            throw new IncorrectPasswordException("Stare hasło jest nieprawidłowe");
+        }
+        if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
+            LOGGER.info("Incorrect new password");
+            throw new IncorrectPasswordException("Nowe hasło musi być różne od starego");
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+        LOGGER.info("Changed password (userId: " + id + ")");
+        return AppUserMapper.INSTANCE.appUserToSnapshot(user);
     }
 
     public AppUserSnapshot getUserByNoticeId(Long noticeId) {
@@ -116,7 +155,7 @@ public class AppUserService {
         if (userOptional.isEmpty()) {
             LOGGER.info("Cannot activate non-existing user account (userEmail: " + email + ")");
             throw new UserNotFoundException("Nie znaleziono użytkownika o podanym adresie e-mail");
-        } else if(!userOptional.get().isLockedAccount()){
+        } else if (!userOptional.get().isLockedAccount()) {
             LOGGER.info("Cannot activate activated user account (userEmail: " + email + ")");
             throw new AlreadyActivatedUserException("Użytkownik o podanym adresie e-mail został aktywowany już wcześniej");
         }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import pl.wysockif.noticeboard.entities.notice.Notice;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
@@ -27,4 +28,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             String location2, BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
             Pageable pageable);
 
+    List<Notice> findAllByCreatorId(Long creatorId);
+
+    void deleteAllByCreatorId(Long creatorId);
 }

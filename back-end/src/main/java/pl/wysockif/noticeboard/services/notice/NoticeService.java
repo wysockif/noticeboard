@@ -19,6 +19,8 @@ import pl.wysockif.noticeboard.services.file.StaticFileService;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -51,6 +53,21 @@ public class NoticeService {
         Long savedNoticeId = noticeRepository.save(noticeToSave).getId();
         LOGGER.info("Created notice (noticeId: (" + savedNoticeId + ")");
         return savedNoticeId;
+    }
+
+    @Transactional
+    public void deleteAllByUserId(Long userId) {
+        LOGGER.info("Deleting all notices by user id (userId: " + userId + ")");
+        List<Notice> notices = noticeRepository.findAllByCreatorId(userId);
+        List<String> imagesToDelete = new LinkedList<>();
+        notices.forEach(noticeToDelete -> {
+            imagesToDelete.add(noticeToDelete.getPrimaryImage());
+            imagesToDelete.add(noticeToDelete.getSecondaryImage());
+            imagesToDelete.add(noticeToDelete.getTertiaryImage());
+        });
+        noticeRepository.deleteAllByCreatorId(userId);
+        imagesToDelete.forEach(imageName -> staticFileService.deleteNoticeImage(userId.toString(), imageName));
+        LOGGER.info("Deleted all notices by user id (userId: " + userId + ")");
     }
 
     public NoticeWithDetailsSnapshot getNotice(Long noticeId) {

@@ -50,8 +50,15 @@ public class VerificationTokenService {
         checkIfTokenHasExpired(token.get().getGeneratedAt(), tokenValue);
         Long userId = token.get().getAppUser().getId();
         userService.unlockUserAccount(userId);
-        tokenRepository.deleteAllByAppUserId(userId);
+        deleteAllByUserId(userId);
         LOGGER.info("Verified token: " + tokenValue);
+    }
+
+    @Transactional
+    public void deleteAllByUserId(Long userId) {
+        LOGGER.info("Deleting all token by userId (userId:" + userId + ")");
+        tokenRepository.deleteAllByAppUserId(userId);
+        LOGGER.info("Deleted all token by userId (userId:" + userId + ")");
     }
 
     @SneakyThrows
