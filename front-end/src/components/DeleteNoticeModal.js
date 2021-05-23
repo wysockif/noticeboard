@@ -2,9 +2,9 @@ import React from 'react';
 import {Alert, Button, Modal} from "react-bootstrap";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 
-const DeleteModal = ({show, ongoingApiCall, errorMessage, onClickDelete, onClickCancel}) => {
+const DeleteNoticeModal = ({show, ongoingApiCall, errorMessage, onClickDelete, onClickCancel}) => {
     return (
-        <Modal show={show} onHide={onClickCancel} className="">
+        <Modal show={show} onHide={onClickCancel} centered>
             <Modal.Header closeButton>
                 <Modal.Title>Kasowanie ogłoszenia</Modal.Title>
             </Modal.Header>
@@ -20,4 +20,4 @@ const DeleteModal = ({show, ongoingApiCall, errorMessage, onClickDelete, onClick
     );
 };
 
-export default DeleteModal;
+export default DeleteNoticeModal;

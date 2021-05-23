@@ -84,7 +84,7 @@ class EditNoticePage extends Component {
         const tertiaryImage = this.imagesComponent.current.state.tertiaryImage.split(',')[1];
         const price = this.state.price
             .replace('zł', '').replace('zl', '')
-            .replaceAll(' ','');
+            .replaceAll(' ', '');
         const title = this.state.title.trim();
         const location = this.state.location.trim();
         const description = this.state.description.trim();
@@ -145,7 +145,7 @@ class EditNoticePage extends Component {
     returnMainContent = () => {
         return (
             <Card style={{marginBottom: "100px"}}>
-                {this.state.userId !== this.props.userId && <Redirect to='/'/> }
+                {this.state.userId !== this.props.userId && <Redirect to='/'/>}
                 <Card.Header className="text-center">
                     <h5 className="my-2">Edytuj ogłoszenie </h5>
                 </Card.Header>

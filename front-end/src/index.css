@@ -30,14 +30,14 @@ select:focus,
 
 
 .pagination .active span {
-    background-color: #b84  !important;
+    background-color: #b84 !important;
     border-color: #b84 !important;
     color: #ffffff !important;
 }
 
 .pagination span:hover {
-    background-color: #B82  !important;
-    border-color: #b82  !important;
+    background-color: #B82 !important;
+    border-color: #b82 !important;
     color: #ffffff !important;
     cursor: pointer;
 }
@@ -54,7 +54,7 @@ html {
     border-color: #fff;
 }
 
-.btn.profile-btn{
+.btn.profile-btn {
     background-color: #f4f4f4;
     color: black;
     border-color: #dfdfdf;
@@ -66,7 +66,7 @@ html {
     border-color: #cecece;
 }
 
-.btn.option-btn{
+.btn.option-btn {
     background-color: white;
     color: black;
 }
@@ -83,10 +83,36 @@ html {
     left: 0;
 }
 
-.mh-profile-card{
+.mh-profile-card {
     min-height: calc(100vh - 455px);
 }
 
-.mh-home-card{
+.mh-home-card {
     min-height: calc(100vh - 370px);
+}
+
+.settings-btn {
+    border: 0 !important;
+    min-width: 100px;
+    color: gray !important;
+    background-color: #f4f4f4 !important;
+}
+
+.settings-btn:hover,
+.settings-btn:focus,
+.settings-btn:visited {
+    border: 0 !important;
+    color: black !important;
+    background-color: #f4f4f4 !important;
+}
+
+.modal-open {
+    overflow: visible;
+}
+
+.modal-open,
+.modal-open .fixed-top {
+    padding-left: 0!important;
+    padding-right: 0!important;
+    margin: 0!important;
 }

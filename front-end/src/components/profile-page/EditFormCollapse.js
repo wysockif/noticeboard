@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Collapse, Container, FormControl} from 'react-bootstrap';
+import {Button, Collapse, Container} from 'react-bootstrap';
 import InputWithValidation from '../InputWithValidation';
 import ButtonWithSpinner from '../ButtonWithSpinner';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import DeleteAccountModal from "../DeleteAccountModal";
 
 
 class EditFormCollapse extends Component {
@@ -10,9 +11,9 @@ class EditFormCollapse extends Component {
         id: undefined,
         firstName: '',
         lastName: '',
-        selectedFile: ''
+        selectedFile: '',
+        deleteAccountModal: false
     }
-
     componentDidMount() {
         if (this.props.user) {
             this.setState({
@@ -52,11 +53,18 @@ class EditFormCollapse extends Component {
         this.props.onClickUpdateUser(this.state.id, body);
     }
 
-    onImageSelect = event => {
+    onSelectProfileImage = event => {
         this.props.onImageSelect(event);
         this.setState({selectedFile: event.target.value})
     }
 
+    onClickCancelDeleteAccount = () => {
+        this.setState({deleteAccountModal: false})
+    }
+
+    onClickDeleteAccountButton = () => {
+        this.setState({deleteAccountModal: true})
+    }
 
     render() {
         let disabled = this.props.ongoingApiCall ||
@@ -68,22 +76,28 @@ class EditFormCollapse extends Component {
 
         return (
             <div>
+                <DeleteAccountModal isDisplayed={this.state.deleteAccountModal}
+                                    onClickCancel={this.onClickCancelDeleteAccount}
+                                    id={this.state.id}
+                                    onDeleteSuccess={this.onDeleteAccountSuccess}
+                />
                 <Collapse in={this.props.open} onExited={this.onExitedCollapse}>
                     <div id="example-collapse-text" className="mt-3">
+
                         <Container className="col-12 col-sm-11 col-md-10 col-lg-9 col-xl-8">
                             <div className="mb-2">
                                 <FontAwesomeIcon icon="user" className="me-1"/>
                                 Dane osobowe
                             </div>
                             <InputWithValidation
-                                label="Imię:" placeholder="Imię" width="100px"
+                                label="Imię:" placeholder="Imię" width="115px"
                                 value={this.state.firstName}
                                 onChange={this.onChangeFirstName}
                                 hasError={this.props.errors.firstName !== undefined}
                                 error={this.props.errors.firstName}
                             />
                             <InputWithValidation
-                                label="Nazwisko:" placeholder="Nazwisko" width="100px"
+                                label="Nazwisko:" placeholder="Nazwisko" width="115px"
                                 value={this.state.lastName}
                                 onChange={this.onChangeLastName}
                                 hasError={this.props.errors.lastName !== undefined}
@@ -95,16 +109,16 @@ class EditFormCollapse extends Component {
                                 Zdjęcie profilowe
                             </div>
                             <div className="custom-file mb-3 mx-auto">
-                                <FormControl type="file"
-                                             className="custom-file-input col-12 col-sm-10 col-md-9 col-lg-7 col-xl-6 mx-auto"
-                                             id="inputGroupFile02" style={{cursor: "pointer"}}
-                                             onChange={this.onImageSelect}
-                                             isInvalid={this.props.errors.profileImage !== undefined}
-                                             value={this.state.selectedFile}
-                                />
-                                <FormControl.Feedback type="invalid" className="text-center">
-                                    {this.props.errors.profileImage && this.props.errors.profileImage}
-                                </FormControl.Feedback>
+                                <div className="custom-file mb-3 mx-auto mt-2">
+                                    <input className="form-control" type="file" id="formFile"
+                                           onChange={this.onSelectProfileImage}/>
+                                    {this.props.errors.profileImage !== undefined && <div className="text-center">
+                                        <small className="text-danger">
+                                            {this.props.errors.profileImage}
+                                        </small>
+                                    </div>}
+                                </div>
+
                             </div>
                             <div>
                                 <ButtonWithSpinner
@@ -114,7 +128,18 @@ class EditFormCollapse extends Component {
                                     ongoingApiCall={this.props.ongoingApiCall}
                                 />
                             </div>
+
                         </Container>
+                        <div>
+                            <hr style={{maxWidth: "280px", marginBottom: "1px"}} className="mx-auto"/>
+                            <Button className="settings-btn mx-1 px-2" variant="outline-light" size="sm">
+                                Zmień hasło
+                            </Button>
+                            <Button className="settings-btn mx-1 px-2" variant="outline-light" size="sm"
+                                    onClick={this.onClickDeleteAccountButton}>
+                                Skasuj konto
+                            </Button>
+                        </div>
                     </div>
                 </Collapse>
             </div>

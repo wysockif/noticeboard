@@ -4,7 +4,7 @@ import * as apiCalls from "../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import {Link} from "react-router-dom";
-import DeleteModal from "../components/DeleteModal";
+import DeleteNoticeModal from "../components/DeleteNoticeModal";
 import {connect} from "react-redux";
 import defaultProfilePicture from "../assets/default-profile-image.jpeg";
 
@@ -203,7 +203,7 @@ class NoticePage extends Component {
                         <Button className="px-5 m-1 option-btn" variant="outline-secondary" onClick={this.handleShow}>
                             <FontAwesomeIcon icon="trash-alt" className="me-1"/>Skasuj
                         </Button>
-                        <DeleteModal
+                        <DeleteNoticeModal
                             show={this.state.show}
                             onClickCancel={this.handleClose}
                             onClickDelete={this.onClickDelete}

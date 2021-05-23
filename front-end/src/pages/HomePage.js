@@ -334,8 +334,8 @@ class HomePage extends Component {
                         </div>
                     </Card.Header>
                     <div>
-                        <div className="row m-3 mt-2">
-                            {this.state.isLoadingContent && <div className="text-center mt-3">
+                        <div className="row m-3 mt-2 mh-home-card">
+                            {this.state.isLoadingContent && <div className="text-center mt-3 ">
                                 <Spinner animation="border" size="sm" role="status" className="ms-1">
                                     <span className="sr-only">Loading...</span>
                                 </Spinner>
@@ -356,7 +356,7 @@ class HomePage extends Component {
                                 Wystąpił błąd podczas ładowania ogłoszeń. Spróbuj ponownie później.
                             </div>}
                             {!this.state.loadingError && !this.state.isLoadingContent && (this.state.page.content.length < 1) &&
-                            <div className="text-center text-muted mt-2 row align-items-center mh-home-card">
+                            <div className="text-center text-muted mt-2 row align-items-center">
                                 <div className="col">Nie znaleziono ogłoszeń</div>
                             </div>}
                         </div>

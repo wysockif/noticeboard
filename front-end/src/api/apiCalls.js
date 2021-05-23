@@ -42,6 +42,10 @@ export const deleteNotice = id => {
     return axios.delete(apiUrl + '/notices/' + id);
 }
 
+export const deleteUserAccount = (id,body) => {
+    return axios.delete(apiUrl + '/users/' + id, body);
+}
+
 export const getUserByNoticeId = noticeId => {
     return axios.get(apiUrl + '/users/notice/' + noticeId);
 }
