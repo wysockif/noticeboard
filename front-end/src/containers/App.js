@@ -8,11 +8,12 @@ import UserProfilePage from '../pages/UserProfilePage';
 import ErrorPage from '../pages/ErrorPage';
 import TopBar from '../components/TopBar';
 import * as apiCalls from '../api/apiCalls';
-import {Container, Navbar} from 'react-bootstrap';
+import {Container} from 'react-bootstrap';
 import CreateNoticePage from '../pages/CreateNoticePage';
 import EditNoticePage from '../pages/EditNoticePage';
 import VerificationEmailAddressPage from "../pages/VerificationEmailAddressPage";
 import ActivateAccountPage from "../pages/ActivateAccountPage";
+import Footer from "../components/Footer";
 
 const actions = {
     postLogin: apiCalls.login,
@@ -41,22 +42,7 @@ function App() {
                         <Route path="*" component={ErrorPage}/>
                     </Switch>
                 </Container>
-                <div>
-                </div>
-                <div className="footerWrap">
-                    <Navbar sticky="bottom" variant="light" expand="lg"
-                            className="shadow-sm border border-2 rounded"
-                            bg="light" style={{minHeight: '65px'}}>
-                        <div className="mx-auto">
-                            <div className="text-center text-muted">
-                                <small>&copy; 2021 Noticeboard.pl</small>
-                            </div>
-                            <div className="text-center text-muted">
-                                <small>Franciszek Wysocki</small>
-                            </div>
-                        </div>
-                    </Navbar>
-                </div>
+                <Footer/>
             </div>
         </div>
     );
