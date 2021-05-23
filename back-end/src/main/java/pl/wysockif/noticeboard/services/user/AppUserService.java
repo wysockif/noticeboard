@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.wysockif.noticeboard.dto.user.requests.ChangePasswordRequest;
+import pl.wysockif.noticeboard.dto.user.requests.DeleteAccountRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
@@ -75,12 +76,17 @@ public class AppUserService {
         return snapshot;
     }
 
-    public void deleteUser(Long userId) {
+    public void deleteUser(Long userId, DeleteAccountRequest deleteAccountRequest) {
         LOGGER.info("Deleting user: " + userId);
         Optional<AppUser> userFromDb = userRepository.findById(userId);
         if (userFromDb.isEmpty()) {
             LOGGER.info("Cannot unlock non-existing user (userId: " + userId + ")");
             throw new UserNotFoundException("Nie znaleziono użytkownika");
+        }
+        if (deleteAccountRequest.getPassword() == null ||
+                !passwordEncoder.matches(deleteAccountRequest.getPassword(), userFromDb.get().getPassword())) {
+            LOGGER.info("Incorrect password");
+            throw new IncorrectPasswordException("Niepoprawne hasło");
         }
         tokenService.deleteAllByUserId(userId);
         noticeService.deleteAllByUserId(userId);

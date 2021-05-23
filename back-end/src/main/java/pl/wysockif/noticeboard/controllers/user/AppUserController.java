@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.dto.user.requests.ChangePasswordRequest;
+import pl.wysockif.noticeboard.dto.user.requests.DeleteAccountRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PatchUserRequest;
 import pl.wysockif.noticeboard.dto.user.requests.PostUserRequest;
 import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
@@ -90,9 +91,9 @@ public class AppUserController {
     @DeleteMapping("users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     @ResponseStatus(OK)
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable Long id, @Valid @RequestBody DeleteAccountRequest deleteAccountRequest) {
         LOGGER.info("Request deleteUser started (userId: " + id + ")");
-        appUserService.deleteUser(id);
+        appUserService.deleteUser(id, deleteAccountRequest);
         LOGGER.info("Request deleteUser finished (userId: " + id + ")");
     }
 }
