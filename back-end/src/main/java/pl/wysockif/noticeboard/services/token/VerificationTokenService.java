@@ -15,12 +15,9 @@ import pl.wysockif.noticeboard.services.user.AppUserService;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

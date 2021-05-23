@@ -1,4 +1,4 @@
-package pl.wysockif.noticeboard.user;
+package pl.wysockif.noticeboard.controllers.user;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;

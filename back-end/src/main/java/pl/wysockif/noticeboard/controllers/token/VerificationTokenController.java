@@ -6,11 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wysockif.noticeboard.services.token.VerificationTokenService;
 
+import java.util.logging.Logger;
+
 @RestController
 @RequestMapping(("/api/1.0"))
 public class VerificationTokenController {
 
     private final VerificationTokenService tokenService;
+    private final Logger LOGGER = Logger.getLogger(VerificationTokenController.class.getName());
+
 
     public VerificationTokenController(VerificationTokenService tokenService) {
         this.tokenService = tokenService;
@@ -18,6 +22,8 @@ public class VerificationTokenController {
 
     @PostMapping("/tokens/{token}")
     public void verifyToken(@PathVariable String token) {
+        LOGGER.info("Request VerifyToken started (token: " + token + " )");
         tokenService.verifyToken(token);
+        LOGGER.info("Request VerifyToken finished (token: " + token + " )");
     }
 }
