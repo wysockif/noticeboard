@@ -221,7 +221,7 @@ class HomePage extends Component {
     render() {
         return (
             <div data-testid="homepage" className="mb-5 mt-4">
-                <Card style={{marginBottom: "110px"}}>
+                <Card style={{marginBottom: "90px"}}>
                     <Card.Header>
                         <div className="col-10 col-sm-9 col-md-8 mx-auto">
                             <InputGroup className="my-2">
@@ -334,7 +334,7 @@ class HomePage extends Component {
                         </div>
                     </Card.Header>
                     <div>
-                        <div className="row m-4">
+                        <div className="row m-3 mt-2">
                             {this.state.isLoadingContent && <div className="text-center mt-3">
                                 <Spinner animation="border" size="sm" role="status" className="ms-1">
                                     <span className="sr-only">Loading...</span>

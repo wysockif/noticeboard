@@ -264,7 +264,7 @@ class UserProfilePage extends Component {
     displayMainContent() {
         const canBeModified = this.props.match.params.username === this.props.loggedInUser.username;
         return <div data-testid="homepage">
-            <Card style={{marginBottom: "110px"}}>
+            <Card style={{marginBottom: "90px"}}>
                 <UserPageHeader
                     open={this.state.open}
                     user={this.state.user}
@@ -276,7 +276,7 @@ class UserProfilePage extends Component {
                     selectedImage={this.state.selectedImage}
                     onImageSelect={this.onImageSelect}
                 />
-                <div className="row m-4">
+                <div className="row m-3 mt-2">
                     {!this.state.page.totalElements &&
                     <div className="text-center text-muted mt-2 row align-items-center mh-profile-card">
                         <div className="col">Ta tablica jest jeszcze pusta</div>

@@ -144,7 +144,7 @@ class EditNoticePage extends Component {
 
     returnMainContent = () => {
         return (
-            <Card style={{marginBottom: "110px"}}>
+            <Card style={{marginBottom: "100px"}}>
                 {this.state.userId !== this.props.userId && <Redirect to='/'/> }
                 <Card.Header className="text-center">
                     <h5 className="my-2">Edytuj ogłoszenie </h5>
@@ -175,7 +175,7 @@ class EditNoticePage extends Component {
                         secondaryImage={this.state.secondaryImage}
                         tertiaryImage={this.state.tertiaryImage}
                     />
-                    <div className="text-center my-2">
+                    <div className="text-center my-2 mt-4">
                         <ButtonWithSpinner
                             content="Zatwierdź zmiany"
                             onClick={this.onClickSubmit}

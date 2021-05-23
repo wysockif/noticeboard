@@ -12,33 +12,34 @@ const NoticeboardItem = (props) => {
     momentDate.locale('pl');
 
     return (
-        <Link to={`/notice/${props.id}`} className="col-12 col-md-6 col-lg-4 my-2 nav-link">
-            <Card className="col-11 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
-                <div className="mx-auto">
-                    <h6><FontAwesomeIcon icon="map-pin"/></h6>
-                </div>
-                <Image src={imageSource} onError={event => event.target.src = temp}
-                       className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
-                <Card.Body>
-                    <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>
-                    <Card.Text as="div" className="col">
-                        <div>
-                            <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
-                            <span>{props.price} zł</span>
-                        </div>
-                        <div className="text-nowrap text-truncate">
-                            <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
-                            {props.location}
-                        </div>
-                    </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                    <small className="text-muted">Opublikowano: {momentDate.startOf('second').fromNow()}</small>
-                </Card.Footer>
-            </Card>
-        </Link>
-    )
-        ;
+        <div className="col-12 col-md-6 col-lg-4 mt-4">
+            <Link to={`/notice/${props.id}`} className="text-decoration-none">
+                <Card className="col-12 mx-auto list-group-item-action" style={{cursor: 'pointer'}}>
+                    <div className="mx-auto">
+                        <h6><FontAwesomeIcon icon="map-pin"/></h6>
+                    </div>
+                    <Image src={imageSource} onError={event => event.target.src = temp}
+                           className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
+                    <Card.Body>
+                        <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>
+                        <Card.Text as="div" className="col">
+                            <div>
+                                <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
+                                <span>{props.price} zł</span>
+                            </div>
+                            <div className="text-nowrap text-truncate">
+                                <FontAwesomeIcon icon="map-marker-alt" className="ms-1 me-2"/>
+                                {props.location}
+                            </div>
+                        </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                        <small className="text-muted">Opublikowano: {momentDate.startOf('second').fromNow()}</small>
+                    </Card.Footer>
+                </Card>
+            </Link>
+        </div>
+    );
 }
 
 export default NoticeboardItem;

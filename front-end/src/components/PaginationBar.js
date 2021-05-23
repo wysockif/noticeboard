@@ -5,7 +5,7 @@ const PaginationBar = ({page, onClickNext, onClickPrevious, onClickFirst, onClic
     const nextClasses = page.last ?  'page-item disabled' : 'page-item';
 
     return (
-        <nav className="mb-2">
+        <nav className="my-2">
             <ul className="pagination justify-content-center">
                 <li className={previousClasses} onClick={onClickPrevious}><span
                     className="page-link text-dark">{'<'}</span></li>

@@ -24,7 +24,7 @@ function App() {
         <div>
             <TopBar/>
             <div>
-                <Container className="clear-top mb-5">
+                <Container>
                     <Switch>
                         <Route exact path="/" render={(props) => <HomePage {...props} key={Date.now()}/>}/>
                         <Route path="/login" component={props => <LoginPage {...props} actions={actions}/>}/>
@@ -45,8 +45,8 @@ function App() {
                 </div>
                 <div className="footerWrap">
                     <Navbar sticky="bottom" variant="light" expand="lg"
-                            className="shadow-sm border border-2 rounded mt-5"
-                            bg="light">
+                            className="shadow-sm border border-2 rounded"
+                            bg="light" style={{minHeight: '65px'}}>
                         <div className="mx-auto">
                             <div className="text-center text-muted">
                                 <small>&copy; 2021 Noticeboard.pl</small>

@@ -106,7 +106,7 @@ class NoticePage extends Component {
             profileImage = defaultProfilePicture;
         }
         return (
-            <Card style={{marginBottom: "110px"}}>
+            <Card style={{marginBottom: "90px"}}>
                 <Card.Header className="text-center">
                     <h4 className="my-2">{this.state.notice.title}</h4>
                 </Card.Header>
@@ -219,7 +219,7 @@ class NoticePage extends Component {
                         <div className="col-sm-6 text-center mx-auto">
                             {this.state.user.username && <Link
                                 to={`/user/${this.state.user.username}`}
-                                className="btn btn-outline-secondary profile-btn px-4 py-2 shadow-sm"
+                                className="btn btn-outline-secondary profile-btn shadow-sm"
                             >
                                 <div>
                                     <span>{`${this.state.user.firstName} ${this.state.user.lastName}`}</span>

@@ -91,7 +91,7 @@ class CreateNoticePage extends Component {
         return (
             <Container data-testid="createnoticepage" className="my-3">
                 {!this.props.isLoggedIn && <Redirect to="/login"/>}
-                <Card style={{marginBottom: "110px"}}>
+                <Card style={{marginBottom: "95px"}}>
                     <Card.Header className="text-center">
                         <h5 className="my-2">Dodaj ogłoszenie </h5>
                     </Card.Header>
@@ -118,7 +118,7 @@ class CreateNoticePage extends Component {
                             ref={this.imagesComponent}
                             errors={this.state.errors}
                         />
-                        <div className="text-center my-2">
+                        <div className="text-center my-2 mt-4">
                             <ButtonWithSpinner
                                 content="Dodaj ogłoszenie"
                                 onClick={this.onClickSubmit}

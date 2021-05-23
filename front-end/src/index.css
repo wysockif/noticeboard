@@ -84,9 +84,9 @@ html {
 }
 
 .mh-profile-card{
-    min-height: calc(100vh - 460px);
+    min-height: calc(100vh - 430px);
 }
 
 .mh-home-card{
-    min-height: calc(100vh - 380px);
+    min-height: calc(100vh - 370px);
 }
