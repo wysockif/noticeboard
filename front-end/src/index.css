@@ -84,11 +84,11 @@ html {
 }
 
 .mh-profile-card {
-    min-height: calc(100vh - 455px);
+    min-height: calc(100vh - 175px);
 }
 
 .mh-home-card {
-    min-height: calc(100vh - 370px);
+    min-height: calc(100vh - 190px);
 }
 
 .settings-btn {

@@ -12,6 +12,7 @@ import pl.wysockif.noticeboard.dto.user.snapshots.AppUserSnapshot;
 import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.user.AlreadyActivatedUserException;
 import pl.wysockif.noticeboard.errors.user.IncorrectPasswordException;
+import pl.wysockif.noticeboard.errors.user.SameNewPasswordException;
 import pl.wysockif.noticeboard.errors.user.UserNotFoundException;
 import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
@@ -43,8 +44,8 @@ public class AppUserService {
     private final NoticeService noticeService;
 
 
-    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          StaticFileService staticFileService, VerificationTokenService tokenService, NoticeService noticeService) {
+    public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder, StaticFileService staticFileService,
+                          VerificationTokenService tokenService, NoticeService noticeService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.staticFileService = staticFileService;
@@ -59,7 +60,7 @@ public class AppUserService {
         user.setLockedAccount(activeProfile);
         AppUser savedUser = userRepository.save(user);
         Long savedUserId = savedUser.getId();
-        tokenService.sendNewToken(savedUser);
+        tokenService.sendNewVerificationToken(savedUser);
         LOGGER.info("Saved user (userId: " + savedUserId + ")");
         return savedUser.getId();
     }
@@ -119,11 +120,11 @@ public class AppUserService {
         AppUser user = userRepository.getOne(id);
         if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             LOGGER.info("Incorrect old password");
-            throw new IncorrectPasswordException("Stare hasło jest nieprawidłowe");
+            throw new IncorrectPasswordException("Bieżace hasło jest nieprawidłowe");
         }
         if (passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
             LOGGER.info("Incorrect new password");
-            throw new IncorrectPasswordException("Nowe hasło musi być różne od starego");
+            throw new SameNewPasswordException("Nowe hasło musi być różne od bieżącego");
         }
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
@@ -165,8 +166,9 @@ public class AppUserService {
             LOGGER.info("Cannot activate activated user account (userEmail: " + email + ")");
             throw new AlreadyActivatedUserException("Użytkownik o podanym adresie e-mail został aktywowany już wcześniej");
         }
-        tokenService.sendNewToken(userOptional.get());
+        tokenService.sendNewVerificationToken(userOptional.get());
         LOGGER.info("Activated user account (userEmail: " + email + ")");
         return AppUserMapper.INSTANCE.appUserToSnapshot(userOptional.get());
     }
+
 }

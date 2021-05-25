@@ -4,6 +4,7 @@ import InputWithValidation from '../InputWithValidation';
 import ButtonWithSpinner from '../ButtonWithSpinner';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DeleteAccountModal from "../DeleteAccountModal";
+import ChangePasswordModal from "../ChangePasswordModal";
 
 
 class EditFormCollapse extends Component {
@@ -11,15 +12,19 @@ class EditFormCollapse extends Component {
         id: undefined,
         firstName: '',
         lastName: '',
+        username: '',
         selectedFile: '',
-        deleteAccountModal: false
+        deleteAccountModal: false,
+        changePasswordModal: false
     }
+
     componentDidMount() {
         if (this.props.user) {
             this.setState({
                 id: this.props.user.id,
                 firstName: this.props.user.firstName,
                 lastName: this.props.user.lastName,
+                username: this.props.user.username
             })
         }
     }
@@ -63,7 +68,15 @@ class EditFormCollapse extends Component {
     }
 
     onClickDeleteAccountButton = () => {
-        this.setState({deleteAccountModal: true})
+        this.setState({deleteAccountModal: true});
+    }
+
+    onClickChangePasswordButton = () => {
+        this.setState({changePasswordModal: true});
+    }
+
+    onClickCancelChangePassword = () => {
+        this.setState({changePasswordModal: false});
     }
 
     render() {
@@ -79,7 +92,11 @@ class EditFormCollapse extends Component {
                 <DeleteAccountModal isDisplayed={this.state.deleteAccountModal}
                                     onClickCancel={this.onClickCancelDeleteAccount}
                                     id={this.state.id}
-                                    onDeleteSuccess={this.onDeleteAccountSuccess}
+                />
+                <ChangePasswordModal isDisplayed={this.state.changePasswordModal}
+                                     onClickCancel={this.onClickCancelChangePassword}
+                                     id={this.state.id}
+                                     username={this.state.username}
                 />
                 <Collapse in={this.props.open} onExited={this.onExitedCollapse}>
                     <div id="example-collapse-text" className="mt-3">
@@ -132,7 +149,8 @@ class EditFormCollapse extends Component {
                         </Container>
                         <div>
                             <hr style={{maxWidth: "280px", marginBottom: "1px"}} className="mx-auto"/>
-                            <Button className="settings-btn mx-1 px-2" variant="outline-light" size="sm">
+                            <Button className="settings-btn mx-1 px-2" variant="outline-light" size="sm"
+                                    onClick={this.onClickChangePasswordButton}>
                                 Zmień hasło
                             </Button>
                             <Button className="settings-btn mx-1 px-2" variant="outline-light" size="sm"

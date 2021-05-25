@@ -16,6 +16,8 @@ export default function authenticationReducer(state = initialState, action) {
             return {...action.payload};
         case 'LOGOUT_SUCCESS':
             return {...initialState};
+        case 'CHANGE_PASSWORD_SUCCESS':
+            return {...state, password: action.payload.password}
         default:
             return state;
     }

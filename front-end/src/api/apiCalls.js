@@ -11,16 +11,13 @@ export const setAuthHeader = ({isLoggedIn, username, password}) => {
     }
 }
 
-
 export const updateUser = (id, body) => {
     return axios.patch(apiUrl + `/users/${id}`, body);
 }
 
-
 export const register = user => {
     return axios.post(apiUrl + '/users', user);
 };
-
 
 export let getUser = username => {
     return axios.get(apiUrl + `/users/${username}`);
@@ -44,6 +41,10 @@ export const deleteNotice = id => {
 
 export const deleteUserAccount = (id,body) => {
     return axios.delete(apiUrl + '/users/' + id, body);
+}
+
+export const changePassword = (id, body) => {
+    return axios.patch(apiUrl + '/users/' + id + '/password', body)
 }
 
 export const getUserByNoticeId = noticeId => {

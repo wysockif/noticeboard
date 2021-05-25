@@ -70,7 +70,7 @@ public class VerificationTokenService {
         }
     }
 
-    public void sendNewToken(AppUser appUser) {
+    public void sendNewVerificationToken(AppUser appUser) {
         LOGGER.info("Creating new token for user: " + appUser.getUsername());
         String tokenValue = saveNewTokenInDatabase(appUser);
         String url = linkToClick + "/" + tokenValue;
