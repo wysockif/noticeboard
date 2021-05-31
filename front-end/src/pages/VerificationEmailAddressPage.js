@@ -25,7 +25,7 @@ class VerificationEmailAddressPage extends Component {
         this._isMounted = true;
         this.interval = setInterval(() => {
             if (this.state.timeInSeconds) {
-                if(this._isMounted){
+                if (this._isMounted) {
                     this.setState({timeInSeconds: this.state.timeInSeconds - 1});
                 }
             }

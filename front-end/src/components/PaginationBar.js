@@ -2,7 +2,7 @@ import React from 'react';
 
 const PaginationBar = ({page, onClickNext, onClickPrevious, onClickFirst, onClickLast}) => {
     const previousClasses = page.first ? 'page-item disabled' : 'page-item';
-    const nextClasses = page.last ?  'page-item disabled' : 'page-item';
+    const nextClasses = page.last ? 'page-item disabled' : 'page-item';
 
     return (
         <nav className="my-2">

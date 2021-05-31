@@ -73,7 +73,7 @@ class EditNoticePage extends Component {
                     this.setState({userId: response.data.id, isUserDetailsLoading: false});
                 })
                 .catch(error => {
-
+                    this.setState({isLoading: false});
                 });
         }
     }

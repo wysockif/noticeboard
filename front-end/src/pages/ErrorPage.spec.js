@@ -40,3 +40,4 @@ describe('ErrorPage', () => {
         expect(link).toHaveAttribute('href', '/');
     });
 })
+console.error = () => {}

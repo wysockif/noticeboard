@@ -2,7 +2,7 @@ import React from 'react';
 import {FormControl, InputGroup} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-const   InputWithValidation = props => {
+const InputWithValidation = props => {
     const type = props.type ? props.type : 'text';
     const labelWidth = props.width ? props.width : '200px';
     const style = props.readOnly ? {backgroundColor: "white"} : {};
@@ -25,7 +25,7 @@ const   InputWithValidation = props => {
                     onChange={props.onChange}
                     type={type}
                     isInvalid={props.hasError}
-                    isValid={props.isCorrect && true}
+                    isValid={props.isCorrect}
                     readOnly={props.readOnly}
                 />
                 <FormControl.Feedback type="invalid" className="text-center">
@@ -37,8 +37,7 @@ const   InputWithValidation = props => {
 }
 
 InputWithValidation.defaultProps = {
-    onChange: () => {
-    }
+    onChange: () => {}
 };
 
 export default InputWithValidation;

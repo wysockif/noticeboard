@@ -131,7 +131,7 @@ describe('RegistrationPage', () => {
             });
         }
 
-        it('redirects to login page after successful registration', async () => {
+        it('redirects to verification page after successful registration', async () => {
             // given
             const actions = {
                 postRegister: jest.fn().mockResolvedValueOnce({})
@@ -144,7 +144,19 @@ describe('RegistrationPage', () => {
             fireEvent.click(button);
             await waitForElementToBeRemoved(() => queryByText('Loading...'));
             // then
-            expect(history.push).toHaveBeenCalledWith('/login');
+            expect(history.push).toHaveBeenCalledWith({
+                    "pathname": "/verify",
+                    "state": {
+                        "user": {
+                            "email": "updatedemail@mail.com",
+                            "firstName": "Updatedfirstname",
+                            "lastName": "Updatedlastname",
+                            "password": "Password123",
+                            "username": "updatedusername"
+                        }
+                    }
+                }
+            );
         });
 
         it('sets the first name value into state', () => {
@@ -350,5 +362,4 @@ describe('RegistrationPage', () => {
 
     });
 });
-console.error = () => {
-}
+console.error = () => {}

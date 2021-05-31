@@ -73,7 +73,7 @@ class ActivateAccountPage extends Component {
                 </div>
             </Container>
         );
-    };
+    }
 }
 
 const mapStateToProps = state => {

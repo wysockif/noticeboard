@@ -28,7 +28,7 @@ class DeleteAccountModal extends Component {
         this.props.onClickCancel();
     }
 
-    onClickDelete = event => {
+    onClickDelete = () => {
         this.setState({ongoingApiCall: true, errorMessage: undefined})
         const password = this.state.password;
         apiCalls.deleteUserAccount(this.props.id, {data: {password}})

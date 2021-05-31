@@ -10,7 +10,7 @@ class ErrorPage extends Component {
                 <ErrorAlert image={pageNotFoundImage}/>
             </div>
         );
-    };
+    }
 }
 
 export default ErrorPage;

@@ -15,7 +15,7 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.title}
                         onChange={props.onChangeTitle}
-                        hasError={props.titleError && true}
+                        hasError={props.titleError}
                         error={props.titleError}
                     />
                     <InputWithValidation
@@ -25,7 +25,7 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.location}
                         onChange={props.onChangeLocation}
-                        hasError={props.locationError && true}
+                        hasError={props.locationError}
                         error={props.locationError}
                     />
                     <InputWithValidation
@@ -35,7 +35,7 @@ const BasicInformation = props => {
                         width="170px"
                         value={props.price}
                         onChange={props.onChangePrice}
-                        hasError={props.priceError && true}
+                        hasError={props.priceError}
                         error={props.priceError}
                     />
                     {props.priceError &&

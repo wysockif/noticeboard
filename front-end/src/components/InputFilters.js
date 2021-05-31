@@ -2,8 +2,6 @@ import React from 'react';
 import {FormControl} from "react-bootstrap";
 
 const InputFilters = props => {
-
-
     return (
         <div className="col-lg-8 row">
             <div className="col-12 mt-2">

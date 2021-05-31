@@ -25,7 +25,7 @@ export const DescriptionForm = props => {
                         <FormControl as="textarea" aria-label="Opis:" className="rounded"
                                      style={{resize: "none", height: "200px"}}
                                      value={props.description} onChange={props.onChangeDescription}
-                                     isInvalid={props.descriptionError && true}
+                                     isInvalid={props.descriptionError}
                         />
                         <FormControl.Feedback type="invalid" className="text-center">
                             {props.descriptionError}

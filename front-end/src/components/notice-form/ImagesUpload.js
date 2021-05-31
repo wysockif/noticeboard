@@ -160,8 +160,7 @@ export class ImagesUpload extends Component {
                 </div>
             </Card>
         );
-    };
+    }
 }
-
 
 export default ImagesUpload;

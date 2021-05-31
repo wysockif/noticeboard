@@ -96,14 +96,9 @@ export class RegistrationPage extends Component {
 
     everyFieldHasBeenCompleted = () => {
         const {firstName, lastName, username, email, password, passwordRepeat} = this.state;
-        if (firstName !== '' && lastName !== '' && username !== ''
-            && email !== '' & password !== '' && passwordRepeat !== '') {
-            return true;
-        } else {
-            return false;
-        }
+        return !!(firstName !== '' && lastName !== '' && username !== ''
+            && email !== '' & password !== '' && passwordRepeat !== '');
     }
-
     render() {
         return (
             <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5" style={{marginBottom: "90px"}}>

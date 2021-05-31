@@ -139,3 +139,5 @@ describe('apiCalls', () => {
         });
     });
 });
+
+console.error = () => {}

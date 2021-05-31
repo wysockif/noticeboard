@@ -5,7 +5,7 @@ import EditFormCollapse from "./EditFormCollapse";
 import UserDetailsHeader from "./UserDetailsHeader";
 
 const UserPageHeader = props => {
-    return ((
+    return (
         <Card.Header className="text-center">
             <div className="col-10 col-sm-9 col-md-8 mx-auto">
                 {props.user &&
@@ -40,7 +40,7 @@ const UserPageHeader = props => {
                 />
             </div>
         </Card.Header>
-    ));
+    );
 }
 
 export default UserPageHeader;

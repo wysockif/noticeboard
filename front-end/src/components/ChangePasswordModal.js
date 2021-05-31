@@ -6,8 +6,6 @@ import * as apiCalls from "../api/apiCalls";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 
-//Todo: validation errors
-
 class ChangePasswordModal extends Component {
 
     state = {
