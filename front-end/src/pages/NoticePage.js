@@ -6,6 +6,7 @@ import moment from "moment";
 import {Link} from "react-router-dom";
 import DeleteNoticeModal from "../components/DeleteNoticeModal";
 import {connect} from "react-redux";
+import defaultNoticeImage from "../assets/default-notice-image.jpg";
 import defaultProfilePicture from "../assets/default-profile-image.jpeg";
 
 
@@ -154,6 +155,7 @@ class NoticePage extends Component {
                                            className="d-block w-100"
                                            src={`/images/notice/${this.state.notice.primaryImage}`}
                                            alt="First slide"
+                                           onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                                 <Carousel.Item style={{maxHeight: "430px"}}>
@@ -162,6 +164,7 @@ class NoticePage extends Component {
                                            className="d-block w-100"
                                            src={`/images/notice/${this.state.notice.secondaryImage}`}
                                            alt="Second slide"
+                                           onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                                 <Carousel.Item style={{maxHeight: "430px"}}>
@@ -170,6 +173,7 @@ class NoticePage extends Component {
                                            className="d-block w-100"
                                            src={`/images/notice/${this.state.notice.tertiaryImage}`}
                                            alt="Third slide"
+                                           onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                             </Carousel>

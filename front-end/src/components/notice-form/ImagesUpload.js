@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Card} from "react-bootstrap";
-import SimpleImage from "./SingleImage";
+import SingleImage from "./SingleImage";
 
 export class ImagesUpload extends Component {
     state = {
@@ -138,19 +138,19 @@ export class ImagesUpload extends Component {
                 <div className="col-11 mx-auto row">
                     <Card.Title className="m-3 mb-1"><small>Zdjęcia</small></Card.Title>
                     <small className="mx-3 text-muted">Kolejność zdjęć ma znaczenie.</small>
-                    <SimpleImage
+                    <SingleImage
                         content="Zdjęcie pierwszoplanowe"
                         image={this.state.primaryImage}
                         onSelectImage={this.onSelectPrimaryImage}
                         error={this.state.primaryImageError || (this.props.errors && this.props.errors.primaryImage)}
                     />
-                    <SimpleImage
+                    <SingleImage
                         content="Zdjęcie drugoplanowe"
                         image={this.state.secondaryImage}
                         onSelectImage={this.onSelectSecondaryImage}
                         error={this.props.errors && this.props.errors.secondaryImage}
                     />
-                    <SimpleImage
+                    <SingleImage
                         content="Zdjęcie trzecioplanowe"
                         image={this.state.tertiaryImage}
                         onSelectImage={this.onSelectTertiaryImage}

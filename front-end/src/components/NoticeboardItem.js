@@ -1,13 +1,13 @@
 import React from 'react';
 import {Card, Image} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import temp from "../assets/temp.svg";
+import defaultNoticeImage from "../assets/default-notice-image.jpg";
 import {Link} from "react-router-dom";
 import moment from "moment";
 import 'moment/locale/pl'
 
 const NoticeboardItem = (props) => {
-    const imageSource = props.image ? '/images/notice/' + props.image : temp;
+    const imageSource = props.image ? '/images/notice/' + props.image : defaultNoticeImage;
     const momentDate = moment(new Date(props.createdAt));
     momentDate.locale('pl');
 
@@ -18,7 +18,7 @@ const NoticeboardItem = (props) => {
                     <div className="mx-auto">
                         <h6><FontAwesomeIcon icon="map-pin"/></h6>
                     </div>
-                    <Image src={imageSource} onError={event => event.target.src = temp}
+                    <Image src={imageSource} onError={event => event.target.src = defaultNoticeImage}
                            className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
                     <Card.Body>
                         <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>

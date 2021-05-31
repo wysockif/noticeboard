@@ -38,7 +38,7 @@ export const deleteNotice = id => {
     return axios.delete(apiUrl + '/notices/' + id);
 }
 
-export const deleteUserAccount = (id,body) => {
+export const deleteUserAccount = (id, body) => {
     return axios.delete(apiUrl + '/users/' + id, body);
 }
 
@@ -67,7 +67,7 @@ export const verifyToken = (token) => {
     return axios.post(apiUrl + `/tokens/${token}`);
 }
 
-export const getNotices = (page = 0, sort = 'createdAt,desc', size = 12, gettingNoticesParams) => {
+export const getNotices = (page = 0, sort = 'createdAt,desc', size = 12, gettingNoticesParams = {}) => {
     let url = apiUrl + `/notices?page=${page}&sort=${sort}&size=${size}`;
     if (gettingNoticesParams) {
         url += mapToUrl(gettingNoticesParams);
