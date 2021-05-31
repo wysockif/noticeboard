@@ -226,7 +226,7 @@ public class PostUserTest {
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("firstName"))
-                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 60 znaków");
+                .isEqualTo("Musi mieć co najmniej 3 i co najwyżej 60 znaków");
     }
 
     @Test
@@ -434,7 +434,7 @@ public class PostUserTest {
         ResponseEntity<ApiError> response = testRestTemplate.postForEntity(USERS_URL, postUserRequest, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("password"))
-                .isEqualTo("Musi mieć conajmniej jedną małą i wielką literę oraz cyfrę");
+                .isEqualTo("Musi mieć co najmniej jedną małą i wielką literę oraz cyfrę");
     }
 
     @Test

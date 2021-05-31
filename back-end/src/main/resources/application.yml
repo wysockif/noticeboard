@@ -1,7 +1,7 @@
 spring:
   profiles:
     active:
-      - prod
+      - dev
 ---
 spring:
   config:
@@ -37,13 +37,13 @@ spring:
     password: ENC(EIBqM8XUC8dqi8NglfUDGSiC/TUZYl15y/kVlfvjF72nakgW9EXAGsAzBre1jcBmp3aOk0+li+TRzWQLIx5nIn7efrazqvqaK/OBkmRZICg=)
     properties:
       mail:
-      smtp:
-      auth: true
-      port: 587
-      starttls:
-      enable: true
-      transport:
-      protocol: smtp
+        smtp:
+          auth: true
+          port: 587
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
 lock-user-account-on-start: true
 upload-folder-path: static-uploads-dev
 verify-address-email-url: https://localhost:3000/#/verify
@@ -81,13 +81,13 @@ spring:
     password: ENC(EIBqM8XUC8dqi8NglfUDGSiC/TUZYl15y/kVlfvjF72nakgW9EXAGsAzBre1jcBmp3aOk0+li+TRzWQLIx5nIn7efrazqvqaK/OBkmRZICg=)
     properties:
       mail:
-      smtp:
-      auth: true
-      port: 587
-      starttls:
-      enable: true
-      transport:
-      protocol: smtp
+        smtp:
+          auth: true
+          port: 587
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
 lock-user-account-on-start: true
 upload-folder-path: static-uploads-prod
 verify-address-email-url: https://noticeboard.pl/#/verify

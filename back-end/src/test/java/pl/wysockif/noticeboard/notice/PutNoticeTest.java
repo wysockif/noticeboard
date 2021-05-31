@@ -250,7 +250,7 @@ public class PutNoticeTest {
         ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("title"))
-                .isEqualTo("Musi mieć conajmniej 8 i conajwyżej 60 znaków");
+                .isEqualTo("Musi mieć co najmniej 8 i co najwyżej 60 znaków");
     }
 
     @Test
@@ -308,7 +308,7 @@ public class PutNoticeTest {
         ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("description"))
-                .isEqualTo("Musi mieć conajmniej 60 i conajwyżej 2000 znaków");
+                .isEqualTo("Musi mieć co najmniej 60 i co najwyżej 2000 znaków");
     }
 
     @Test
@@ -408,7 +408,7 @@ public class PutNoticeTest {
         ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("location"))
-                .isEqualTo("Musi mieć conajmniej 3 i conajwyżej 60 znaków");
+                .isEqualTo("Musi mieć co najmniej 3 i co najwyżej 60 znaków");
     }
 
     @Test
@@ -466,7 +466,7 @@ public class PutNoticeTest {
         ResponseEntity<ApiError> response = testRestTemplate.exchange(url, PUT, requestHttpEntity, ApiError.class);
         // then
         assertThat(response.getBody().getValidationErrors().get("price"))
-                .isEqualTo("Musi mieć conajmniej 1 i conajwyżej 10 znaków");
+                .isEqualTo("Musi mieć co najmniej 1 i co najwyżej 10 znaków");
     }
 
     @Test
