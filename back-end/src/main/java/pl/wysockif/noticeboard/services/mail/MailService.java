@@ -31,19 +31,24 @@ public class MailService {
         LOGGER.info("Sending email to: " + to);
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-        mimeMessageHelper.setFrom("no-reply@noticeboard.pl", "Noticeboard");
-        mimeMessageHelper.setTo(to);
-        mimeMessageHelper.setSubject("Zweryfikuj adres email");
-        mimeMessageHelper.setText(getHtmlContent(userName, url), true);
+        createMail(to, userName, url, mimeMessageHelper);
         Runnable task = () -> {
             try {
                 javaMailSender.send(mimeMessage);
                 LOGGER.info("Sent email to: " + to);
             } catch (Exception e) {
                 e.printStackTrace();
+                LOGGER.warning("Cannot send email to: " + to);
             }
         };
         executor.execute(task);
+    }
+
+    private void createMail(String to, String userName, String url, MimeMessageHelper mimeMessageHelper) throws MessagingException, UnsupportedEncodingException {
+        mimeMessageHelper.setFrom("no-reply@noticeboard.pl", "Noticeboard");
+        mimeMessageHelper.setTo(to);
+        mimeMessageHelper.setSubject("Zweryfikuj adres email");
+        mimeMessageHelper.setText(getHtmlContent(userName, url), true);
     }
 
     private String getHtmlContent(String name, String url) {

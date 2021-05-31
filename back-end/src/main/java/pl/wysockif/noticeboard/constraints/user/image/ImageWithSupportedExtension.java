@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ImageWithSupportedExtension {
+
     String message() default "{noticeboard.constraints.ImageWithSupportedExtension.message}";
 
     Class<?>[] groups() default {};

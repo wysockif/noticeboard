@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wysockif.noticeboard.entities.token.VerificationToken;
 import pl.wysockif.noticeboard.entities.user.AppUser;
-import pl.wysockif.noticeboard.errors.ExpiredTokenException;
+import pl.wysockif.noticeboard.errors.token.ExpiredTokenException;
 import pl.wysockif.noticeboard.errors.token.IncorrectTokenException;
 import pl.wysockif.noticeboard.repositories.token.VerificationTokenRepository;
 import pl.wysockif.noticeboard.services.mail.MailService;
@@ -23,9 +23,9 @@ import java.util.logging.Logger;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
-public class VerificationTokenService {
+public class ActivationTokenService {
 
-    private final Logger LOGGER = Logger.getLogger(VerificationTokenService.class.getName());
+    private final Logger LOGGER = Logger.getLogger(ActivationTokenService.class.getName());
 
     @Value("${verify-address-email-url}")
     private String linkToClick;
@@ -64,7 +64,7 @@ public class VerificationTokenService {
     @SneakyThrows
     private void checkIfTokenHasExpired(Date generatedAt, String tokenValue) {
         long diff = new Date().getTime() - generatedAt.getTime();
-        if(MILLISECONDS.toSeconds(diff) > 15 * 60){
+        if (MILLISECONDS.toSeconds(diff) > 15 * 60) {
             LOGGER.info("Token has expired: " + tokenValue);
             throw new ExpiredTokenException("Ten link aktywujący konto wygasł");
         }

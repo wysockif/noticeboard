@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class PutNoticeRequest {
+
     @NotNull
     @Size(min = 8, max = 60)
     private String title;
@@ -36,4 +37,5 @@ public class PutNoticeRequest {
 
     @ImageWithSupportedExtension
     private String tertiaryImage;
+
 }

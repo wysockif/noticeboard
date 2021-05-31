@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.controllers.user;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,7 +27,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("api/1.0")
 public class AppUserController {
+
     private final AppUserService appUserService;
+
     private static final Logger LOGGER = Logger.getLogger(AppUserController.class.getName());
 
     public AppUserController(AppUserService appUserService) {
@@ -35,6 +38,7 @@ public class AppUserController {
 
     @PostMapping("/users")
     @ResponseStatus(CREATED)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public Long addUser(@Valid @RequestBody PostUserRequest postUserRequest) {
         LOGGER.info("Request postAppUser started (user: " + postUserRequest + ")");
         Long savedUserId = appUserService.saveUser(postUserRequest);
@@ -44,6 +48,7 @@ public class AppUserController {
 
     @GetMapping("/users/{username}")
     @ResponseStatus(OK)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public AppUserSnapshot getUserByUsername(@PathVariable String username) {
         LOGGER.info("Request getUserByUsername started (username: " + username + ")");
         AppUserSnapshot snapshot = appUserService.getUserByUsername(username);
@@ -53,6 +58,7 @@ public class AppUserController {
 
     @GetMapping("/users/notice/{noticeId:[0-9]+}")
     @ResponseStatus(OK)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public AppUserSnapshot getUserByNoticeId(@PathVariable Long noticeId) {
         LOGGER.info("Request getUserByNoticeId started (noticeId: " + noticeId + ")");
         AppUserSnapshot snapshot = appUserService.getUserByNoticeId(noticeId);
@@ -63,6 +69,7 @@ public class AppUserController {
     @PatchMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     @ResponseStatus(OK)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public AppUserSnapshot updateUser(@PathVariable Long id, @Valid @RequestBody PatchUserRequest patchUserRequest) {
         LOGGER.info("Request updateUser started (userId: " + id + ")");
         AppUserSnapshot snapshot = appUserService.update(id, patchUserRequest);
@@ -70,9 +77,20 @@ public class AppUserController {
         return snapshot;
     }
 
+    @DeleteMapping("users/{id:[0-9]+}")
+    @PreAuthorize("#id == principal.id")
+    @ResponseStatus(OK)
+    @CrossOrigin(origins = "https://noticeboard.pl")
+    public void deleteUser(@PathVariable Long id, @Valid @RequestBody DeleteAccountRequest deleteAccountRequest) {
+        LOGGER.info("Request deleteUser started (userId: " + id + ")");
+        appUserService.deleteUser(id, deleteAccountRequest);
+        LOGGER.info("Request deleteUser finished (userId: " + id + ")");
+    }
+
     @PatchMapping("/users/{id:[0-9]+}/password")
     @PreAuthorize("#id == principal.id")
     @ResponseStatus(OK)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public AppUserSnapshot changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
         LOGGER.info("Request changePassword started (userId: " + id + ")");
         AppUserSnapshot snapshot = appUserService.changePassword(id, changePasswordRequest);
@@ -81,19 +99,11 @@ public class AppUserController {
     }
 
     @PatchMapping("/users/{email}/activation")
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public AppUserSnapshot activateAccount(@PathVariable String email) {
         LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
         AppUserSnapshot snapshot = appUserService.activateAccount(email);
         LOGGER.info("Request activateAccount started (userEmail: " + email + ")");
         return snapshot;
-    }
-
-    @DeleteMapping("users/{id:[0-9]+}")
-    @PreAuthorize("#id == principal.id")
-    @ResponseStatus(OK)
-    public void deleteUser(@PathVariable Long id, @Valid @RequestBody DeleteAccountRequest deleteAccountRequest) {
-        LOGGER.info("Request deleteUser started (userId: " + id + ")");
-        appUserService.deleteUser(id, deleteAccountRequest);
-        LOGGER.info("Request deleteUser finished (userId: " + id + ")");
     }
 }

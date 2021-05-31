@@ -176,7 +176,7 @@ class NoticePage extends Component {
                                     Godzina opublikowania:
                                 </small>
                                 <div className="fw-bold ms-2">
-                                    {momentDate.format("HH:MM")}
+                                    {momentDate.format("LT")}
                                 </div>
                             </div>
                         </div>
@@ -247,7 +247,7 @@ class NoticePage extends Component {
             ? this.getSpinner() : this.getMainContent();
 
         return (
-            <Container data-testid="noticepage" className="my-3">
+            <Container data-testid="noticepage" className="my-3" style={{marginBottom: "90px"}}>
                 {content}
             </Container>
         );

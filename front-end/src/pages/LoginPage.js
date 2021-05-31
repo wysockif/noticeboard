@@ -58,7 +58,7 @@ export class LoginPage extends Component {
         const disableSubmit = !(this.state.username && this.state.password);
 
         return (
-            <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5">
+            <Container className="col-11 col-sm-10 col-md-9 col-lg-7 col-xl-5 mt-5" style={{marginBottom: "90px"}}>
                 {this.props.isLoggedIn && <Redirect to="/"/>}
                 <h1 className="text-center my-4">Zaloguj się</h1>
                 <InputWithValidation

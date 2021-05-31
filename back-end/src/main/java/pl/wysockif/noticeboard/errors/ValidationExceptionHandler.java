@@ -24,4 +24,5 @@ public class ValidationExceptionHandler {
         }
         return new ApiError("Validation error", validationErrors);
     }
+
 }

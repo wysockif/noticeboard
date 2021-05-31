@@ -11,6 +11,7 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 
 @RestController
 public class ErrorHandler implements ErrorController {
+
     private final ErrorAttributes errorAttributes;
 
     public ErrorHandler(ErrorAttributes errorAttributes) {

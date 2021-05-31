@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AppUserSnapshot {
+
     private Long id;
 
     private String username;
@@ -15,4 +16,5 @@ public class AppUserSnapshot {
     private String lastName;
 
     private String image;
+
 }

@@ -13,6 +13,9 @@ import java.lang.annotation.Target;
 public @interface UniqueEmail {
 
     String message() default "{noticeboard.constraints.UniqueEmail.message}";
-    Class<?>[] groups() default { };
-    Class<? extends Payload>[] payload() default { };
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
 }

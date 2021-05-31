@@ -1,6 +1,5 @@
 package pl.wysockif.noticeboard.config.web;
 
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -45,7 +44,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCacheControl(CacheControl.maxAge(365, DAYS));
         resourceHandlerRegistry.addResourceHandler("images/notice/**")
                 .addResourceLocations("file:" + uploadFolderPath + "/notice-images/")
-                .setCacheControl(CacheControl.maxAge(14, DAYS));
-
+                .setCacheControl(CacheControl.maxAge(30, DAYS));
     }
+
 }

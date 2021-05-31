@@ -26,10 +26,9 @@ public class StaticFileService {
         String noticeImageFileName = noticeId + "-" +
                 UUID.randomUUID().toString().replace("-", "");
         LOGGER.info("Saving notice image (noticeId: " + noticeId + ", imageName: " + noticeImageFileName + ")");
-
         byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);
         File file = new File(uploadFolderPath + "/notice-images/" + noticeImageFileName);
-        tryToCreateFile(decodedImage, file, noticeId);
+        tryToCreateFile(decodedImage, file);
         LOGGER.info("Saved notice image (noticeId: " + noticeId + ", imageName: " + file.getName() + ")");
         return noticeImageFileName;
     }
@@ -38,19 +37,18 @@ public class StaticFileService {
         String profileImageFileName = username + "-" +
                 UUID.randomUUID().toString().replace("-", "");
         LOGGER.info("Saving profile image (userId: " + userId + ", imageName: " + profileImageFileName + ")");
-
         byte[] decodedImage = Base64.getDecoder().decode(imageAsEncodedString);
         File file = new File(uploadFolderPath + "/profile-images/" + profileImageFileName);
-        tryToCreateFile(decodedImage, file, userId);
+        tryToCreateFile(decodedImage, file);
         LOGGER.info("Saved profile image (userId: " + userId + ", imageName: " + file.getName() + ")");
         return profileImageFileName;
     }
 
-    private void tryToCreateFile(byte[] decodedImage, File file, String userId) throws FileIOException {
+    private void tryToCreateFile(byte[] decodedImage, File file) throws FileIOException {
         try {
             FileUtils.writeByteArrayToFile(file, decodedImage);
         } catch (IOException e) {
-            LOGGER.warning("Cannot create user image (userId: " + userId + ", imageName: " + file.getName() + ")");
+            LOGGER.warning("Cannot create image (imageName: " + file.getName() + ")");
             throw new FileIOException();
         }
     }

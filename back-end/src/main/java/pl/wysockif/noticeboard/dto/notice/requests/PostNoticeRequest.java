@@ -39,4 +39,5 @@ public class PostNoticeRequest {
     @NotNull
     @Size(min = 3, max = 60)
     private String location;
+
 }

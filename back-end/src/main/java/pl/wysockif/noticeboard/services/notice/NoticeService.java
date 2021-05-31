@@ -28,7 +28,9 @@ import java.util.logging.Logger;
 public class NoticeService {
 
     private final Logger LOGGER = Logger.getLogger(NoticeService.class.getName());
+
     private final NoticeRepository noticeRepository;
+
     private final StaticFileService staticFileService;
 
     public NoticeService(NoticeRepository noticeRepository, StaticFileService staticFileService) {
@@ -42,6 +44,13 @@ public class NoticeService {
         Notice createdNotice = NoticeMapper.INSTANCE.postNoticeRequestToNotice(postNoticeRequest);
         createdNotice.setCreatedAt(new Date());
         createdNotice.setCreator(creator);
+        Notice noticeToSave = saveImages(createdNotice);
+        Long savedNoticeId = noticeRepository.save(noticeToSave).getId();
+        LOGGER.info("Created notice (noticeId: (" + savedNoticeId + ")");
+        return savedNoticeId;
+    }
+
+    private Notice saveImages(Notice createdNotice) {
         String primaryImage = createdNotice.getPrimaryImage();
         createdNotice.setPrimaryImage(null);
         String secondaryImage = createdNotice.getSecondaryImage();
@@ -50,9 +59,7 @@ public class NoticeService {
         createdNotice.setTertiaryImage(null);
         Notice noticeToSave = noticeRepository.save(createdNotice);
         saveImages(noticeToSave, noticeToSave.getId().toString(), primaryImage, secondaryImage, tertiaryImage);
-        Long savedNoticeId = noticeRepository.save(noticeToSave).getId();
-        LOGGER.info("Created notice (noticeId: (" + savedNoticeId + ")");
-        return savedNoticeId;
+        return noticeToSave;
     }
 
     @Transactional
@@ -60,11 +67,11 @@ public class NoticeService {
         LOGGER.info("Deleting all notices by user id (userId: " + userId + ")");
         List<Notice> notices = noticeRepository.findAllByCreatorId(userId);
         List<String> imagesToDelete = new LinkedList<>();
-        notices.forEach(noticeToDelete -> {
+        for (Notice noticeToDelete : notices) {
             imagesToDelete.add(noticeToDelete.getPrimaryImage());
             imagesToDelete.add(noticeToDelete.getSecondaryImage());
             imagesToDelete.add(noticeToDelete.getTertiaryImage());
-        });
+        }
         noticeRepository.deleteAllByCreatorId(userId);
         imagesToDelete.forEach(imageName -> staticFileService.deleteNoticeImage(userId.toString(), imageName));
         LOGGER.info("Deleted all notices by user id (userId: " + userId + ")");
@@ -136,7 +143,7 @@ public class NoticeService {
             noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);
         } else {
             BigDecimal minPriceValue = minPriceParam == null ? new BigDecimal("0") : new BigDecimal(minPriceParam);
-            BigDecimal maxPriceValue = maxPriceParam == null ? new BigDecimal("100000000") : new BigDecimal(maxPriceParam); //todo: sprawdzić największą
+            BigDecimal maxPriceValue = maxPriceParam == null ? new BigDecimal("100000000") : new BigDecimal(maxPriceParam);
             noticePage = getNoticeFilteredPage(pageable, searched, location, minPriceValue, maxPriceValue);
         }
         return noticePage;
@@ -152,8 +159,8 @@ public class NoticeService {
         return noticePage;
     }
 
-    private Page<Notice> getNoticePageWhenLocationIsNotProvided(Pageable pageable, String searched,
-                                                                BigDecimal minPriceValue, BigDecimal maxPriceValue) {
+    private Page<Notice> getNoticePageWhenLocationIsNotProvided(
+            Pageable pageable, String searched, BigDecimal minPriceValue, BigDecimal maxPriceValue) {
         Page<Notice> noticePage;
         if (searched != null) {
             noticePage = noticeRepository

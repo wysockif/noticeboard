@@ -12,6 +12,10 @@ import java.util.List;
 @Repository
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
+    void deleteAllByCreatorId(Long creatorId);
+
+    List<Notice> findAllByCreatorId(Long creatorId);
+
     Page<Notice> findAllByCreatorUsername(Pageable pageable, String username);
 
     Page<Notice> findAllByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
@@ -27,8 +31,4 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             String location1, BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
             String location2, BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
             Pageable pageable);
-
-    List<Notice> findAllByCreatorId(Long creatorId);
-
-    void deleteAllByCreatorId(Long creatorId);
 }

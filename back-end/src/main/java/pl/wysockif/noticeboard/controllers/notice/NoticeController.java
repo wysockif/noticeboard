@@ -3,6 +3,7 @@ package pl.wysockif.noticeboard.controllers.notice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +40,7 @@ public class NoticeController {
 
     @PostMapping("/notices")
     @ResponseStatus(CREATED)
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public Long postNotice(@Valid @RequestBody PostNoticeRequest postNoticeRequest) {
         LOGGER.info("Request postNotice started");
         AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -48,6 +50,7 @@ public class NoticeController {
     }
 
     @GetMapping("/notices")
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public Page<NoticeSnapshot> getNotices(Pageable pageable, GettingNoticesParams gettingNoticesParams) {
         LOGGER.info("Request getNotices started");
         Page<NoticeSnapshot> page = noticeService.getNotices(pageable, gettingNoticesParams);
@@ -56,6 +59,7 @@ public class NoticeController {
     }
 
     @GetMapping("/notices/{id:[0-9]+}")
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public NoticeWithDetailsSnapshot getNotice(@PathVariable Long id) {
         LOGGER.info("Request getNotice started");
         NoticeWithDetailsSnapshot noticeWithDetailsSnapshot = noticeService.getNotice(id);
@@ -64,6 +68,7 @@ public class NoticeController {
     }
 
     @DeleteMapping("/notices/{id:[0-9]+}")
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public void deleteNotice(@PathVariable Long id) {
         LOGGER.info("Request deleteNotice started");
         AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -72,6 +77,7 @@ public class NoticeController {
     }
 
     @PutMapping("/notices/{id:[0-9]+}")
+    @CrossOrigin(origins = "https://noticeboard.pl")
     public void putNotice(@PathVariable Long id, @Valid @RequestBody PutNoticeRequest putNoticeRequest) {
         LOGGER.info("Request putNotice started");
         AppUser loggedInUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

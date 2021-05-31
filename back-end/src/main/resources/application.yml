@@ -1,7 +1,7 @@
 spring:
   profiles:
     active:
-      - dev
+      - prod
 ---
 spring:
   config:
@@ -9,9 +9,9 @@ spring:
       on-profile: dev
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: Cj1dNIdO4JjRoNXe46yzF7dyokDJ
+    username: ENC(1umlUO1LVlWOK57oUFj5MX5y/0bkPctlrcEtRT7ReRmLKMCbHnsruAW1NK61gJArtO9kD/SUEpNBPXQlcW02Wg==)
+    password: ENC(TBvK1FQb5UksjDNZ28MBnAk/kZLswnIPXctjmHMgqsTBAiM0QpGBkv4s1nbJ+WVIr3zyDssToUgJ/3mhnrl4pg==)
     url: jdbc:postgresql://localhost:5555/noticeboard_database
-    username: noticeboard_user
   jpa:
     hibernate:
       ddl-auto: update
@@ -33,20 +33,20 @@ spring:
         max-page-size: 36
   mail:
     host: smtp.gmail.com
-    password: Lbep$gYDLR3*#o
+    username: ENC(bfL4vVL0JNWFmM2kyDxv3I75sApd/PEWmNerZM9oY4fm07vOCP7O9Gm6rRYTJnW5)
+    password: ENC(EIBqM8XUC8dqi8NglfUDGSiC/TUZYl15y/kVlfvjF72nakgW9EXAGsAzBre1jcBmp3aOk0+li+TRzWQLIx5nIn7efrazqvqaK/OBkmRZICg=)
     properties:
       mail:
-        smtp:
-          auth: true
-          port: 587
-          starttls:
-            enable: true
-        transport:
-          protocol: smtp
-    username: noticeboard.pl
+      smtp:
+      auth: true
+      port: 587
+      starttls:
+      enable: true
+      transport:
+      protocol: smtp
 lock-user-account-on-start: true
 upload-folder-path: static-uploads-dev
-verify-address-email-url: http://localhost:3000/verify
+verify-address-email-url: https://localhost:3000/#/verify
 ---
 spring:
   config:
@@ -54,9 +54,9 @@ spring:
       on-profile: prod
   datasource:
     driver-class-name: org.postgresql.Driver
-    password: Cj1dNIdO4JjRoNXe46yzF7dyokDJ
     url: jdbc:postgresql://localhost:5555/noticeboard_database
-    username: noticeboard_user
+    username: ENC(u3edAbI/m+ml48Hcb40SUemMd1lLdSLP1WJZEEoyFJ233I5lufv5e5HMtaY00LoCjYCX8vOH8Yq/rwfC5qvJCg==)
+    password: ENC(m9ICFJjF2Cp64jn2C09RAFHPjGq/oXFiVPE3DqTs7GycRAokfNDrx+pXpqLuYB5PFWJ1YY4zwVfkf9jMKu2F2J6+M/A9nT/Vnnd9Ge4Pi2Y=)
   jpa:
     hibernate:
       ddl-auto: update
@@ -77,20 +77,29 @@ spring:
         max-page-size: 36
   mail:
     host: smtp.gmail.com
-    password: Lbep$gYDLR3*#o
+    username: ENC(bfL4vVL0JNWFmM2kyDxv3I75sApd/PEWmNerZM9oY4fm07vOCP7O9Gm6rRYTJnW5)
+    password: ENC(EIBqM8XUC8dqi8NglfUDGSiC/TUZYl15y/kVlfvjF72nakgW9EXAGsAzBre1jcBmp3aOk0+li+TRzWQLIx5nIn7efrazqvqaK/OBkmRZICg=)
     properties:
       mail:
-        smtp:
-          auth: true
-          port: 587
-          starttls:
-            enable: true
-        transport:
-          protocol: smtp
-    username: noticeboard.pl
+      smtp:
+      auth: true
+      port: 587
+      starttls:
+      enable: true
+      transport:
+      protocol: smtp
 lock-user-account-on-start: true
 upload-folder-path: static-uploads-prod
-verify-address-email-url: http://localhost:3000/verify
+verify-address-email-url: https://noticeboard.pl/#/verify
+server:
+  port: 443
+  ssl:
+    key-password: ENC(iaxQTEKRoFSSfcpBi5WUe6YoSCQ/WH0J72gjEwnWeQi5nn7WzZMjhhM/RgvduNBh)
+    key-store-password: ENC(7/r+96rUerUSfSVkv1Wh3OWDwWuLuWbwJgs1jNk1hoENJMtxtDpYMdDU/bzZplzK)
+    key-store: classpath:keystore.jks
+    key-store-type: PKCS12
+    key-alias: noticeboard
+    key-store-provider: SUN
 ---
 spring:
   config:

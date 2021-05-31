@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 public class PatchUserRequest {
+
     @NotNull
     @Size(min = 3, max = 60)
     private String firstName;
@@ -25,4 +26,5 @@ public class PatchUserRequest {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
 }

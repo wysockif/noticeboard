@@ -63,7 +63,6 @@ public class AppUser implements Serializable, UserDetails {
         return true;
     }
 
-
     @Transient
     @Override
     @Profile("test")

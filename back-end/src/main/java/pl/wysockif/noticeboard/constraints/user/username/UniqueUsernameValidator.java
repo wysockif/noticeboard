@@ -17,4 +17,5 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
         AppUser existingUser = userRepository.findByUsername(username);
         return existingUser == null;
     }
+
 }

@@ -21,3 +21,5 @@ target/
 static-uploads-test
 static-uploads-dev
 static-uploads-prod
+
+keystore.jks

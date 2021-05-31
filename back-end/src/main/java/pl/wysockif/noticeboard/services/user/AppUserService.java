@@ -1,6 +1,7 @@
 package pl.wysockif.noticeboard.services.user;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import pl.wysockif.noticeboard.mappers.user.AppUserMapper;
 import pl.wysockif.noticeboard.repositories.user.AppUserRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
 import pl.wysockif.noticeboard.services.notice.NoticeService;
-import pl.wysockif.noticeboard.services.token.VerificationTokenService;
+import pl.wysockif.noticeboard.services.token.ActivationTokenService;
 
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -28,10 +29,13 @@ import static java.lang.String.valueOf;
 @Service
 public class AppUserService {
 
+    private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
+
     @Value("${lock-user-account-on-start}")
     private Boolean activeProfile;
 
-    private final Logger LOGGER = Logger.getLogger(AppUserService.class.getName());
+    @Autowired
+    private ActivationTokenService tokenService;
 
     private final AppUserRepository userRepository;
 
@@ -39,17 +43,14 @@ public class AppUserService {
 
     private final StaticFileService staticFileService;
 
-    private final VerificationTokenService tokenService;
-
     private final NoticeService noticeService;
 
 
     public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder, StaticFileService staticFileService,
-                          VerificationTokenService tokenService, NoticeService noticeService) {
+                    NoticeService noticeService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.staticFileService = staticFileService;
-        this.tokenService = tokenService;
         this.noticeService = noticeService;
     }
 

@@ -14,6 +14,9 @@ import javax.validation.Payload;
 public @interface UniqueUsername {
 
     String message() default "{noticeboard.constraints.UniqueUsername.message}";
-    Class<?>[] groups() default { };
-    Class<? extends Payload>[] payload() default { };
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+    
 }
