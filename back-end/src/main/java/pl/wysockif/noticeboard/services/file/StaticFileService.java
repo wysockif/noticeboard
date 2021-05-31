@@ -21,7 +21,6 @@ public class StaticFileService {
 
     private final Logger LOGGER = Logger.getLogger(StaticFileService.class.getName());
 
-
     public String saveNoticeImage(String noticeId, String imageAsEncodedString) {
         String noticeImageFileName = noticeId + "-" +
                 UUID.randomUUID().toString().replace("-", "");

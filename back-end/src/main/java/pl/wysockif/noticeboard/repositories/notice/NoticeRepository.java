@@ -31,4 +31,5 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             String location1, BigDecimal minPrice1, BigDecimal maxPrice1, String searched1,
             String location2, BigDecimal minPrice2, BigDecimal maxPrice2, String searched2,
             Pageable pageable);
+
 }

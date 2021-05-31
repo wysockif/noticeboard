@@ -41,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry) {
         resourceHandlerRegistry.addResourceHandler("images/profile/**")
                 .addResourceLocations("file:" + uploadFolderPath + "/profile-images/")
-                .setCacheControl(CacheControl.maxAge(365, DAYS));
+                .setCacheControl(CacheControl.maxAge(90, DAYS));
         resourceHandlerRegistry.addResourceHandler("images/notice/**")
                 .addResourceLocations("file:" + uploadFolderPath + "/notice-images/")
                 .setCacheControl(CacheControl.maxAge(30, DAYS));

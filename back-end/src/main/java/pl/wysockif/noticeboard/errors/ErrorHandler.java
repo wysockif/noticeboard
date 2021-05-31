@@ -29,4 +29,5 @@ public class ErrorHandler implements ErrorController {
                 .getErrorAttributes(webRequest, ErrorAttributeOptions.of(MESSAGE)).get("message");
         return new ApiError(message);
     }
+
 }
