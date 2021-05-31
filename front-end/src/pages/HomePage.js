@@ -223,7 +223,7 @@ class HomePage extends Component {
             <div data-testid="homepage" className="mb-5 mt-4">
                 <Card style={{marginBottom: "90px"}} className="mh-home-card">
                     <Card.Header>
-                        <div className="col-10 col-sm-9 col-md-8 mx-auto">
+                        <div className="col-11 col-sm-9 col-md-8 mx-auto">
                             <InputGroup className="my-2">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>
@@ -253,6 +253,7 @@ class HomePage extends Component {
                                     aria-controls="collapse-text"
                                     aria-expanded={this.state.open}
                                     variant="light"
+                                    className="my-1 my-md-0"
                                 >
                                     {!this.state.open && <small className="text-muted">
                                         Wyświetl filtry
@@ -295,7 +296,7 @@ class HomePage extends Component {
                             {this.state.searchingParam &&
                             <span className="badge bg-secondary mx-1">
                                 <span className="d-inline-block text-truncate text-nowrap" style={{maxWidth: '210px'}}>
-                                    Wyszukiwanie: {this.state.searchingParam}
+                                    Wyszukiwanie: {this.state.searchingParam.replaceAll('+', ' ')}
                                 </span>
                                 <span className="ms-2" style={{cursor: 'pointer'}}
                                       onClick={this.onClickDeleteSearching}>X</span>
@@ -326,7 +327,7 @@ class HomePage extends Component {
                                 <span
                                     className="d-inline-block text-truncate text-nowrap"
                                     style={{maxWidth: '210px'}}>
-                                Lokalizacja: {this.state.locationParam.replaceAll('+', '')}
+                                Lokalizacja: {this.state.locationParam.replaceAll('+', ' ')}
                                 </span>
                                 <span className="ms-2" style={{cursor: 'pointer'}}
                                       onClick={this.onClickDeleteLocation}>X</span>

@@ -11,53 +11,81 @@ import defaultProfilePicture from "../assets/default-profile-image.jpeg";
 
 class NoticePage extends Component {
 
+    notice = {
+        id: '',
+        title: '',
+        location: '',
+        price: '',
+        description: '',
+        primaryImage: '',
+        secondaryImage: '',
+        tertiaryImage: '',
+        createdAt: ''
+    }
+
+    user = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        image: '',
+        username: '',
+        id: ''
+    }
+
+    paragraphs = 0;
 
     state = {
         isNoticeDetailsLoading: true,
         isUserDetailsLoading: true,
-        notice: {
-            id: '',
-            title: '',
-            location: '',
-            price: '',
-            description: '',
-            primaryImage: '',
-            secondaryImage: '',
-            tertiaryImage: '',
-            createdAt: ''
-        },
-        user: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            image: '',
-            username: '',
-            id: ''
-        },
+        errorMessage: '',
+        notice: {...this.notice},
+        user: {...this.user},
         index: 0,
         show: false,
         ongoingApiCall: false,
         errorMessageInModal: undefined
     }
 
-    paragraphs = 0;
-
     componentDidMount() {
-        this.setState({isNoticeDetailsLoading: true, isUserDetailsLoading: true})
+        this.setState({isNoticeDetailsLoading: true, isUserDetailsLoading: true, apiErrorMessage: false})
         const noticeId = this.props.match.params.id;
+        if (/^\d+$/.test(noticeId)) {
+            this.loadNotices(noticeId);
+            this.loadUser(noticeId);
+        } else {
+            this.setState({errorMessage: 'Nie znaleziono ogłoszenia.'})
+        }
+    }
+
+    loadNotices = (noticeId) => {
         apiCalls.getNotice(noticeId)
             .then(response => {
                 this.setState({notice: response.data, isNoticeDetailsLoading: false});
             })
-            .catch(error => {
-
+            .catch(apiError => {
+                let message = 'Wystąpił błąd podczas ładowania ogłoszenia. Spróbuj ponownie później.';
+                if (apiError.response && apiError.response.status && apiError.response.status === 404) {
+                    message = 'Nie znaleziono ogłoszenia.';
+                }
+                this.setState({
+                    isNoticeDetailsLoading: false,
+                    isUserDetailsLoading: false,
+                    errorMessage: message
+                });
             });
+    }
+
+    loadUser = (noticeId) => {
         apiCalls.getUserByNoticeId(noticeId)
             .then(response => {
                 this.setState({user: response.data, isUserDetailsLoading: false});
             })
-            .catch(error => {
-
+            .catch(() => {
+                this.setState({
+                    isNoticeDetailsLoading: false,
+                    isUserDetailsLoading: false,
+                    errorMessage: 'Wystąpił błąd podczas ładowania ogłoszenia. Spróbuj ponownie później.'
+                });
             });
     }
 
@@ -112,7 +140,7 @@ class NoticePage extends Component {
                 </Card.Header>
                 <Card.Body className="col-12 col-sm-11 col-md-10 mx-auto">
                     <div className="row justify-content-center">
-                        <div className="col-11 col-lg-6">
+                        <div className="col-lg-7">
                             <Carousel
                                 activeIndex={this.state.index}
                                 onSelect={this.handleSelect}
@@ -120,7 +148,7 @@ class NoticePage extends Component {
                                 className="carousel-dark"
                                 interval={10000}
                             >
-                                <Carousel.Item style={{maxHeight: "375px"}}>
+                                <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.primaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"
@@ -128,7 +156,7 @@ class NoticePage extends Component {
                                            alt="First slide"
                                     />}
                                 </Carousel.Item>
-                                <Carousel.Item style={{maxHeight: "375px"}}>
+                                <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.secondaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"
@@ -136,7 +164,7 @@ class NoticePage extends Component {
                                            alt="Second slide"
                                     />}
                                 </Carousel.Item>
-                                <Carousel.Item style={{maxHeight: "375px"}}>
+                                <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.tertiaryImage &&
                                     <Image thumbnail
                                            className="d-block w-100"
@@ -146,7 +174,7 @@ class NoticePage extends Component {
                                 </Carousel.Item>
                             </Carousel>
                         </div>
-                        <div className="col-10 col-lg-5 align-self-center">
+                        <div className="col-sm-11 col-lg-4 align-self-center">
                             <div className="fs-5 my-2">
                                 <small>
                                     <FontAwesomeIcon icon="wallet" className="ms-1 me-1 pe-1"/>
@@ -181,7 +209,7 @@ class NoticePage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="fs-5 col-11 mx-auto mt-4">
+                    <div className="fs-5 col-sm-11 mx-auto mt-4 px-2">
                         {this.state.notice.description.split('\n').map(str => <p key={this.paragraphs++}>{str}</p>)}
                     </div>
 
@@ -242,9 +270,21 @@ class NoticePage extends Component {
         </div>)
     }
 
+    getErrorMessage = () => {
+        return <div className="text-center text-muted">
+            {this.state.errorMessage}
+        </div>;
+    }
+
     render() {
-        const content = (this.state.isNoticeDetailsLoading || this.state.isUserDetailsLoading)
-            ? this.getSpinner() : this.getMainContent();
+        let content;
+        if (this.state.errorMessage) {
+            content = this.getErrorMessage();
+        } else if (this.state.isNoticeDetailsLoading || this.state.isUserDetailsLoading) {
+            content = this.getSpinner();
+        } else {
+            content = this.getMainContent();
+        }
 
         return (
             <Container data-testid="noticepage" className="my-3" style={{marginBottom: "90px"}}>
