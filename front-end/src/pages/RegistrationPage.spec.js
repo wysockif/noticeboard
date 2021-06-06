@@ -362,4 +362,5 @@ describe('RegistrationPage', () => {
 
     });
 });
-console.error = () => {}
+console.error = () => {
+}

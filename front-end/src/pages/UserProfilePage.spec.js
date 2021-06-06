@@ -86,4 +86,5 @@ describe('UserProfilePage', () => {
         expect(errorDiv).toBeInTheDocument();
     });
 })
-console.error = () => {}
+console.error = () => {
+}

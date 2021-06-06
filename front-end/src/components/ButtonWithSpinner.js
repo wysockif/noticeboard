@@ -15,7 +15,6 @@ const ButtonWithSpinner = props => {
                 <span className="sr-only">Loading...</span>
             </Spinner>}
         </Button>
-
     );
 };
 

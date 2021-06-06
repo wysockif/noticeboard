@@ -28,7 +28,7 @@ class CreateNoticePage extends Component {
         const tertiaryImage = this.imagesComponent.current.state.tertiaryImage.split(',')[1];
         const price = this.state.price
             .replace('zł', '').replace('zl', '')
-            .replaceAll(' ','');
+            .replaceAll(' ', '');
         const title = this.state.title.trim();
         const location = this.state.location.trim();
         const description = this.state.description.trim();

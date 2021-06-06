@@ -71,21 +71,6 @@ describe('apiCalls', () => {
         });
     });
 
-    // describe('getNotices', () => {
-    //     it('calls /api/1.0/notices?sort=createdAt,desc', () => {
-    //         // given
-    //         const username = 'username123';
-    //         const mockGetNotices = jest.fn();
-    //         axios.get = mockGetNotices;
-    //         // when
-    //         apiCalls.getNotices();
-    //         // then
-    //         const calledPath = mockGetNotices.mock.calls[0][0];
-    //         expect(calledPath).toBe('/api/1.0/notices?sort=createdAt,desc');
-    //     });
-    // });
-
-
     describe('getNotice', () => {
         it('calls /api/1.0/notices/1 when 1 is provided for the function', () => {
             // given
@@ -119,7 +104,7 @@ describe('apiCalls', () => {
             const mockPutNotice = jest.fn();
             axios.put = mockPutNotice;
             // when
-            apiCalls.putNotice(1,{});
+            apiCalls.putNotice(1, {});
             // then
             const calledPath = mockPutNotice.mock.calls[0][0];
             expect(calledPath).toBe('/api/1.0/notices/1');
@@ -140,4 +125,5 @@ describe('apiCalls', () => {
     });
 });
 
-console.error = () => {}
+console.error = () => {
+}

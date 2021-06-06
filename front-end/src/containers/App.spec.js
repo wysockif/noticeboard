@@ -45,16 +45,6 @@ const setUser1LoggedInStorage = () => {
 };
 
 describe('App', () => {
-    // it('displays homepage when url is /', () => {
-    //     // given
-    //     const url = '/';
-    //     // when
-    //     const {queryByTestId} = renderAppComponent(url);
-    //     // then
-    //     const homeDiv = queryByTestId('homepage');
-    //     expect(homeDiv).toBeInTheDocument();
-    // });
-
     it('displays login page when url is /login', () => {
         // given
         const url = '/login';
@@ -84,8 +74,6 @@ describe('App', () => {
         const header = container.querySelector('h1');
         expect(header).toHaveTextContent('Zarejestruj się');
     });
-
-
 
     it('displays create notice page when url is /notice/new', () => {
         // given
@@ -119,4 +107,5 @@ describe('App', () => {
     });
 });
 
-console.error = () => {}
+console.error = () => {
+}

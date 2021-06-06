@@ -90,4 +90,5 @@ describe('TopBar', () => {
     });
 
 });
-console.error = () => {}
+console.error = () => {
+}

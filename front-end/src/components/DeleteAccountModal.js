@@ -17,7 +17,6 @@ class DeleteAccountModal extends Component {
         successInfo: undefined
     }
 
-
     onCancel = () => {
         this.setState({
             ongoingApiCall: false,

@@ -152,28 +152,28 @@ class NoticePage extends Component {
                                 <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.primaryImage &&
                                     <Image
-                                           className="d-block w-100"
-                                           src={`/images/notice/${this.state.notice.primaryImage}`}
-                                           alt="First slide"
-                                           onError={event => event.target.src = defaultNoticeImage}
+                                        className="d-block w-100"
+                                        src={`/images/notice/${this.state.notice.primaryImage}`}
+                                        alt="First slide"
+                                        onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                                 <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.secondaryImage &&
                                     <Image
-                                           className="d-block w-100"
-                                           src={`/images/notice/${this.state.notice.secondaryImage}`}
-                                           alt="Second slide"
-                                           onError={event => event.target.src = defaultNoticeImage}
+                                        className="d-block w-100"
+                                        src={`/images/notice/${this.state.notice.secondaryImage}`}
+                                        alt="Second slide"
+                                        onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                                 <Carousel.Item style={{maxHeight: "430px"}}>
                                     {this.state.notice.tertiaryImage &&
                                     <Image
-                                           className="d-block w-100"
-                                           src={`/images/notice/${this.state.notice.tertiaryImage}`}
-                                           alt="Third slide"
-                                           onError={event => event.target.src = defaultNoticeImage}
+                                        className="d-block w-100"
+                                        src={`/images/notice/${this.state.notice.tertiaryImage}`}
+                                        alt="Third slide"
+                                        onError={event => event.target.src = defaultNoticeImage}
                                     />}
                                 </Carousel.Item>
                             </Carousel>

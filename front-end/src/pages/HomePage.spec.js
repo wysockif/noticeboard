@@ -13,4 +13,5 @@ describe('HomePage', () => {
         expect(homeDiv).toBeInTheDocument();
     });
 })
-console.error = () => {}
+console.error = () => {
+}

@@ -17,5 +17,4 @@ const ContactInformation = ({email}) => {
     );
 };
 
-
 export default ContactInformation;

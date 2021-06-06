@@ -37,7 +37,8 @@ const InputWithValidation = props => {
 }
 
 InputWithValidation.defaultProps = {
-    onChange: () => {}
+    onChange: () => {
+    }
 };
 
 export default InputWithValidation;
