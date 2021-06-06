@@ -9,7 +9,7 @@ const SingleImage = ({image, onSelectImage, content, error}) => {
         <div className="col-12 col-sm-11 col-md-9 col-lg-5 col-xl-4 mx-auto mb-3 mx-1">
             <Card.Text as="div" className="mx-3 my-1">
                 <div>
-                    <Image src={img} className="croppedImage mx-auto d-inline-block"
+                    <Image src={img} className="croppedImage mx-auto d-inline-block objectFit"
                            onError={event => event.target.src = defaultNoticeImage}/>
                 </div>
                 <div className="my-2">

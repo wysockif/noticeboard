@@ -25,14 +25,13 @@ class VerificationEmailAddressPage extends Component {
         this._isMounted = true;
         this.interval = setInterval(() => {
             if (this.state.timeInSeconds) {
-                if (this._isMounted) {
+                if(this._isMounted){
                     this.setState({timeInSeconds: this.state.timeInSeconds - 1});
                 }
             }
         }, 1000);
 
         const token = this.props.match.params.token;
-
         if (token) {
             this.setState({isLoading: true, errorMessage: '', verified: false})
             apiCalls.verifyToken(token)

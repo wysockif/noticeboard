@@ -47,7 +47,7 @@ public class AppUserService {
 
 
     public AppUserService(AppUserRepository userRepository, PasswordEncoder passwordEncoder, StaticFileService staticFileService,
-                    NoticeService noticeService) {
+                          NoticeService noticeService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.staticFileService = staticFileService;

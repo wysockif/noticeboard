@@ -19,7 +19,7 @@ const NoticeboardItem = (props) => {
                         <h6><FontAwesomeIcon icon="map-pin"/></h6>
                     </div>
                     <Image src={imageSource} onError={event => event.target.src = defaultNoticeImage}
-                           className="shadow-sm" style={{borderTop: "1px solid whitesmoke"}}/>
+                           className="shadow-sm objectFit" style={{borderTop: "1px solid whitesmoke"}}/>
                     <Card.Body>
                         <Card.Title className="text-nowrap text-truncate">{props.title}</Card.Title>
                         <Card.Text as="div" className="col">

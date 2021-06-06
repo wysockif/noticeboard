@@ -38,9 +38,6 @@ public class Notice implements Serializable {
 
     private BigDecimal price;
 
-    @Column(length = 360)
-    private String keywords;
-
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private AppUser creator;

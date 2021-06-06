@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -48,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(POST, API_URL + "/login").authenticated()
                 .antMatchers(PATCH, API_URL + "/users/{id:[0-9]+}").authenticated()
+                .antMatchers(PATCH, API_URL + "/users/{id:[0-9]+}/password").authenticated()
                 .antMatchers(DELETE, API_URL + "/users/{id:[0-9]+}").authenticated()
                 .antMatchers(POST, API_URL + "/notices").authenticated()
                 .antMatchers(DELETE, API_URL + "/notices/{id:[0-9]+}").authenticated()

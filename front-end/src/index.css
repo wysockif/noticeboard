@@ -1,9 +1,6 @@
-.croppedImage {
-    width: 100%;
+.objectFit {
     object-fit: cover;
-    background-repeat: no-repeat;
-    background-size: cover;
-    overflow: hidden;
+    width: 100%;
 }
 
 textarea:focus,

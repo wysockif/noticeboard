@@ -64,6 +64,7 @@ public class PostUserTest {
         noticeRepository.deleteAll();
         userRepository.deleteAll();
     }
+
     @After
     public void cleanUp() throws IOException {
         FileUtils.cleanDirectory(new File(uploadFolderPath + "/profile-images"));

@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.wysockif.noticeboard.params.GettingNoticesParams;
 import pl.wysockif.noticeboard.dto.notice.requests.PostNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.requests.PutNoticeRequest;
 import pl.wysockif.noticeboard.dto.notice.snapshots.NoticeSnapshot;
@@ -14,6 +13,7 @@ import pl.wysockif.noticeboard.entities.user.AppUser;
 import pl.wysockif.noticeboard.errors.notice.NoPermissionException;
 import pl.wysockif.noticeboard.errors.notice.NoticeNotFoundException;
 import pl.wysockif.noticeboard.mappers.notice.NoticeMapper;
+import pl.wysockif.noticeboard.params.GettingNoticesParams;
 import pl.wysockif.noticeboard.repositories.notice.NoticeRepository;
 import pl.wysockif.noticeboard.services.file.StaticFileService;
 
@@ -143,7 +143,7 @@ public class NoticeService {
             noticePage = noticeRepository.findAllByCreatorUsername(pageable, username);
         } else {
             BigDecimal minPriceValue = minPriceParam == null ? new BigDecimal("0") : new BigDecimal(minPriceParam);
-            BigDecimal maxPriceValue = maxPriceParam == null ? new BigDecimal("100000000") : new BigDecimal(maxPriceParam);
+            BigDecimal maxPriceValue = maxPriceParam == null ? new BigDecimal("10000000000") : new BigDecimal(maxPriceParam);
             noticePage = getNoticeFilteredPage(pageable, searched, location, minPriceValue, maxPriceValue);
         }
         return noticePage;
