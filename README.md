@@ -174,15 +174,4 @@ The tests were created mostly in TDD by following the F.I.R.S.T. principles.
 * Edit user page:
 <img src="https://raw.githubusercontent.com/wysockif/noticeboard/master/docs/screenshots/edituserpage.png" alt="drawing" style="width:1100px; margin: 10px;"/>
 
----
-
-### Motivation & Project Status
-
-Noticeboard was created as my student project during the second year of studying Computer Science.
-
-I wanted to build a full-stack web application and learn how to: implement register/login functionality, send e-mails using Java, serve static resources (with caching), secure the data (e.g hashing passwords), provide pagination and lazy loading, deploy the app with SSL. The idea was inspired by the website <a href="https://www.olx.pl/" target="_blank">olx.pl</a>.  
-
-The project was completed successfully. 
-
-Duration time: 26.02.2021 - 07.06.2021.
 
