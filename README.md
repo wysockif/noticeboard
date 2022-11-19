@@ -1,8 +1,7 @@
 
-<a href="https://www.noticeboard.pl" target="_blank"><img src="https://raw.githubusercontent.com/wysockif/noticeboard/master/docs/screenshots/logo.png" alt="Noticeboard" style="height: auto !important;width: auto !important;" ></a>
+<img src="https://raw.githubusercontent.com/wysockif/noticeboard/master/docs/screenshots/logo.png" alt="Noticeboard" style="height: auto !important;width: auto !important;" >
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/wysockif/noticeboard)
-[![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://noticeboard.pl)
 ---
 
 ## Table of Contents
